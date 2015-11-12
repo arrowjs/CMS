@@ -1,0 +1,33 @@
+{
+  "information": {
+    "theme_name": "ACME",
+    "theme_uri": "http://arrowjs.io/themes/frontend/default",
+    "author": "Techmaster",
+    "author_uri": "http://techmaster.vn",
+    "version": "0.1.1",
+    "description": "Default theme for ArrowJS CMS",
+    "license": "GNU General Public License v2 or later",
+    "license_uri": "http://www.gnu.org/licenses/gpl-2.0.html",
+    "tag": "red, green, blue"
+  },
+  "menus": [
+    {
+      "id": "main_menu",
+      "title": "Main nenu"
+    },
+    {
+      "id": "social_menu",
+      "title": "Social menu"
+    }
+  ],
+  "sidebars": [
+    {
+      "id": "sidebar1",
+      "title": "Sidebar 1"
+    },
+    {
+      "id": "sidebar2",
+      "title": "Sidebar 2"
+    }
+  ]
+}
