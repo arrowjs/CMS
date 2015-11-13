@@ -3,11 +3,13 @@
 /**
  * Map final part of URL to equivalent functions in controller
  */
-module.exports = function (component, application) {
+module.exports = function (component) {
+    let controller = component.controllers.frontend;
+
     return {
         "/blog": {
             get: {
-                handler: component.controllers.frontend.index
+                handler: controller.allPosts
             }
         }
     }
