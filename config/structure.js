@@ -27,9 +27,9 @@ module.exports = {
                 "path": {
                     "name": "backend",
                     "folder": [
-                        "/themes/backend/:theme/features/$component",
+                        "/themes/backend/:backendTheme/features/$component",
                         "backend/views",
-                        "/themes/backend/:theme/layout"
+                        "/themes/backend/:backendTheme/layouts"
                     ]
                 }
             },
@@ -37,9 +37,9 @@ module.exports = {
                 "path": {
                     "name": "frontend",
                     "folder": [
-                        "/themes/frontend/:theme/features/$component",
+                        "/themes/frontend/:frontendTheme/features/$component",
                         "frontend/views",
-                        "/themes/frontend/:theme/layout"
+                        "/themes/frontend/:frontendTheme/layouts"
                     ]
                 }
             }

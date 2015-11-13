@@ -5,7 +5,7 @@
  */
 module.exports = function (component, application) {
     return {
-        "/": {
+        "post": {
             get: {
                 handler: component.controllers.backend.index
             }
