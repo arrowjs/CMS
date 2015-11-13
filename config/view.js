@@ -9,10 +9,10 @@ module.exports = {
     },
     viewExtension : "twig",
     pagination: {
-        number_item: 20
+        numberItem: 20
     },
-    frontendTheme: "acme",
     backendTheme: "adminLTE",
+    frontendTheme: "acme",
     functionAndVariableFolder : '/libraries/functions',
     filterFolder : '/libraries/filters'
 };
