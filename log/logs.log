@@ -555,3 +555,103 @@
 {"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-12T11:09:25.043Z"}
 {"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-12T11:09:25.050Z"}
 {"level":"info","message":"Application started on port 3333 , Process ID: 4283","timestamp":"2015-11-12T11:09:25.050Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T02:20:18.199Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T02:20:18.202Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T02:20:18.202Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T02:20:18.203Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T02:20:18.210Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 1133","timestamp":"2015-11-13T02:20:18.210Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T04:53:13.086Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T04:53:13.089Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T04:53:13.090Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T04:53:13.090Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T04:53:36.757Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T04:53:36.761Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T04:53:36.761Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T04:53:36.762Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T04:53:36.769Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 8443","timestamp":"2015-11-13T04:53:36.769Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T05:02:13.261Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T05:02:13.264Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T05:02:13.264Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T05:02:13.265Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T05:02:13.272Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 8995","timestamp":"2015-11-13T05:02:13.272Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T05:02:31.937Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T05:02:31.940Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T05:02:31.941Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T05:02:31.941Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T05:02:31.948Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 9027","timestamp":"2015-11-13T05:02:31.948Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T05:02:53.788Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T05:02:53.790Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T05:02:53.791Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T05:02:53.792Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T05:02:53.800Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 9067","timestamp":"2015-11-13T05:02:53.800Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T05:06:18.028Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T05:06:18.031Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T05:06:18.032Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T05:06:18.032Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T05:06:18.040Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 9270","timestamp":"2015-11-13T05:06:18.040Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T05:06:37.699Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T05:06:37.702Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T05:06:37.703Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T05:06:37.703Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T05:06:37.710Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 9308","timestamp":"2015-11-13T05:06:37.710Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T05:07:05.445Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T05:07:05.448Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T05:07:05.449Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T05:07:05.449Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T05:07:05.457Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 9353","timestamp":"2015-11-13T05:07:05.457Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T05:09:23.160Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T05:09:23.163Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T05:09:23.164Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T05:09:23.164Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T05:09:23.172Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 9505","timestamp":"2015-11-13T05:09:23.172Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T07:09:51.474Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T07:09:51.477Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T07:09:51.478Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T07:09:51.478Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T07:09:51.486Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 1175","timestamp":"2015-11-13T07:09:51.486Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T07:12:28.864Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T07:12:28.867Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T07:12:28.868Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T07:12:28.868Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T07:12:28.876Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 1202","timestamp":"2015-11-13T07:12:28.876Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T07:13:40.652Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T07:13:40.655Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T07:13:40.656Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T07:13:40.657Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T07:13:40.664Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 1220","timestamp":"2015-11-13T07:13:40.665Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T07:17:53.861Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T07:17:53.864Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T07:17:53.865Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T07:17:53.865Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T07:17:53.873Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 1263","timestamp":"2015-11-13T07:17:53.873Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T07:19:39.081Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T07:19:39.084Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T07:19:39.084Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T07:19:39.085Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T07:19:39.092Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 1290","timestamp":"2015-11-13T07:19:39.092Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T07:22:59.134Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T07:22:59.137Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T07:22:59.138Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T07:22:59.138Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T07:22:59.146Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 1320","timestamp":"2015-11-13T07:22:59.146Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T07:23:35.753Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'index'","timestamp":"2015-11-13T07:23:35.756Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T07:23:35.757Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T07:23:35.757Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T07:23:35.765Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 1339","timestamp":"2015-11-13T07:23:35.765Z"}

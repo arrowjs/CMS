@@ -4,7 +4,12 @@ module.exports = function (controller, component, application) {
     let mockWidgetID = 'categories';
 
     controller.index = function (req, res) {
-        res.send('widget module');
+        // Get all widgets
+        component.models.widget.findAll().then(function(widgets){
+            res.render('index', {
+                widgets: widgets
+            })
+        });
     };
 
     controller.createWidget = function (req, res) {

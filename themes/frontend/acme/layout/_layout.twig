@@ -65,8 +65,9 @@
 
 <!-- Widget area mockup -->
 <div style="position: fixed; top: 0; left: 0">
-    <h2>Widget area</h2>
+    <h2>Widget area {{ "cuong" | hello }}</h2>
     <div>{{ widget | safe }}</div>
+    {{ get_sidebar() }}
 </div>
 
 <!--footer start-->

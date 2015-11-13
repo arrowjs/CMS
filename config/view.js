@@ -11,5 +11,7 @@ module.exports = {
     pagination: {
         number_item: 20
     },
-    theme: "acme"
+    theme: "acme",
+    functionAndVariableFolder : '/libraries/functions',
+    filterFolder : '/libraries/filters'
 };
