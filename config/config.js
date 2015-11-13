@@ -10,6 +10,7 @@ module.exports = {
         logo: '',
         icon: ''
     },
+    admin_prefix: 'admin',
     bodyParser : {
         extended: true,
         limit: '5mb'

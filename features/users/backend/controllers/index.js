@@ -17,7 +17,9 @@ let route = 'users';
 
 module.exports = function (controller,component,app) {
 
-    let config = app.getConfig;
+
+    let adminPrefix = app.getConfig('admin_prefix') || 'admin';
+    let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
     controller.list = function (req, res) {
         // Add button
         //res.locals.createButton = __acl.addButton(req, route, 'create', '/admin/users/create');
@@ -200,8 +202,8 @@ module.exports = function (controller,component,app) {
     controller.update = function (req, res, next) {
         let edit_user = null;
         let data = req.body;
-        // Get user by id
-        //console.log('update',JSON.stringify(config('redis_prefix'),null,3));
+         //Get user by id
+        console.log('update',JSON.stringify(adminPrefix,null,3));
         app.models.user.findById(req.params.uid).then(function (user) {
             edit_user = user;
             return new Promise(function (fulfill, reject) {
@@ -231,16 +233,16 @@ module.exports = function (controller,component,app) {
                                 }
                             }).then(function (user) {
                                 let user_tmp = JSON.parse(JSON.stringify(user));
-                                user_tmp.key = config('redis_prefix') + 'current-user-' + user.id;
+                                user_tmp.key = redisPrefix + 'current-user-' + user.id;
                                 user_tmp.acl = JSON.parse(user_tmp.role.rules);
                                 redis.setex(user_tmp.key, 300, JSON.stringify(user_tmp));
                             }).catch(function (error) {
                                 console.log(error.stack);
                             });
                     });
-                    return res.redirect('/' + config('admin_prefix') + '/users/profile/' + req.params.uid);
+                    return res.redirect('/' + adminPrefix + '/users/profile/' + req.params.uid);
                 }
-                return res.redirect('/' + config('admin_prefix') + '/users/' + req.params.uid);
+                return res.redirect('/' + adminPrefix + '/users/' + req.params.uid);
             });
         }).catch(function (error) {
             if (error.name == 'SequelizeUniqueConstraintError') {

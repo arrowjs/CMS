@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    redis_prefix: 'arrowjs_',
+    redis_prefix: 'arrowCMS_',
     redis_key : {
         configs : "site_setting",
         features : "all_features",
