@@ -2,7 +2,7 @@
 
 module.exports = {
     resource : {
-        path : 'themes',
+        path : ['themes','upload'],
         option : {
             maxAge: 3600
         }
