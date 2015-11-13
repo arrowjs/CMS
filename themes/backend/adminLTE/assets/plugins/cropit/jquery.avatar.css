@@ -1,0 +1,99 @@
+.avt-item {
+    position: relative;
+    cursor: pointer;
+    margin: 0 10px 10px 0;
+    float: left;
+}
+
+@media (min-width: 481px) and (max-width: 992px){
+    .avt-item {
+        width: 96px;
+    }
+}
+
+@media (max-width: 480px){
+    .avt-item {
+        width: 64px;
+    }
+}
+
+#avatar-body {
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+#avt-wrap, #avt-upload-tab input, #avt-upload-tab img {
+    margin-top: 15px;
+}
+
+.avt-choose {
+    -webkit-box-shadow: 6px 6px 10px 3px rgba(143, 143, 143, 1);
+    -moz-box-shadow: 6px 6px 10px 3px rgba(143, 143, 143, 1);
+    box-shadow: 6px 6px 10px 3px rgba(143, 143, 143, 1);
+}
+
+.avt-choose:before {
+    content: "\2713 ";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: #0064D5;
+}
+
+#avt-gallery-modal .modal-dialog {
+    width: 90%;
+}
+
+/* using cropit to crop */
+/* Show load indicator when image is being loaded */
+.cropit-image-preview.cropit-image-loading .spinner {
+    opacity: 1;
+}
+
+/* Show move cursor when image has been loaded */
+.cropit-image-preview.cropit-image-loaded {
+    cursor: move;
+}
+
+/* Gray out zoom slider when the image cannot be zoomed */
+.cropit-image-zoom-input[disabled] {
+    opacity: .2;
+}
+
+/* Hide default file input button if you want to use a custom button */
+input.cropit-image-input {
+    visibility: hidden;
+}
+
+/* The following styles are only relevant to when background image is enabled */
+
+/* Translucent background image */
+.cropit-image-background {
+    opacity: .1;
+}
+
+/* Style the background image differently when preview area is hovered */
+.cropit-image-background.cropit-preview-hovered {
+    opacity: .2;
+}
+
+/*
+ * If the slider or anything else is covered by the background image,
+ * use non-static position on it
+ */
+input.cropit-image-zoom-input {
+    position: relative;
+    max-width: 240px;
+}
+
+/* Limit the background image by adding overflow: hidden */
+#image-cropper {
+    overflow: hidden;
+}
+.select-image-btn, .save-image-btn {
+    margin: 15px 15px 15px 0;
+}
+.select-btn-wrap {
+    position: relative;
+    z-index: 1500;
+}

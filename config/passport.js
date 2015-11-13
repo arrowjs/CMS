@@ -19,21 +19,22 @@ module.exports = function (passport, application) {
             if(req.isAuthenticated()){
                 return next();
             } else {
-                res.redirect('/login');
+                res.redirect('/admin/login');
             }
         },
-        local1: {
+        local_login: {
             strategy : 'local',
             option: {
-                successRedirect: '/',
-                failureRedirect: '/login'
+                successRedirect: '/admin',
+                failureRedirect: '/admin/login',
+                failureFlash : true
+
             }
         },
-        'facebook1': {
-            strategy : 'facebook',
+        'facebook': {
             option: {
                 successRedirect: '/',
-                failureRedirect: 'users/login'
+                failureRedirect: '/users/login'
             }
         }
     }

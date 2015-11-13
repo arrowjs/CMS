@@ -1,0 +1,80 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {#{% include 'toolbar.twig' %}#}
+            <div class="box box-solid box-primary">
+                <div class="box-body table-responsive no-padding">
+                    {#{% include 'basic_table.twig' %}#}
+                    {#{{ totalPage|pagination(currentPage,'/admin/users/page/{page}/sort/'+currentColumn+'/'+currentOrder)|safe }}#}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="course-view" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Danh sách khóa học</h4> <p class="nameStudent"></p>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tên khóa học</th>
+                                    <th>Ngày đăng ký</th>
+                                </tr>
+                                </thead>
+                                <tbody id="view-course">
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block jsExtends %}
+
+    <script>
+        function viewCourse(email){
+            // lay du lieu va gan vao modal
+//            $.get('/admin/users/course-view/' + email, function (result) {
+//                var stt = 1;
+//                $('#view-course').empty();
+//                result.forEach(function (item) {
+//                    $('#view-course').append('<tr>' +
+//                    '<td>' + stt++ +'</td>' +
+//                    '<td>' + item.course.title + '</td>' +
+//                    '<td>' + item.register_date.dateFormat() + '</td>'+
+//                    '</tr>')
+//                })
+//            });
+
+            // hien modal
+            $('#course-view').modal('show');
+        }
+        String.prototype.dateFormat = function () {
+            var str = new Date(Date.parse(this));
+            return str.toLocaleDateString();
+        };
+    </script>
+{% endblock %}
+
+
+
+
