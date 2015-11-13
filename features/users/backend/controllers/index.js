@@ -17,29 +17,29 @@ let route = 'users';
 
 module.exports = function (controller,component,app) {
 
-
     let adminPrefix = app.getConfig('admin_prefix') || 'admin';
     let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
+
     controller.list = function (req, res) {
         // Add button
-        //res.locals.createButton = __acl.addButton(req, route, 'create', '/admin/users/create');
-
-        // Config ordering
+        //res.locals.createButton = '/admin/users/create';
+        //res.locals.user = req.user;
+        //// Config ordering
         //let page = req.params.page || 1;
         //let column = req.params.sort || 'id';
         //let order = req.params.order || 'asc';
         //res.locals.root_link = '/admin/users/page/' + page + '/sort';
-
-        // Store search data to session
+        //
+        //// Store search data to session
         //let session_search = {};
         //if (req.session.search) {
         //    session_search = req.session.search;
         //}
         //session_search[route + '_index_list'] = req.url;
         //req.session.search = session_search;
-
-        // Config columns
-        //let filter = createFilter(req, res, route, '/admin/users', column, order, [
+        //
+        //// Config columns
+        //let filter = app.createFilter(req, res, route, '/admin/users', column, order, [
         //    {
         //        column: "id",
         //        width: '8%',
@@ -116,38 +116,38 @@ module.exports = function (controller,component,app) {
         //        }
         //    }
         //]);
-
-        // List users
-        app.models.user.findAndCountAll({
-            //attributes: filter.attributes,
-            //include: [
-            //    {
-            //        model: app.models.role
-            //    }
-            //]//,
-            //order: filter.sort,
-            //limit: config.pagination.number_item,
-            //offset: (page - 1) * config.pagination.number_item,
-            //where: filter.values
-        }).then(function (results) {
-            //let totalPage = Math.ceil(results.count / config.pagination.number_item);
-            res.backend.render(req, res, 'index', {
-                title: t('m_users_backend_controllers_index_list'),
-                totalPage: totalPage,
-                items: results.rows,
-                currentPage: page
-
-            });
-
-        }).catch(function (error) {
-            //req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.backend.render('index', {
-                title: t('m_users_backend_controllers_index_list'),
-                totalPage: 1,
-                users: null,
-                currentPage: 1
-            });
-        });
+        //
+        //// List users
+        //app.models.user.findAndCountAll({
+        //    //attributes: filter.attributes,
+        //    //include: [
+        //    //    {
+        //    //        model: app.models.role
+        //    //    }
+        //    //]//,
+        //    //order: filter.sort,
+        //    //limit: config.pagination.number_item,
+        //    //offset: (page - 1) * config.pagination.number_item,
+        //    //where: filter.values
+        //}).then(function (results) {
+        //    //let totalPage = Math.ceil(results.count / config.pagination.number_item);
+        //    res.backend.render(req, res, 'index', {
+        //        title: t('m_users_backend_controllers_index_list'),
+        //        totalPage: totalPage,
+        //        items: results.rows,
+        //        currentPage: page
+        //
+        //    });
+        //
+        //}).catch(function (error) {
+        //    //req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+        //    res.backend.render('index', {
+        //        title: t('m_users_backend_controllers_index_list'),
+        //        totalPage: 1,
+        //        users: null,
+        //        currentPage: 1
+        //    });
+        //});
     };
 
     controller.view = function (req, res) {
@@ -203,7 +203,7 @@ module.exports = function (controller,component,app) {
         let edit_user = null;
         let data = req.body;
          //Get user by id
-        console.log('update',JSON.stringify(adminPrefix,null,3));
+        console.log('update',JSON.stringify(data,null,3));
         app.models.user.findById(req.params.uid).then(function (user) {
             edit_user = user;
             return new Promise(function (fulfill, reject) {
@@ -211,7 +211,7 @@ module.exports = function (controller,component,app) {
                     let fileName = folder_upload + slug(user.user_login).toLowerCase() + '.png';
                     let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
 
-                    return writeFileAsync(__base + 'public' + fileName, base64Data, 'base64').then(function () {
+                    return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
                         data.user_image_url = fileName;
                         fulfill(data);
                     }).catch(function (err) {
@@ -292,12 +292,13 @@ module.exports = function (controller,component,app) {
 
         // Get form data
         var data = req.body;
+        console.log(JSON.stringify(data,null,3));
         return new Promise(function (fulfill, reject) {
             if (data.base64 && data.base64 != '') {
                 let fileName = folder_upload + slug(data.user_login).toLowerCase() + '.png';
                 let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
 
-                return writeFileAsync(__base + 'public' + fileName, base64Data, 'base64').then(function () {
+                return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
                     data.user_image_url = fileName;
                     fulfill(data);
                 }).catch(function (err) {
@@ -368,6 +369,7 @@ module.exports = function (controller,component,app) {
             //console.log(JSON.stringify(roles,null,2));
             res.locals.backButton = '/admin'
             res.locals.saveButton = 'save';
+            res.locals.user = req.user;
             res.backend.render('new', {
                 user: req.user,
                 role_ids: roles
@@ -414,7 +416,8 @@ module.exports = function (controller,component,app) {
      * Get Avatar library
      */
     controller.getAvatarGallery = function (req, res) {
-        readdirAsync(__base + 'public/avatar-gallery').then(function (files) {
+        readdirAsync(__base + 'upload/avatar-gallery').then(function (files) {
+            console.log('avatar : ',files);
             res.json(files);
         }).catch(function (err) {
             res.status(500).send(err.stack);
@@ -484,10 +487,10 @@ module.exports = function (controller,component,app) {
             },
             raw : true
         }).then(function (user) {
-            req._user = user;
+            req.user = user;
             next();
         }).catch(function (err) {
-            console.log(err);
+            console.log('ERROR : '+err);
         })
     };
 
