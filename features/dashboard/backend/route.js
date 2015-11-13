@@ -3,14 +3,14 @@
  */
 'use strict';
 
-module.exports = function (component,app) {
+module.exports = function (component, app) {
     let comp = component.controllers.backend;
     return {
-        "/" : {
-            get : {
-                handler : comp.view,
-                authenticate : true
+        "/": {
+            get: {
+                handler: comp.view,
+                authenticate: true
             }
         }
     }
-}
+};

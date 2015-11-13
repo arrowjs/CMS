@@ -1,10 +1,19 @@
-/**
- * Created by thangnv on 11/12/15.
- */
-'use strict'
+'use strict';
 
-module.exports = function (cont,comp,app) {
-    cont.view = function (req, res) {
-        res.send('Sorry . Not yet frontend module !')
+module.exports = function (controller, component, application) {
+    let mockWidgetID = 'categories';
+
+    controller.index = function (req, res) {
+        res.frontend.render('index', {
+            widget: application.widgetManager._widget[mockWidgetID].controllers.renderWidget()
+        })
     };
-}
+
+    controller.changeTheme = function (req, res) {
+        let theme = req.params.theme || "acme";
+
+        application.setConfig("theme", theme).then(function () {
+            res.redirect('/');
+        });
+    };
+};

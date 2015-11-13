@@ -1,14 +1,18 @@
-/**
- * Created by thangnv on 11/12/15.
- */
-'use strict'
-module.exports = function (component,app) {
-    let comp = component.controllers.frontend;
+'use strict';
+
+module.exports = function (component) {
+    let controller = component.controllers.frontend;
+
     return {
-        "/" : {
-            get : {
-                handler : comp.view
+        "/": {
+            get: {
+                handler: controller.index
+            }
+        },
+        "/change-theme/:theme([0-9a-zA-Z-]+)": {
+            get: {
+                handler: controller.changeTheme
             }
         }
     }
-}
+};

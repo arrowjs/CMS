@@ -1,4 +1,5 @@
 node_modules/
+log/
 .idea
 .bowerrc
 .DS_Store
