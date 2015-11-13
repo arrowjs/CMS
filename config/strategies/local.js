@@ -13,7 +13,7 @@ module.exports = function (passport,config,application) {
         function (username, password, done) {
             application.models.user.find({
                 where: {
-                    username: username
+                    user_login: username
                 }
             }).then(function (user) {
                 bcrypt.compare(password, user.password, function (err, result) {
