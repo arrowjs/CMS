@@ -751,3 +751,75 @@
 {"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T08:12:43.703Z"}
 {"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T08:12:43.711Z"}
 {"level":"info","message":"Application started on port 3333 , Process ID: 2370","timestamp":"2015-11-13T08:12:43.711Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T08:15:17.111Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'dashboard'","timestamp":"2015-11-13T08:15:17.113Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'login'","timestamp":"2015-11-13T08:15:17.114Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'roles'","timestamp":"2015-11-13T08:15:17.115Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'users'","timestamp":"2015-11-13T08:15:17.115Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T08:15:17.117Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T08:15:17.117Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T08:15:17.125Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 2428","timestamp":"2015-11-13T08:15:17.125Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T08:15:49.152Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'dashboard'","timestamp":"2015-11-13T08:15:49.155Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'login'","timestamp":"2015-11-13T08:15:49.156Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'roles'","timestamp":"2015-11-13T08:15:49.156Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'users'","timestamp":"2015-11-13T08:15:49.156Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widget_manager'","timestamp":"2015-11-13T08:15:49.158Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T08:15:49.159Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T08:15:49.166Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 2454","timestamp":"2015-11-13T08:15:49.166Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T08:31:19.393Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'dashboard'","timestamp":"2015-11-13T08:31:19.395Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'login'","timestamp":"2015-11-13T08:31:19.396Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'roles'","timestamp":"2015-11-13T08:31:19.397Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'users'","timestamp":"2015-11-13T08:31:19.397Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widgets'","timestamp":"2015-11-13T08:31:19.399Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T08:31:19.399Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T08:31:19.406Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 2622","timestamp":"2015-11-13T08:31:19.406Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T08:31:47.805Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'dashboard'","timestamp":"2015-11-13T08:31:47.808Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'login'","timestamp":"2015-11-13T08:31:47.809Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'roles'","timestamp":"2015-11-13T08:31:47.809Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'users'","timestamp":"2015-11-13T08:31:47.809Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widgets'","timestamp":"2015-11-13T08:31:47.811Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T08:31:47.812Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T08:31:47.819Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 2657","timestamp":"2015-11-13T08:31:47.819Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T08:32:20.769Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'dashboard'","timestamp":"2015-11-13T08:32:20.771Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'login'","timestamp":"2015-11-13T08:32:20.772Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'roles'","timestamp":"2015-11-13T08:32:20.773Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'users'","timestamp":"2015-11-13T08:32:20.773Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widgets'","timestamp":"2015-11-13T08:32:20.775Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T08:32:20.775Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T08:32:20.783Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 2692","timestamp":"2015-11-13T08:32:20.783Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T08:32:52.790Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'dashboard'","timestamp":"2015-11-13T08:32:52.793Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'login'","timestamp":"2015-11-13T08:32:52.794Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'roles'","timestamp":"2015-11-13T08:32:52.795Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'users'","timestamp":"2015-11-13T08:32:52.795Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widgets'","timestamp":"2015-11-13T08:32:52.797Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T08:32:52.797Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T08:32:52.804Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 2733","timestamp":"2015-11-13T08:32:52.804Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T08:39:16.489Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'dashboard'","timestamp":"2015-11-13T08:39:16.492Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'login'","timestamp":"2015-11-13T08:39:16.493Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'roles'","timestamp":"2015-11-13T08:39:16.493Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'users'","timestamp":"2015-11-13T08:39:16.493Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widgets'","timestamp":"2015-11-13T08:39:16.495Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T08:39:16.496Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T08:39:16.503Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 2826","timestamp":"2015-11-13T08:39:16.503Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'blog'","timestamp":"2015-11-13T08:40:47.486Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'dashboard'","timestamp":"2015-11-13T08:40:47.488Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'login'","timestamp":"2015-11-13T08:40:47.489Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'roles'","timestamp":"2015-11-13T08:40:47.490Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'users'","timestamp":"2015-11-13T08:40:47.490Z"}
+{"level":"info","message":"Arrow loaded: 'feature' - 'widgets'","timestamp":"2015-11-13T08:40:47.492Z"}
+{"level":"info","message":"Arrow loaded: 'widget' - 'categories'","timestamp":"2015-11-13T08:40:47.492Z"}
+{"level":"info","message":"Application loaded using the \"development\" environment configuration","timestamp":"2015-11-13T08:40:47.499Z"}
+{"level":"info","message":"Application started on port 3333 , Process ID: 2879","timestamp":"2015-11-13T08:40:47.499Z"}

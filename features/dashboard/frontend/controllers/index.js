@@ -12,7 +12,7 @@ module.exports = function (controller, component, application) {
     controller.changeTheme = function (req, res) {
         let theme = req.params.theme || "acme";
 
-        application.setConfig("theme", theme).then(function () {
+        application.setConfig("frontendTheme", theme).then(function () {
             res.redirect('/');
         });
     };
