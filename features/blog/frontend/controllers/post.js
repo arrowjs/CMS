@@ -33,4 +33,13 @@ module.exports = function (controller, component, application) {
             console.log(err.stack)
         });
     };
+
+    controller.postDetail = function (req, res) {
+        component.models.post.findById(req.params.postId)
+            .then(function (post) {
+                res.frontend.render('post_detail', {
+                    post: post
+                });
+            });
+    }
 };
