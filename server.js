@@ -1,4 +1,7 @@
 'use strict';
 const Arrow = require('arrowjs');
 const application = new Arrow();
-application.start();
+application.start({
+    passport :true,
+    role : false
+});
