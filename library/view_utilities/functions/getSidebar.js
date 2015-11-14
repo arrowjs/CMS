@@ -33,14 +33,16 @@ module.exports = {
                     let widget = app.widgetManager._widget[w.widget_type];
 
                     if (widget) {
+                        // Get content of each widget in the sidebar
                         resolve = resolve.then(function () {
-                            widget.controllers.renderWidget().then(function(html){
-                                console.log("\x1b[32m", html, "\x1b[0m");
-                            });
-                        })
+                            return widget.controllers.renderWidget(w.data)
+                        }).then(function(view){
+                            return html += view;
+                        });
                     }
                 });
 
+                // Return content of the sidebar
                 resolve.then(function () {
                     callback(null, html);
                 });
