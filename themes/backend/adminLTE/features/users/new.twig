@@ -94,10 +94,10 @@
                             </div>
 
                             <div class="col-md-6">
-                                {% if not user %}
+                                {% if not user or create %}
                                     <div class="form-group">
                                         <label>{{ t('all_table_column_password') }} <span class="required"> *</span></label>
-                                        <input type="password" class="form-control" id="user_pass" name="user_pass"
+                                        <input type="password" class="form-control" id="user_pass" name="user_pass" value="{{ user.user_pass }}"
                                                required="required"/>
                                     </div>
 
@@ -195,8 +195,9 @@
             confirm_password.onkeyup = validatePassword;
         }
 
-        {% if user %}
+        {% if user and not create %}
         function deleteUser() {
+            console.log('delete user');
             $.ajax({
                 url: '/admin/users',
                 type: 'DELETE',

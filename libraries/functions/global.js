@@ -6,6 +6,8 @@
 let  _ = require('lodash'),
     glob = require('glob'),
     fs = require('fs'),
+    acl=require('./acl'),
+    __ = require('./global'),
     util = require('util');
 
 /**
@@ -251,8 +253,8 @@ exports.parseValue = function (value, col) {
  */
 exports.createFilter = function (req, res, route, reset_link, current_column, order, columns, customCondition) {
     if (route != '') {
-        res.locals.searchButton = __acl.customButton(route);
-        res.locals.resetFilterButton = __acl.customButton(reset_link);
+        res.locals.searchButton = acl.customButton(route);
+        res.locals.resetFilterButton = acl.customButton(reset_link);
     }
 
     let conditions = [];

@@ -35,7 +35,7 @@ module.exports = function (component,application) {
                 role :  "update_profile"
             }
         },
-        "profile/:uid" : { //    admin/profile/:uid
+        "profile/:uid([0-9]+)" : { //    admin/profile/:uid
             get : {
                 handler : comp.profile,
                 name : "users-profile-get", //unique string, name route.
@@ -50,7 +50,7 @@ module.exports = function (component,application) {
             }
         },
 
-        "page/:page" : {
+        "page/:page([0-9]+)" : {
             get : {
                 handler : comp.list,
                 name : "users-page",
@@ -58,7 +58,7 @@ module.exports = function (component,application) {
                 role : "index"
             }
         },
-        "page/:page/sort/:sort/(:order)?" : {
+        "page/:page([0-9]+)/sort/:sort/(:order)?" : {
             get : {
                 handler : comp.list,
                 name : "users-page-sort",

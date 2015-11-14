@@ -12,6 +12,7 @@
     "adm-zip": "^0.4.7",
     "arrowjs": "*",
     "bluebird": "^2.10.1",
+    "callsite": "^1.0.0",
     "connect-redis": "^2.5.1",
     "express": "*",
     "express-session": "*",

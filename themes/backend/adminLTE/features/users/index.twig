@@ -3,10 +3,10 @@
 {% block content %}
     <div class="row">
         <div class="col-md-12">
-            {#{% include 'toolbar.twig' %}#}
+            {% include 'toolbar.twig' %}
             <div class="box box-solid box-primary">
                 <div class="box-body table-responsive no-padding">
-                    {#{% include 'basic_table.twig' %}#}
+                    {% include 'basic_table/table.twig' %}
                     {#{{ totalPage|pagination(currentPage,'/admin/users/page/{page}/sort/'+currentColumn+'/'+currentOrder)|safe }}#}
                 </div>
             </div>
