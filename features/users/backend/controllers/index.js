@@ -9,113 +9,118 @@ let promise = require('bluebird');
 let writeFileAsync = promise.promisify(require('fs').writeFile);
 let readdirAsync = promise.promisify(require('fs').readdir);
 let formidable = require('formidable');
+//
+let global_functions = require(__base+'/libraries/functions/global');
+let acl = require(__base+'/libraries/functions/acl');
+
+//
 promise.promisifyAll(formidable);
 
-let edit_template = 'new.twig';
+let edit_template = 'new';
 let folder_upload = '/img/users/';
 let route = 'users';
 
 module.exports = function (controller,component,app) {
 
-
     let adminPrefix = app.getConfig('admin_prefix') || 'admin';
     let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
+
     controller.list = function (req, res) {
         // Add button
-        //res.locals.createButton = __acl.addButton(req, route, 'create', '/admin/users/create');
-
-        // Config ordering
-        //let page = req.params.page || 1;
-        //let column = req.params.sort || 'id';
-        //let order = req.params.order || 'asc';
-        //res.locals.root_link = '/admin/users/page/' + page + '/sort';
+        res.locals.createButton = '/admin/users/create';
+        res.locals.user = req.user;
+        //// Config ordering
+        let page = req.params.page || 1;
+        let column = req.params.sort || 'id';
+        let order = req.params.order || 'asc';
+        res.locals.root_link = '/admin/users/page/' + page + '/sort';
 
         // Store search data to session
-        //let session_search = {};
-        //if (req.session.search) {
-        //    session_search = req.session.search;
-        //}
-        //session_search[route + '_index_list'] = req.url;
-        //req.session.search = session_search;
+        let session_search = {};
+        if (req.session.search) {
+            session_search = req.session.search;
+        }
+        session_search[route + '_index_list'] = req.url;
+        req.session.search = session_search;
 
         // Config columns
-        //let filter = createFilter(req, res, route, '/admin/users', column, order, [
-        //    {
-        //        column: "id",
-        //        width: '8%',
-        //        header: "ID",
-        //        filter: {
-        //            model: 'user',
-        //            data_type: 'number'
-        //        }
-        //    },
-        //    {
-        //        column: "display_name",
-        //        width: '15%',
-        //        header: t('m_users_backend_full_name'),
-        //        link: '/admin/users/{id}',
-        //        acl: 'users.update',
-        //        filter: {
-        //            data_type: 'string'
-        //        }
-        //    },
-        //    {
-        //        column: "user_login",
-        //        width: '15%',
-        //        header: t('m_users_backend_user_name'),
-        //        filter: {
-        //            data_type: 'string'
-        //        }
-        //    },
-        //    {
-        //        column: "user_email",
-        //        width: '15%',
-        //        header: t('all_table_column_email'),
-        //        filter: {
-        //            data_type: 'string'
-        //        }
-        //    },
-        //    {
-        //        column: "phone",
-        //        width: '12%',
-        //        header: t('all_table_column_phone'),
-        //        filter: {
-        //            data_type: 'string'
-        //        }
-        //    },
-        //    {
-        //        column: "role.name",
-        //        width: '10%',
-        //        header: t('all_table_column_role'),
-        //        link: '/admin/roles/{role.id}',
-        //        filter: {
-        //            type: 'select',
-        //            filter_key: 'role_id',
-        //            data_source: 'arr_role',
-        //            display_key: 'name',
-        //            value_key: 'id'
-        //        }
-        //    },
-        //    {
-        //        column: "user_status",
-        //        width: '10%',
-        //        header: t('all_table_column_status'),
-        //        filter: {
-        //            type: 'select',
-        //            filter_key: 'user_status',
-        //            data_source: [
-        //                {
-        //                    name: "publish"
-        //                },
-        //                {
-        //                    name: "un-publish"
-        //                }
-        //            ],
-        //            display_key: 'name',
-        //            value_key: 'name'
-        //        }
-        //    }
-        //]);
+        let filter = global_functions.createFilter(req, res, route, '/admin/users', column, order, [
+            {
+                column: "id",
+                width: '8%',
+                header: "ID",
+                filter: {
+                    model: 'user',
+                    data_type: 'number'
+                }
+            },
+            {
+                column: "display_name",
+                width: '15%',
+                header: t('m_users_backend_full_name'),
+                link: '/admin/users/{id}',
+                acl: 'users.update',
+                filter: {
+                    data_type: 'string'
+                }
+            },
+            {
+                column: "user_login",
+                width: '15%',
+                header: t('m_users_backend_user_name'),
+                filter: {
+                    data_type: 'string'
+                }
+            },
+            {
+                column: "user_email",
+                width: '15%',
+                header: t('all_table_column_email'),
+                filter: {
+                    data_type: 'string'
+                }
+            },
+            {
+                column: "phone",
+                width: '12%',
+                header: t('all_table_column_phone'),
+                filter: {
+                    data_type: 'string'
+                }
+            },
+            {
+                column: "role.name",
+                width: '10%',
+                header: t('all_table_column_role'),
+                link: '/admin/roles/{role.id}',
+                filter: {
+                    type: 'select',
+                    filter_key: 'role_id',
+                    data_source: 'arr_role',
+                    display_key: 'name',
+                    value_key: 'id'
+                }
+            },
+            {
+                column: "user_status",
+                width: '10%',
+                header: t('all_table_column_status'),
+                filter: {
+                    type: 'select',
+                    filter_key: 'user_status',
+                    data_source: [
+                        {
+                            name: "publish"
+                        },
+                        {
+                            name: "un-publish"
+                        }
+                    ],
+                    display_key: 'name',
+                    value_key: 'name'
+                }
+            }
+        ]);
 
         // List users
         app.models.user.findAndCountAll({
@@ -148,10 +153,13 @@ module.exports = function (controller,component,app) {
                 currentPage: 1
             });
         });
+
+        res.backend.render('index');
     };
 
     controller.view = function (req, res) {
         // Add button
+        res.locals.user = req.user;
         let back_link = '/admin/users';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_index_list']) {
@@ -181,6 +189,7 @@ module.exports = function (controller,component,app) {
     };
 
     controller.course_of = function (req, res) {
+        res.locals.user = req.user;
         let email = req.params.email;
         app.models.customer_register.findAll({
             include: [{
@@ -202,8 +211,9 @@ module.exports = function (controller,component,app) {
     controller.update = function (req, res, next) {
         let edit_user = null;
         let data = req.body;
+        res.locals.user = req.user;
          //Get user by id
-        console.log('update',JSON.stringify(adminPrefix,null,3));
+        console.log('update',JSON.stringify(data,null,3));
         app.models.user.findById(req.params.uid).then(function (user) {
             edit_user = user;
             return new Promise(function (fulfill, reject) {
@@ -211,7 +221,7 @@ module.exports = function (controller,component,app) {
                     let fileName = folder_upload + slug(user.user_login).toLowerCase() + '.png';
                     let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
 
-                    return writeFileAsync(__base + 'public' + fileName, base64Data, 'base64').then(function () {
+                    return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
                         data.user_image_url = fileName;
                         fulfill(data);
                     }).catch(function (err) {
@@ -257,47 +267,52 @@ module.exports = function (controller,component,app) {
 
     controller.create = function (req, res) {
         // Add button
+        res.locals.user = req.user;
         let back_link = '/admin/users';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
-        //res.locals.backButton = __acl.addButton(req, route, 'index', back_link);
-        //res.locals.saveButton = __acl.addButton(req, route, 'create');
+        res.locals.backButton =  back_link;
+        res.locals.saveButton =  'create';
 
-        // Get list roles
-        //app.models.role.findAll({
-        //    order: "id asc"
-        //}).then(function (roles) {
-        //    res.backend.render(req, res, edit_template, {
-        //        title: t('m_users_backend_controllers_index_add_user'),
-        //        roles: roles
-        //    });
-        //}).catch(function (error) {
-        //    req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-        //    res.backend.render(req, res, edit_template, {
-        //        title: t('m_users_backend_controllers_index_add_user'),
-        //        roles: null
-        //    });
-        //});
-        res.backend.render('new');
+         //Get list roles
+        app.models.role.findAll({
+            order: "id asc"
+        }).then(function (roles) {
+            res.backend.render(req, res, edit_template, {
+                title: t('m_users_backend_controllers_index_add_user'),
+                roles: roles
+            });
+        }).catch(function (error) {
+            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+            res.backend.render( edit_template, {
+                title: t('m_users_backend_controllers_index_add_user'),
+                roles: null
+            });
+        });
     };
 
     controller.save = function (req, res, next) {
+        res.locals.user = req.user;
         let back_link = '/admin/users';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
-
         // Get form data
         var data = req.body;
+
+        if (!data.role_ids){
+            console.log('DATA : ',JSON.stringify(data,null,3));
+        }
+
         return new Promise(function (fulfill, reject) {
             if (data.base64 && data.base64 != '') {
                 let fileName = folder_upload + slug(data.user_login).toLowerCase() + '.png';
                 let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
 
-                return writeFileAsync(__base + 'public' + fileName, base64Data, 'base64').then(function () {
+                return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
                     data.user_image_url = fileName;
                     fulfill(data);
                 }).catch(function (err) {
@@ -307,23 +322,35 @@ module.exports = function (controller,component,app) {
         }).then(function (data) {
                 app.models.user.create(data).then(function (user) {
                     req.flash.success(t('m_users_backend_controllers_index_add_flash_success'));
+                    res.locals.title = t('m_users_backend_controllers_index_list');
                     res.redirect(back_link);
                 }).catch(function (error) {
+                    res.locals.backButton =  back_link;
+                    res.locals.saveButton =  'create';
                     if (error.name == 'SequelizeUniqueConstraintError') {
+                        res.locals.title = t('m_users_backend_controllers_index_update');
                         req.flash.error(t('m_users_backend_controllers_index_flash_email_exist'));
                         res.redirect(back_link);
                     } else {
                         req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                        res.redirect(back_link);
+                        res.backend.render(edit_template,{user:data,create : 'true',title: t('m_users_backend_controllers_index_update')});
                     }
                 });
             }).catch(function (error) {
                 req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                res.redirect(back_link);
+                res.locals.backButton =  back_link;
+                res.locals.saveButton =  'create';
+                res.backend.render(edit_template,{
+                    title: t('m_users_backend_controllers_index_update'),
+                    user : data,
+                    create : true
+                });
             })
     };
 
     controller.delete = function (req, res) {
+        res.locals.user = req.user;
+        console.log('delete');
         // Check delete current user
         let ids = req.body.ids;
         let id = req.user.id;
@@ -353,6 +380,7 @@ module.exports = function (controller,component,app) {
      * Profile
      */
     controller.profile = function (req, res) {
+        res.locals.user = req.user;
         // Add button
         //console.log('profile : ',JSON.stringify(req.user,null,3));
         let role_ids = [];
@@ -368,6 +396,7 @@ module.exports = function (controller,component,app) {
             //console.log(JSON.stringify(roles,null,2));
             res.locals.backButton = '/admin'
             res.locals.saveButton = 'save';
+            res.locals.user = req.user;
             res.backend.render('new', {
                 user: req.user,
                 role_ids: roles
@@ -414,7 +443,7 @@ module.exports = function (controller,component,app) {
      * Get Avatar library
      */
     controller.getAvatarGallery = function (req, res) {
-        readdirAsync(__base + 'public/avatar-gallery').then(function (files) {
+        readdirAsync(__base + 'upload/avatar-gallery').then(function (files) {
             res.json(files);
         }).catch(function (err) {
             res.status(500).send(err.stack);
@@ -434,6 +463,7 @@ module.exports = function (controller,component,app) {
      * Update pass view
      */
     controller.updatePass = function (req, res) {
+        res.locals.user = req.user;
         let old_pass = req.body.old_pass;
         let user_pass = req.body.user_pass;
 
@@ -484,10 +514,10 @@ module.exports = function (controller,component,app) {
             },
             raw : true
         }).then(function (user) {
-            req._user = user;
+            req.user = user;
             next();
         }).catch(function (err) {
-            console.log(err);
+            console.log('ERROR : '+err);
         })
     };
 

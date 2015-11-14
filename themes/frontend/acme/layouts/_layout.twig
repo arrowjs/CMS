@@ -53,8 +53,8 @@
 
 <body>
 <div style="position: fixed; top: 0; right: 0;">
-    <div style="padding: 5px; background-color: lightblue;"><a href="/change-theme/acme">{{ theme_name }}</a></div>
-    <div style="padding: 5px; background-color: lightcoral;"><a href="/change-theme/acme2">{{ theme_name }} 2</a></div>
+    <div style="padding: 5px; background-color: lightblue;"><a href="/change-theme/acme">ACME</a></div>
+    <div style="padding: 5px; background-color: lightcoral;"><a href="/change-theme/acme2">ACME 2</a></div>
 </div>
 <!--header start-->
 {% include "_header.twig" %}
@@ -62,6 +62,13 @@
 
 {% block content %}
 {% endblock %}
+
+<!-- Widget area mockup -->
+{#<div style="position: fixed; top: 0; left: 0">#}
+    {#<h2>Widget area {{ "cuong" | hello }}</h2>#}
+    {#<div>{{ widget | safe }}</div>#}
+    {#{{ get_sidebar() }}#}
+{#</div>#}
 
 <!--footer start-->
 {% include "_footer.twig" %}

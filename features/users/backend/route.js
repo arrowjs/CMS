@@ -7,13 +7,13 @@ module.exports = function (component,application) {
             get : {
                 handler : comp.list,
                 name : "users-get",
-                authenticate : false,
+                authenticate : true,
                 role : "index"
             },
             delete : {
                 name : "users-delete",
                 handler : comp.delete,
-                authenticate : false,
+                authenticate : true,
                 role : "delete"
             },
             param : { // bad logic param for all router users/...  here
@@ -25,44 +25,44 @@ module.exports = function (component,application) {
             get : {
                 handler : comp.changePass,
                 name : "users-change-pass-get", //unique string, name route.
-                authenticate : false, //boolean true false.
+                authenticate : true, //boolean true false.
                 role :  "update_profile"
             },
             post : {
                 handler : comp.updatePass,
                 name : "users-change-pass-post", //unique string, name route.
-                authenticate : false, //boolean true false.
+                authenticate : true, //boolean true false.
                 role :  "update_profile"
             }
         },
-        "profile/:uid" : { //    admin/profile/:uid
+        "profile/:uid([0-9]+)" : { //    admin/profile/:uid
             get : {
                 handler : comp.profile,
                 name : "users-profile-get", //unique string, name route.
-                authenticate : false, //boolean true false.
+                authenticate : true, //boolean true false.
                 role :  "update_profile"
             },
             post : {
                 handler : [comp.update,comp.profile],
                 name : "users-profile-post", //unique string, name route.
-                authenticate : false, //boolean true false.
+                authenticate : true, //boolean true false.
                 role :  ["update","update_profile"]
             }
         },
 
-        "page/:page" : {
+        "page/:page([0-9]+)" : {
             get : {
                 handler : comp.list,
                 name : "users-page",
-                authenticate : false,
+                authenticate : true,
                 role : "index"
             }
         },
-        "page/:page/sort/:sort/(:order)?" : {
+        "page/:page([0-9]+)/sort/:sort/(:order)?" : {
             get : {
                 handler : comp.list,
                 name : "users-page-sort",
-                authenticate : false,
+                authenticate : true,
                 role : "index"
             }
         },
@@ -70,13 +70,13 @@ module.exports = function (component,application) {
             get : {
                 handler : comp.create,
                 name : "users-create-get",
-                authenticate : false,
+                authenticate : true,
                 role : "create"
             },
             post : {
                 handler : [comp.save, comp.list],
                 name : "users-create-post",
-                authenticate : false,
+                authenticate : true,
                 role : "create"
             }
         },
@@ -84,24 +84,10 @@ module.exports = function (component,application) {
             post : {
                 handler : comp.getAvatarGallery,
                 name : "users-avatar",
-                authenticate : false,
+                authenticate : true,
                 role : "update_profile"
             }
         }
-        //":uid" : {
-        //    get : {
-        //        handler : comp.view,
-        //        name : "users-update-get",
-        //        authenticate : false,
-        //        role : "update"
-        //    },
-        //    post : {
-        //        handler : [comp.update,comp.list],
-        //        name : "users-update-post",
-        //        authenticate : false,
-        //        role : "update"
-        //    }
-        //}
     }
 
 

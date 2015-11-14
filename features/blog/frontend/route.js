@@ -11,16 +11,6 @@ module.exports = function (component) {
             get: {
                 handler: controller.allPosts
             }
-        },
-        '/blog/page-:page([0-9]+)?(/)?': {
-            get: {
-                handler: controller.allPosts
-            }
-        },
-        "/blog/:postId([0-9]+)/:postTitle": {
-            get: {
-                handler: controller.postDetail
-            }
         }
     }
 };

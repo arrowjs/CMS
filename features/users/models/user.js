@@ -16,14 +16,15 @@ module.exports = function (sequelize, DataTypes) {
         user_login: {
             type : DataTypes.STRING(60),
             allowNull : false,
+            unique : true,
             validate: {
                 len : {
                     args : [1,60],
                     msg : 'please input not too long'
                 },
                 isName : function (value) {
-                    if (typeof value !== 'string' || !value.match(__config.regExp.username_reg)){
-                        throw new Error('Please input valid value user_login');
+                    if (typeof value !== 'string' || value.match(/[+-.,!@#$%^&*();\/|<>"'\\]/g)){
+                        throw new Error('Please input valid value user_login 1111');
                     }
                 }
             }
@@ -40,6 +41,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         user_email: {
             type : DataTypes.STRING(100),
+            unique : true,
             validate : {
                 isEmail: {
                     msg : 'Please input valid Email'
@@ -108,7 +110,6 @@ module.exports = function (sequelize, DataTypes) {
                 }
             },
             set : function (val) {
-                console.log('set role_id',val);
                 let roleIds = this.getDataValue('role_ids');
                 let flag = false;
                 if (roleIds)
@@ -124,9 +125,8 @@ module.exports = function (sequelize, DataTypes) {
         },
         role_ids: {
             type : DataTypes.TEXT,
-            allowNull : false,
+            defaultValue : '{0}',
             set : function (val) {
-                console.log('set role_ids',val);
                 let value = val.toString().split(',')
                 let temp = '';
                 let flag = false;
