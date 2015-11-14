@@ -1,7 +1,7 @@
+node_modules/
+config/env/
+log/
 .idea
 .bowerrc
 .DS_Store
 dump.rdb
-node_modules/
-config/env/development.js
-log/
