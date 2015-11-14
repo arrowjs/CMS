@@ -10,8 +10,8 @@ let writeFileAsync = promise.promisify(require('fs').writeFile);
 let readdirAsync = promise.promisify(require('fs').readdir);
 let formidable = require('formidable');
 //
-let global_functions = require(__base+'/libraries/functions/global');
-let acl = require(__base+'/libraries/functions/acl');
+let global_functions = require(__base+'/library/js_utilities/global');
+let acl = require(__base+'/library/js_utilities/acl');
 
 //
 promise.promisifyAll(formidable);
