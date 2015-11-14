@@ -13,6 +13,7 @@ module.exports = {
     },
     backendTheme: "adminLTE",
     frontendTheme: "acme",
-    functionAndVariableFolder : '/libraries/functions',
-    filterFolder : '/libraries/filters'
+    functionFolder : '/libraries/functions',
+    filterFolder : '/libraries/filters',
+    variableFile : '/libraries/variables/global.js'
 };
