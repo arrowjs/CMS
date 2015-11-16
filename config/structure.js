@@ -83,7 +83,7 @@ module.exports = {
             "path": {
                 "folder": [
                     "/themes/frontend/:frontendTheme/widgets/$component",
-                    "/views"
+                    "views"
                 ]
             }
         },
