@@ -1,13 +1,13 @@
 'use strict';
 
 module.exports = {
-    port: process.env.PORT || 3333,
+    port: process.env.PORT || 8000,
     db: {
         host: 'localhost',
         port: '5432',
-        database: 'techmaster_core2',
+        database: 'arrowjs',
         username: 'postgres',
-        password: 'vanthanh123-',
+        password: '',
         dialect: 'postgres',
         logging: false
     },

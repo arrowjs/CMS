@@ -3,7 +3,7 @@
 module.exports =  {
     async : true,
     handler :  function (source, filter, cb) {
-        console.log(filter+' -- '+source);
+        console.log(filter + ' -- ' + source);
         //if (typeof source == 'string') {
         //    if (filter.source_type && filter.source_type == "query") {
         //        this.models.sequelize.query(source).then(function (data) {
