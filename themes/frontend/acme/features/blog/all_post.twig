@@ -1,4 +1,4 @@
-{% extends '_layout.twig' %}
+{% extends '_layout.' + getConfig('viewExtension') %}
 
 {% block content %}
     <div class="breadcrumbs">
@@ -110,7 +110,7 @@
                 {% endfor %}
 
                 <div class="text-center">
-                    {{ pagination(totalPage, currentPage, '/blog/page-{page}') | safe }}
+                    {{ paginateLinks(totalPage, currentPage, '/blog/page-{page}') | safe }}
                 </div>
             </div>
 

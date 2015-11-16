@@ -1,5 +1,7 @@
 "use strict";
 
+let getLayouts = require('./structureExtend').getWidgetLayouts;
+
 module.exports = {
     feature: {
         "path": {
@@ -87,12 +89,8 @@ module.exports = {
                 ]
             }
         },
-        "extends" : {
-            // Demo extends
-            "getLayouts": function (widget) {
-                // Get all widget layouts
-                console.log("\x1b[32m", "Widget: Get all layouts", "\x1b[0m");
-            }
+        "extends": {
+            "getLayouts": getLayouts
         }
     }
 };

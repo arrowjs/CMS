@@ -2,7 +2,7 @@
 
 module.exports = {
     resource : {
-        path : ['themes','upload'],
+        path : 'themes',
         option : {
             maxAge: 3600
         }
@@ -16,5 +16,13 @@ module.exports = {
     frontendTheme: "acme",
     functionFolder : '/library/view_utilities/functions',
     filterFolder : '/library/view_utilities/filters',
-    variableFile : '/library/view_utilities//variables/global.js'
+    variableFile : '/library/view_utilities//variables/global.js',
+    nunjuckSettings : {
+        autoescape: true,
+        throwOnUndefined: false,
+        trimBlocks: false,
+        lstripBlocks: false,
+        watch: false,
+        noCache: true
+    }
 };

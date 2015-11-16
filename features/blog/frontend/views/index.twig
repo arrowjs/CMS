@@ -1,4 +1,4 @@
-{% extends '_layout.twig' %}
+{% extends '_layout.' + getConfig('viewExtension') %}
 
 {% block content %}
     <div id="primary" class="content-area col-sm-12 col-md-8 pull-left">

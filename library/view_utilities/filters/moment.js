@@ -1,7 +1,7 @@
 /**
  * Created by thangnv on 11/13/15.
  */
-'use strict'
+'use strict';
 
 let moment = require('moment');
 
