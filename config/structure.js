@@ -1,6 +1,6 @@
 "use strict";
 
-let getLayouts = require('./viewExtend').getWidgetLayouts;
+let getLayouts = require('./structureExtend').getWidgetLayouts;
 
 module.exports = {
     feature: {
@@ -90,7 +90,6 @@ module.exports = {
             }
         },
         "extends": {
-            // Demo extends
             "getLayouts": getLayouts
         }
     }

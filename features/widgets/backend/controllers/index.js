@@ -14,15 +14,15 @@ module.exports = function (controller, component, application) {
 
     controller.createWidget = function (req, res) {
         // Mockup render widget setting form
-        let files = application
+        let html = application
             .widgetManager
             .getComponent(mockWidgetName)
             .controllers
-            .createWidget(mockWidgetName);
-        //console.log(files);
+            .settingWidget(mockWidgetName);
 
-        res.send('<select name="layout"><option>xx</option></select>');
-
+        res.render('new', {
+            html: html
+        })
     };
 
     controller.saveWidget = function (req, res) {

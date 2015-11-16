@@ -3,6 +3,7 @@
 let _ = require('lodash');
 
 module.exports = {
+
     /**
      * Create pagination
      *
