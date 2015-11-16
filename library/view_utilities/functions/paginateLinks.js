@@ -12,26 +12,26 @@ module.exports = {
      * @param className - Class of pagination use for CSS
      * @param previousButton - Content of previous button
      * @param nextButton - Content of next button
-     * @param limitNumberOfPage - Limit number of page display in pagination
+     * @param numberPageOfPagination - Limit number of page display in pagination
      * @returns HTML
      */
-    handler: function (totalPage, currentPage, itemLink, className, previousButton, nextButton, limitNumberOfPage) {
+    handler: function (totalPage, currentPage, itemLink, className, previousButton, nextButton, numberPageOfPagination) {
         // Set default values
         totalPage = _.isNumber(parseInt(totalPage)) ? totalPage : 1;
         currentPage = _.isNumber(parseInt(currentPage)) ? currentPage : 1;
         className = className || 'pagination';
         previousButton = previousButton || '«';
         nextButton = nextButton || '»';
-        limitNumberOfPage = (_.isNumber(limitNumberOfPage) && limitNumberOfPage > 1) ? limitNumberOfPage : 4;
+        numberPageOfPagination = (_.isNumber(numberPageOfPagination) && numberPageOfPagination > 1) ? numberPageOfPagination : 4;
 
         // Only display pagination when total page > 1
         if (totalPage > 1) {
-            let start = currentPage - limitNumberOfPage - 1;
+            let start = currentPage - numberPageOfPagination - 1;
             if (start < 1) {
                 start = 1;
             }
 
-            let end = currentPage + limitNumberOfPage - 1;
+            let end = currentPage + numberPageOfPagination - 1;
             if (end > totalPage) {
                 end = totalPage;
             }

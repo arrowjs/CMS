@@ -24,6 +24,7 @@ module.exports = {
             order: ['ordering'],
             raw: true
         }).then(function (widgets) {
+
             // Check the sidebar has widget
             if (widgets && widgets.length) {
                 let html = '';
@@ -31,7 +32,7 @@ module.exports = {
 
                 widgets.map(function (w) {
                     // Get widget by type
-                    let widget = app.widgetManager._widget[w.widget_type];
+                    let widget = app.widgetManager.getComponent(w.widget_type);
 
                     if (widget) {
                         // Get content of each widget in the sidebar

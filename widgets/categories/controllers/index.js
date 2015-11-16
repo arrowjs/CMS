@@ -4,9 +4,9 @@ let Promise = require('bluebird');
 
 module.exports = function (controller, component, application) {
 
-    controller.createWidget = function (widget) {
+    controller.createWidget = function (widget_name) {
         // Get all widget layouts
-        component.getLayouts(widget.widget);
+        component.getLayouts(widget_name);
     };
 
     controller.saveWidget = function () {
