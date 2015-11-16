@@ -1,6 +1,7 @@
 "use strict";
 
 let _ = require('lodash');
+let log = require('arrowjs').logger;
 
 module.exports = {
 
@@ -36,8 +37,10 @@ module.exports = {
                         // Get content of each widget in the sidebar
                         resolve = resolve.then(function () {
                             return widget.controllers.renderWidget(w.data)
-                        }).then(function(view){
+                        }).then(function (view) {
                             return html += view;
+                        }).catch(function (err) {
+                            log.error(err);
                         });
                     }
                 });
@@ -49,6 +52,8 @@ module.exports = {
             } else {
                 callback(null, '');
             }
+        }).catch(function (err) {
+            log.error(err);
         });
     }
 };

@@ -4,8 +4,9 @@ let Promise = require('bluebird');
 
 module.exports = function (controller, component, application) {
 
-    controller.createWidget = function () {
-
+    controller.createWidget = function (widget) {
+        // Get all widget layouts
+        component.getLayouts(widget.widget);
     };
 
     controller.saveWidget = function () {
@@ -15,8 +16,11 @@ module.exports = function (controller, component, application) {
     controller.renderWidget = function (widget) {
         let renderWidget = Promise.promisify(component.render);
 
+        //todo: get layout from db
+        let layout = 'default';
+
         // Mockup render widget with default layout
-        return renderWidget('default', {
+        return renderWidget(layout, {
             widget: widget
         })
     };
