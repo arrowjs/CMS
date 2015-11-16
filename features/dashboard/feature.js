@@ -8,5 +8,10 @@ module.exports =  {
     author: 'Nguyen Van Thang',
     version: '0.2.0',
     description: "Dashboard Of Administrator Site",
-    role: []
+    permistions: [
+        {
+        name: 'view',
+        title: 'Permistion to view dashboard'
+        }
+    ]
 }

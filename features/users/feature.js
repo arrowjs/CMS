@@ -5,7 +5,7 @@ module.exports =  {
     author: 'Nguyen Van Thanh',
     version: '0.1.0',
     description: t('m_users_backend_description'),
-    rules: [
+    permistions: [
         {
             name: 'index',
             title: t('m_users_backend_rule_index')

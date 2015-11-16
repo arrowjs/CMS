@@ -24,6 +24,7 @@ module.exports = function (passport,config,app) {
                     });
                 }
                 if (!user.authenticate(password)) {
+                    console.log('test');
                     return done(null, false, {
                         message: 'Username or password invalid'
                     });

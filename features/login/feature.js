@@ -8,5 +8,5 @@ module.exports =  {
     author: 'Nguyen Van Thang',
     version: '0.2.0',
     description: "Feature to login administrator",
-    role: []
+    permistions: []
 }

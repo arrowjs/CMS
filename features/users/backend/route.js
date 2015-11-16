@@ -8,17 +8,31 @@ module.exports = function (component,application) {
                 handler : comp.list,
                 name : "users-get",
                 authenticate : true,
-                role : "index"
+                permissions : "indexaaa"
             },
             delete : {
                 name : "users-delete",
                 handler : comp.delete,
                 authenticate : true,
-                role : "delete"
+                permissions : "delete"
             },
             param : { // bad logic param for all router users/...  here
                 key : "uid",
                 handler : comp.userById
+            }
+        },
+        "/users/:uid([0-9]+)" : {
+            get : {
+                handler : comp.view,
+                name : "update-users-get",
+                authenticate : true,
+                permissions : "index"
+            },
+            post : {
+                handler : [comp.update,comp.view],
+                name : "update-users-post",
+                authenticate : true,
+                permissions : 'update'
             }
         },
         "change-pass" : {
@@ -26,13 +40,13 @@ module.exports = function (component,application) {
                 handler : comp.changePass,
                 name : "users-change-pass-get", //unique string, name route.
                 authenticate : true, //boolean true false.
-                role :  "update_profile"
+                permissions :  "update_profile"
             },
             post : {
                 handler : comp.updatePass,
                 name : "users-change-pass-post", //unique string, name route.
                 authenticate : true, //boolean true false.
-                role :  "update_profile"
+                permissions :  "update_profile"
             }
         },
         "profile/:uid([0-9]+)" : { //    admin/profile/:uid
@@ -40,13 +54,13 @@ module.exports = function (component,application) {
                 handler : comp.profile,
                 name : "users-profile-get", //unique string, name route.
                 authenticate : true, //boolean true false.
-                role :  "update_profile"
+                permissions :  "update_profile"
             },
             post : {
                 handler : [comp.update,comp.profile],
                 name : "users-profile-post", //unique string, name route.
                 authenticate : true, //boolean true false.
-                role :  ["update","update_profile"]
+                permissions :  ["update"]
             }
         },
 
@@ -55,7 +69,7 @@ module.exports = function (component,application) {
                 handler : comp.list,
                 name : "users-page",
                 authenticate : true,
-                role : "index"
+                permissions : "index"
             }
         },
         "page/:page([0-9]+)/sort/:sort/(:order)?" : {
@@ -63,7 +77,7 @@ module.exports = function (component,application) {
                 handler : comp.list,
                 name : "users-page-sort",
                 authenticate : true,
-                role : "index"
+                permissions : "index"
             }
         },
         "create" : {
@@ -71,13 +85,13 @@ module.exports = function (component,application) {
                 handler : comp.create,
                 name : "users-create-get",
                 authenticate : true,
-                role : "create"
+                permissions : "create"
             },
             post : {
                 handler : [comp.save, comp.list],
                 name : "users-create-post",
                 authenticate : true,
-                role : "create"
+                permissions : "create"
             }
         },
         "avatar" : {
@@ -85,7 +99,7 @@ module.exports = function (component,application) {
                 handler : comp.getAvatarGallery,
                 name : "users-avatar",
                 authenticate : true,
-                role : "update_profile"
+                permissions : "update_profile"
             }
         }
     }
