@@ -1,8 +1,5 @@
 'use strict';
 
-/**
- * Map final part of URL to equivalent functions in controller
- */
 module.exports = function (component) {
     let controller = component.controllers.frontend;
 
@@ -17,7 +14,7 @@ module.exports = function (component) {
                 handler: controller.allPosts
             }
         },
-        "/blog/:postId([0-9]+)/:postTitle": {
+        "/blog/:postId([0-9]+)/:postAlias": {
             get: {
                 handler: controller.postDetail
             }

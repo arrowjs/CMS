@@ -33,4 +33,26 @@ module.exports = function (controller, component, application) {
             console.log(err.stack)
         });
     };
+
+    controller.postDetail = function (req, res) {
+        let postId = req.params.postId;
+        component.models.post.findAndCountAll({
+            where: {
+                id: postId
+            }
+        }).then(function (posts) {
+            if (posts) {
+                // Render view
+                res.frontend.render('blog_detail', {
+                    data: posts.rows
+                });
+            } else {
+                // Redirect to 404 if post not exist
+                res.frontend.render('_404');
+            }
+        }).catch(function (err) {
+            console.log(err.stack)
+        });
+
+    };
 };
