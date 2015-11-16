@@ -8,7 +8,7 @@ module.exports = function (component,application) {
                 handler : comp.list,
                 name : "users-get",
                 authenticate : true,
-                permissions : "indexaaa"
+                permissions : "index"
             },
             delete : {
                 name : "users-delete",
