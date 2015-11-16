@@ -14,11 +14,14 @@ module.exports = function (controller, component, application) {
 
     controller.createWidget = function (req, res) {
         // Mockup render widget setting form
-        res.send(application
+        let files = application
             .widgetManager
             .getComponent(mockWidgetName)
             .controllers
-            .createWidget(mockWidgetName));
+            .createWidget(mockWidgetName);
+        //console.log(files);
+
+        res.send('<select name="layout"><option>xx</option></select>');
 
     };
 
