@@ -26,33 +26,26 @@ module.exports = function (controller, component, application) {
                     baseURL: '/blogs/posts/page-'
                 });
             } else {
-                // Redirect to 404 if post not exist
+                // Redirect to 404 if posts not exist
                 res.frontend.render('_404');
             }
-        }).catch(function (err) {
-            console.log(err.stack)
         });
     };
 
     controller.postDetail = function (req, res) {
         let postId = req.params.postId;
-        component.models.post.findAndCountAll({
-            where: {
-                id: postId
-            }
-        }).then(function (posts) {
-            if (posts) {
+
+        component.models.post.findById(postId).then(function (post) {
+            console.log(post.dataValues);
+            if (post) {
                 // Render view
-                res.frontend.render('blog_detail', {
-                    data: posts.rows
+                res.frontend.render('post_detail', {
+                    post: post.dataValues
                 });
             } else {
                 // Redirect to 404 if post not exist
                 res.frontend.render('_404');
             }
-        }).catch(function (err) {
-            console.log(err.stack)
         });
-
     };
 };
