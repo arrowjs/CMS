@@ -57,7 +57,7 @@
 
         <!-- Main content -->
         <section class="content">
-        {{ messages|flash_message|safe }}
+        {% include 'messages.twig' %}
         {% block content %}
 
         {% endblock %}

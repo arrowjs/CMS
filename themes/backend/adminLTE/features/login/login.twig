@@ -31,7 +31,7 @@
       </div><!-- /.login-logo -->
       <div class="login-box-body">
         <p class="login-box-msg">Login to Administrator site</p>
-        {{ messages | flash_message | safe }}
+        {% include 'messages.twig' %}
         <form method="post">
           <div class="form-group has-feedback">
             <input name ="username" type="text" class="form-control" placeholder="Username" required>

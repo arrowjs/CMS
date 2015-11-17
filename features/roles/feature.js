@@ -10,7 +10,7 @@ module.exports = {
         description: __('m_roles_backend_module_desc'),
         permistions: [
             {
-                name: 'index',
+                name: 'view',
                 title: __('m_roles_backend_module_rules_index')
             },
             {
@@ -31,7 +31,7 @@ module.exports = {
             icon: "fa fa-group",
             menus: [
                 {
-                    rule: 'index',
+                    rule: 'view',
                     title: __('m_roles_backend_module_backend_menu_menus_index'),
                     link: '/'
                 },
