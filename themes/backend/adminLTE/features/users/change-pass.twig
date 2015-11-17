@@ -11,23 +11,23 @@
                 <div class="box-body">
                     <form id="edit-form" method="post">
                         <div class="form-group">
-                            <label class="control-label">{{ t('m_users_backend_views_change_pass_old_pass') }}</label>
+                            <label class="control-label">{{ __('m_users_backend_views_change_pass_old_pass') }}</label>
                             <input type="password" class="form-control" name="old_pass" id="old_pass">
                         </div>
                         <div class="form-group">
-                            <label class="control-label">{{ t('m_users_backend_views_change_pass_new_pass') }}</label>
+                            <label class="control-label">{{ __('m_users_backend_views_change_pass_new_pass') }}</label>
                             <input type="password" class="form-control" id="user_pass" name="user_pass">
                         </div>
                         <div class="form-group">
-                            <label class="control-label">{{ t('m_users_backend_views_change_pass_confirm') }}</label>
+                            <label class="control-label">{{ __('m_users_backend_views_change_pass_confirm') }}</label>
                             <input type="password" class="form-control" id="confirm_pass">
                         </div>
                         <div class="margin-top-10">
                             <button type="submit" class="btn btn-danger">
-                                {{ t('change') }}
+                                {{ __('change') }}
                             </button>
                             <a href="/admin" class="btn btn-default">
-                                {{ t('cancel') }} </a>
+                                {{ __('cancel') }} </a>
                         </div>
                     </form>
                 </div>
@@ -42,7 +42,7 @@
 
         function validatePassword() {
             if (password.value != confirm_password.value) {
-                confirm_password.setCustomValidity("{{ t('m_users_backend_views_change_pass_validate_not_match') }}");
+                confirm_password.setCustomValidity("{{ __('m_users_backend_views_change_pass_validate_not_match') }}");
             } else {
                 confirm_password.setCustomValidity('');
             }
