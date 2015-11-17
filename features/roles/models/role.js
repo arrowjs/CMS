@@ -1,3 +1,4 @@
+
 "use strict";
 
 module.exports = function (sequelize, DataTypes) {
@@ -70,14 +71,14 @@ module.exports = function (sequelize, DataTypes) {
         deletedAt: false,
         classMethods: {
             associate: function () {
-                //return {
-                //    "user" : {
-                //        type : "hasMany",
-                //        option : {
-                //            foreignKey: 'role_id'
-                //        }
-                //    }
-                //}
+                return {
+                    "user" : {
+                        type : "hasMany",
+                        option : {
+                            foreignKey: 'role_id'
+                        }
+                    }
+                }
             }
         }
     });

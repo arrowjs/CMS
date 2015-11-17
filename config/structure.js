@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 let getLayouts = require('./structureExtend').getWidgetLayouts;
 
@@ -7,6 +7,10 @@ module.exports = {
         path: {
             folder: '/features',
             file: 'feature.js'
+        },
+        extend :{
+            system :true,
+            active: true
         },
         controller: [
             {

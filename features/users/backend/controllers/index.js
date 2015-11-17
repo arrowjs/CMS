@@ -252,9 +252,9 @@ module.exports = function (controller,component,app) {
                                 console.log(error.stack);
                             });
                     });
-                    return res.redirec__('/' + adminPrefix + '/users/profile/' + req.params.uid);
+                    return res.redirect('/' + adminPrefix + '/users/profile/' + req.params.uid);
                 }
-                return res.redirec__('/' + adminPrefix + '/users/' + req.params.uid);
+                return res.redirect('/' + adminPrefix + '/users/' + req.params.uid);
             });
         }).catch(function (error) {
             if (error.name == 'SequelizeUniqueConstraintError') {

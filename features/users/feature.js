@@ -5,7 +5,7 @@ module.exports =  {
     author: 'Nguyen Van Thanh',
     version: '0.1.0',
     description: __('m_users_backend_description'),
-    permistions: [
+    permissions: [
         {
             name: 'index',
             title: __('m_users_backend_rule_index')
@@ -32,12 +32,12 @@ module.exports =  {
         icon: "fa fa-user",
         menus: [
             {
-                rule: 'index',
+                permission: 'index',
                 title: __('m_users_backend_rule_index'),
                 link: '/'
             },
             {
-                rule: 'create',
+                permission: 'create',
                 title: __('m_users_backend_rule_create'),
                 link: '/create'
             }

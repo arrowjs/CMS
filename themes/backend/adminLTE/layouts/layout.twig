@@ -38,7 +38,8 @@
     </header>
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
-        {% include 'main-sidebar.twig' %}
+        {{ getBackendMenu(route,permissions) | async | safe }}
+        {#{% include 'main-sidebar.twig' %}#}
     </aside>
 
     <!-- Content Wrapper. Contains page content -->
@@ -57,7 +58,7 @@
 
         <!-- Main content -->
         <section class="content">
-        {{ messages|flash_message|safe }}
+        {% include 'messages.twig' %}
         {% block content %}
 
         {% endblock %}
