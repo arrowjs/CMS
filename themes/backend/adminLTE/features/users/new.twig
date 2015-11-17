@@ -15,35 +15,35 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>{{ t('all_table_column_username') }} <span
+                                    <label>{{ __('all_table_column_username') }} <span
                                                 class="required"> *</span></label>
                                     <input type="text" class="form-control" name="user_login"
                                            value="{{ item.user_login }}" required="required"/>
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ t('all_table_column_fullname') }}<span
+                                    <label>{{ __('all_table_column_fullname') }}<span
                                                 class="required"> *</span></label>
                                     <input type="text" class="form-control" name="display_name"
                                            value="{{ item.display_name }}" required="required"/>
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ t('all_table_column_email') }}<span class="required"> *</span></label>
+                                    <label>{{ __('all_table_column_email') }}<span class="required"> *</span></label>
                                     <input type="email" class="form-control" name="user_email"
                                            value="{{ item.user_email }}" required="required"/>
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ t('all_table_column_phone') }}<span class="required"> *</span></label>
+                                    <label>{{ __('all_table_column_phone') }}<span class="required"> *</span></label>
                                     <input type="text" class="form-control" name="phone"
                                            value="{{ item.phone }}" required="required"/>
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ t('all_table_column_url') }}</label>
+                                    <label>{{ __('all_table_column_url') }}</label>
                                     <input type="text" class="form-control" name="user_url"
                                            value="{{ item.user_url }}"/>
                                 </div>
                                 {% if role_ids %}
                                     <div class="form-group">
-                                        <label>{{ t('all_table_column_current_role') }} <span class="required"> * </span></label>
+                                        <label>{{ __('all_table_column_current_role') }} <span class="required"> * </span></label>
                                         <select class="table-group-action-input form-control input-medium"
                                                 name="role_id" required="required">
                                             {% for roleid in role_ids %}
@@ -58,7 +58,7 @@
                                 {% endif %}
                                 {% if roles %}
                                     <div class="form-group">
-                                        <label for="role_ids">{{ t('all_table_column_role') }}
+                                        <label for="role_ids">{{ __('all_table_column_role') }}
                                             <span class="required"> *</span>
                                         </label>
                                         <select multiple="multiple" name="role_ids" id="role_ids"
@@ -70,24 +70,24 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label>{{ t('all_table_column_status') }}<span
+                                        <label>{{ __('all_table_column_status') }}<span
                                                     class="required"> *</span></label>
                                         <select class="table-group-action-input form-control input-medium"
                                                 name="user_status" value="{{ item.user_status }}" required>
                                             {% if item.user_status == 'publish' %}
                                                 <option value="publish"
-                                                        selected>{{ t('all_table_column_activation') }}</option>
-                                                <option value="un-publish">{{ t('all_table_column_deactivation') }}</option>
+                                                        selected>{{ __('all_table_column_activation') }}</option>
+                                                <option value="un-publish">{{ __('all_table_column_deactivation') }}</option>
                                             {% else %}
-                                                <option value="publish">{{ t('all_table_column_activation') }}</option>
+                                                <option value="publish">{{ __('all_table_column_activation') }}</option>
                                                 <option value="un-publish"
-                                                        selected>{{ t('all_table_column_deactivation') }}</option>
+                                                        selected>{{ __('all_table_column_deactivation') }}</option>
                                             {% endif %}
                                         </select>
                                     </div>
                                     {% if item %}
                                         <a class="btn btn-sm btn-danger" data-toggle="modal" href="#confirm">
-                                            <i class="fa fa-remove"></i> {{ t('delete') }}
+                                            <i class="fa fa-remove"></i> {{ __('delete') }}
                                         </a>
                                     {% endif %}
                                 {% endif %}
@@ -96,13 +96,13 @@
                             <div class="col-md-6">
                                 {% if not item or create %}
                                     <div class="form-group">
-                                        <label>{{ t('all_table_column_password') }} <span class="required"> *</span></label>
+                                        <label>{{ __('all_table_column_password') }} <span class="required"> *</span></label>
                                         <input type="password" class="form-control" id="user_pass" name="user_pass"
                                                required="required"/>
                                     </div>
 
                                     <div class="form-group">
-                                        <label>{{ t('m_users_backend_views_new_pass_confirm') }}<span
+                                        <label>{{ __('m_users_backend_views_new_pass_confirm') }}<span
                                                     class="required"> *</span></label>
                                         <input type="password" class="form-control" id="confirm_pass"
                                                required="required"/>
@@ -110,10 +110,10 @@
                                 {% endif %}
 
                                 <div class="form-group">
-                                    <label>{{ t('m_users_backend_views_new_avatar') }} <span class="help-block"
+                                    <label>{{ __('m_users_backend_views_new_avatar') }} <span class="help-block"
                                                                                                   style="display: inline;">(128x128px) </span></label>
                                     <a href="#" id="avt" class="btn btn-primary btn-block"><i class="fa fa-upload"></i>
-                                        {{ t('m_users_backend_views_new_choose_image') }}</a>
+                                        {{ __('m_users_backend_views_new_choose_image') }}</a>
 
                                     <img style="margin: 15px 0" class="img img-thumbnail" id="user_image"
                                          src="{{ item.user_image_url }}"/>
@@ -132,15 +132,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title">{{ t('m_users_backend_views_new_delete_header') }}</h4>
+                    <h4 class="modal-title">{{ __('m_users_backend_views_new_delete_header') }}</h4>
                 </div>
                 <div class="modal-body">
-                    {{ t('m_users_backend_views_new_delete_confirm_alert') }}
+                    {{ __('m_users_backend_views_new_delete_confirm_alert') }}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ t('cancel') }}</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('cancel') }}</button>
                     <button type="button" class="btn btn-danger"
-                            onclick="return deleteUser();">{{ t('delete') }}</button>
+                            onclick="return deleteUser();">{{ __('delete') }}</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -166,7 +166,7 @@
             //begin init select2 role
             var select2 = $('#role_ids');
             select2.select2({
-                placeholder: "{{ t('all_table_column_role_placeholder') }}",
+                placeholder: "{{ __('all_table_column_role_placeholder') }}",
                 templateSelection: function (option) {
                     var text = $(option.element).text().trim();
                     text = text.replace(/^[—]+/, '');
@@ -185,7 +185,7 @@
 
         function validatePassword() {
             if (password.value != confirm_password.value) {
-                confirm_password.setCustomValidity("{{ t('m_users_backend_views_new_password_not_match') }}");
+                confirm_password.setCustomValidity("{{ __('m_users_backend_views_new_password_not_match') }}");
             } else {
                 confirm_password.setCustomValidity('');
             }

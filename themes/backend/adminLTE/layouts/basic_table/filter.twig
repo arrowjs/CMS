@@ -18,7 +18,7 @@
 
                         {% if filter.type == 'select' %}
                             <select name="{{ filter.filter_key }}" class="form-control">
-                                <option value="">{{ t('all') }}</option>
+                                <option value="">{{ __('all') }}</option>
                                 {% for s in filter.data_source | get_data_source(filter) %}
                                     {% if filters[filter.filter_key] != "" and filters[filter.filter_key] == s[filter.value_key] %}
                                         <option value="{{ s[filter.value_key] }}" selected>{{ s[filter.display_key] }}</option>

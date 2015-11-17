@@ -60,7 +60,7 @@ module.exports = function (controller,component,app) {
             {
                 column: "display_name",
                 width: '15%',
-                header: t('m_users_backend_full_name'),
+                header: __('m_users_backend_full_name'),
                 link: '/admin/users/{id}',
                 acl: 'users.update',
                 filter: {
@@ -70,7 +70,7 @@ module.exports = function (controller,component,app) {
             {
                 column: "user_login",
                 width: '15%',
-                header: t('m_users_backend_user_name'),
+                header: __('m_users_backend_user_name'),
                 filter: {
                     data_type: 'string'
                 }
@@ -78,7 +78,7 @@ module.exports = function (controller,component,app) {
             {
                 column: "user_email",
                 width: '15%',
-                header: t('all_table_column_email'),
+                header: __('all_table_column_email'),
                 filter: {
                     data_type: 'string'
                 }
@@ -86,7 +86,7 @@ module.exports = function (controller,component,app) {
             {
                 column: "phone",
                 width: '12%',
-                header: t('all_table_column_phone'),
+                header: __('all_table_column_phone'),
                 filter: {
                     data_type: 'string'
                 }
@@ -94,7 +94,7 @@ module.exports = function (controller,component,app) {
             {
                 column: "role.name",
                 width: '10%',
-                header: t('all_table_column_role'),
+                header: __('all_table_column_role'),
                 link: '/admin/roles/{role.id}',
                 filter: {
                     type: 'select',
@@ -107,7 +107,7 @@ module.exports = function (controller,component,app) {
             {
                 column: "user_status",
                 width: '10%',
-                header: t('all_table_column_status'),
+                header: __('all_table_column_status'),
                 filter: {
                     type: 'select',
                     filter_key: 'user_status',
@@ -142,7 +142,7 @@ module.exports = function (controller,component,app) {
             * Attention : not allows request, response on render function
             * */
             res.backend.render('index', {
-                title: t('m_users_backend_controllers_index_list'),
+                title: __('m_users_backend_controllers_index_list'),
                 items: results.rows,
                 totalPage: totalPage,
                 currentPage: page
@@ -153,7 +153,7 @@ module.exports = function (controller,component,app) {
             _log.error(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.backend.render('index', {
-                title: t('m_users_backend_controllers_index_list'),
+                title: __('m_users_backend_controllers_index_list'),
                 totalPage: 1,
                 items: null,
                 currentPage: 1
@@ -175,7 +175,7 @@ module.exports = function (controller,component,app) {
         // Get user by session and list roles
         app.models.role.findAll().then(function (roles) {
             res.backend.render( edit_template, {
-                title: t('m_users_backend_controllers_index_update'),
+                title: __('m_users_backend_controllers_index_update'),
                 roles: roles,
                 item: req.user,
                 id: req.params.uid
@@ -184,7 +184,7 @@ module.exports = function (controller,component,app) {
             _log.error(err);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.backend.render( edit_template, {
-                title: t('m_users_backend_controllers_index_update'),
+                title: __('m_users_backend_controllers_index_update'),
                 roles: null,
                 item: null,
                 id: 0
@@ -234,7 +234,7 @@ module.exports = function (controller,component,app) {
             })
         }).then(function (data) {
             return edit_user.updateAttributes(data).then(function (result) {
-                req.flash.success(t('m_users_backend_controllers_index_update_flash_success'));
+                req.flash.success(__('m_users_backend_controllers_index_update_flash_success'));
                 if (req.url.indexOf('profile') !== -1) {
                     redis.del(req.user.key, function (err, reply) {
                         if (!err)
@@ -252,13 +252,13 @@ module.exports = function (controller,component,app) {
                                 console.log(error.stack);
                             });
                     });
-                    return res.redirect('/' + adminPrefix + '/users/profile/' + req.params.uid);
+                    return res.redirec__('/' + adminPrefix + '/users/profile/' + req.params.uid);
                 }
-                return res.redirect('/' + adminPrefix + '/users/' + req.params.uid);
+                return res.redirec__('/' + adminPrefix + '/users/' + req.params.uid);
             });
         }).catch(function (error) {
             if (error.name == 'SequelizeUniqueConstraintError') {
-                req.flash.error(t('m_users_backend_controllers_index_flash_email_exist'));
+                req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
                 return next();
             } else {
                 req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
@@ -283,14 +283,14 @@ module.exports = function (controller,component,app) {
             order: "id asc"
         }).then(function (roles) {
             res.backend.render(edit_template, {
-                title: t('m_users_backend_controllers_index_add_user'),
+                title: __('m_users_backend_controllers_index_add_user'),
                 roles: roles
             });
         }).catch(function (error) {
             _log.error(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.backend.render( edit_template, {
-                title: t('m_users_backend_controllers_index_add_user'),
+                title: __('m_users_backend_controllers_index_add_user'),
                 roles: null
             });
         });
@@ -324,19 +324,19 @@ module.exports = function (controller,component,app) {
             } else fulfill(data);
         }).then(function (data) {
                 app.models.user.create(data).then(function (user) {
-                    req.flash.success(t('m_users_backend_controllers_index_add_flash_success'));
-                    res.locals.title = t('m_users_backend_controllers_index_list');
+                    req.flash.success(__('m_users_backend_controllers_index_add_flash_success'));
+                    res.locals.title = __('m_users_backend_controllers_index_list');
                     res.redirect(back_link);
                 }).catch(function (error) {
                     res.locals.backButton =  back_link;
                     res.locals.saveButton =  'create';
                     if (error.name == 'SequelizeUniqueConstraintError') {
-                        res.locals.title = t('m_users_backend_controllers_index_update');
-                        req.flash.error(t('m_users_backend_controllers_index_flash_email_exist'));
+                        res.locals.title = __('m_users_backend_controllers_index_update');
+                        req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
                         res.redirect(back_link);
                     } else {
                         req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                        res.backend.render(edit_template,{user:data,create : 'true',title: t('m_users_backend_controllers_index_update')});
+                        res.backend.render(edit_template,{user:data,create : 'true',title: __('m_users_backend_controllers_index_update')});
                     }
                 });
             }).catch(function (error) {
@@ -344,7 +344,7 @@ module.exports = function (controller,component,app) {
                 res.locals.backButton =  back_link;
                 res.locals.saveButton =  'create';
                 res.backend.render(edit_template,{
-                    title: t('m_users_backend_controllers_index_update'),
+                    title: __('m_users_backend_controllers_index_update'),
                     item : data,
                     create : true
                 });
@@ -367,14 +367,14 @@ module.exports = function (controller,component,app) {
                     }
                 }
             }).then(function () {
-                req.flash.success(t('m_users_backend_controllers_index_delete_flash_success'));
+                req.flash.success(__('m_users_backend_controllers_index_delete_flash_success'));
                 res.sendStatus(204);
             }).catch(function (error) {
                 req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
                 res.sendStatus(200);
             });
         } else {
-            req.flash.warning(t('m_users_backend_controllers_index_delete_flash_success'));
+            req.flash.warning(__('m_users_backend_controllers_index_delete_flash_success'));
             res.sendStatus(200);
         }
     };
@@ -444,14 +444,14 @@ module.exports = function (controller,component,app) {
                 user.updateAttributes({
                     user_pass: user.hashPassword(user_pass)
                 }).then(function () {
-                    req.flash.success(t('m_users_backend_controllers_index_update_pass_flash_success'));
+                    req.flash.success(__('m_users_backend_controllers_index_update_pass_flash_success'));
                 }).catch(function (error) {
                     req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
                 }).finally(function () {
                     res.backend.render('change-pass');
                 });
             } else {
-                req.flash.warning(t('m_users_backend_controllers_index_update_pass_flash_error'));
+                req.flash.warning(__('m_users_backend_controllers_index_update_pass_flash_error'));
                 res.backend.render(req, res, 'change-pass');
             }
         });
