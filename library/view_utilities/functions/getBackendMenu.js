@@ -4,6 +4,7 @@ let _ = require('lodash');
 let log = require('arrowjs').logger;
 
 module.exports = {
+    name : "getBackendMenu",
 
     async: true,
 
@@ -82,7 +83,10 @@ module.exports = {
                         //if (permissions.feature[moduleName].indexOf(mn.rule) > -1) {
                             //TODO :need check role here
                             menu_class = active_menu(current_url, mn.link.replace('/', ''), "active", 3);
-                            html += `<li class="treeview ${menu_class}"><a href="${'/admin/' + (moduleName + mn.link)}"><i class="fa fa-circle-o"></i> <span> ${mn.title} </span>`;
+                            html += `<li class="treeview ${menu_class}">
+                            <a href="${'/admin/' + (moduleName + mn.link)}">
+                            <i class="fa fa-circle-o"></i> <span> ${mn.title}</span>
+                            </a>`;
                         //}
                     }
                     html += '</ul></li>';
@@ -92,12 +96,11 @@ module.exports = {
                     } else {
                         html = html.replace('{{link}}', '/admin' + subMenu.menus[0].link);
                     }
-                    html += '</a></li>';
+                    html += '</li>';
                 }
             }
         }
-        html += '</ul></section>'
-
+        html += '</ul></section>';
 
         callback(null, html)
     }

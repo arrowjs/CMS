@@ -1,0 +1,150 @@
+{% extends 'layout.twig' %}
+
+{#{% block cssExtends %}#}
+    {#<link href="/theme_resources/backend/default/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>#}
+{#{% endblock %}#}
+
+{% block content %}
+    <button type="submit" id="saveForm" class="btn btn-success" form="edit-form" style="margin-bottom: 5px;">
+        <i class="fa fa-check"></i> {{ __('save') }}
+    </button>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post" role="form">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs pull-right ui-sortable-handle">
+                        <li class=""><a href="#redis-setting" data-toggle="tab" aria-expanded="false">{{ __('m_configurations_backend_index_tab_redis') }}</a></li>
+                        <li class="">
+                            <a href="#database-setting" data-toggle="tab" aria-expanded="false">{{ __('m_configurations_backend_index_tab_database') }}</a>
+                        </li>
+                        <li class="active"><a href="#site-setting" data-toggle="tab" aria-expanded="true">{{ __('m_configurations_backend_index_tab_site')  }}</a></li>
+                        <li class="pull-left header"><i class="fa fa-inbox"></i>{{ __('m_configurations_backend_index_tab_setting') }}</li>
+                    </ul>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="site-setting">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>{{ __('m_configurations_backend_index_label_title') }}</label>
+                                            <input type="text" name="title" class="form-control"
+                                                   value="{{ config.app.title }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>{{ __('m_configurations_backend_index_label_desc') }}</label>
+                                            <input type="text" name="description" class="form-control"
+                                                   value="{{ config.app.description }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+
+                                        <div class="form-group">
+                                            <label>{{ __('m_configurations_backend_index_label_language_code') }}</label>
+                                            <select name="language" id="language" class="form-control">
+                                                {% for key, value in lang %}
+                                                    {% if key == config.app.language %}
+                                                        <option value="{{ key }}" selected>{{ key }}</option>
+                                                    {% else %}
+                                                        <option value="{{ key }}">{{ key }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>{{ __('m_configurations_backend_index_label_item_per_page') }}</label>
+                                                    <input type="text" name="number_item" class="form-control"
+                                                           value="{{ config.pagination.number_item }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="database-setting">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>{{ __('m_configurations_backend_index_label_host') }}</label>
+                                            <input type="text" name="db_host" class="form-control"
+                                                   value="{{ config.db.host }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>{{ __('m_configurations_backend_index_label_port') }}</label>
+                                            <input type="text" name="db_port" class="form-control"
+                                                   value="{{ config.db.port }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>{{ __('m_configurations_backend_index_tab_database') }}</label>
+                                            <input type="text" name="db_database" class="form-control"
+                                                   value="{{ config.db.database }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>{{ __('all_table_column_username') }}</label>
+                                            <input type="text" name="db_username" class="form-control"
+                                                   value="{{ config.db.username }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>{{ ('all_table_column_password') }}</label>
+                                            <input type="password" name="db_password" class="form-control"
+                                                   value="{{ config.db.password }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>{{ __('m_configurations_backend_index_label_dialect') }}</label>
+                                            <input type="text" name="db_dialect" class="form-control"
+                                                   value="{{ config.db.dialect }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label>{{ __('m_configurations_backend_index_label_logging') }}</label>
+                                            {% if config.db.logging %}
+                                                <input type="checkbox" name="db_logging" value="1"
+                                                       checked>
+                                            {% else %}
+                                                <input type="checkbox" name="db_logging" value="1">
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="redis-setting">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>{{ __('m_configurations_backend_index_label_host') }}</label>
+                                            <input type="text" name="redis_host" class="form-control"
+                                                   value="{{ config.redis.host }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>{{ __('m_configurations_backend_index_label_port') }}</label>
+                                            <input type="text" name="redis_port" class="form-control"
+                                                   value="{{ config.redis.port }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
