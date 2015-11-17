@@ -12,7 +12,6 @@ module.exports = function (controller, component, application) {
         // Create setting form
         let form = new WidgetForm();
         form.addText('title', 'Title');
-        form.addText('show_post_count', 'Show post count');
         form.addSelect('layout', 'Layout', layouts);
         return form.render();
     };

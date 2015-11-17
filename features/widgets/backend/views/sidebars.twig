@@ -1,0 +1,218 @@
+{% extends 'layout.twig' %}
+
+{% block cssExtends %}
+    {#<link rel="stylesheet" href="/theme_resources/backend/default/plugins/codemirror/css/codemirror.min.css">#}
+    <style>
+        .widget-list {
+            list-style: none;
+            padding-left: 0;
+            font-size: 15px;
+        }
+
+        .widget-list .box {
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .widget-item {
+            display: block;
+            border: 1px solid;
+            line-height: 35px;
+            padding-left: 15px;
+            background-color: aliceblue;
+            margin-bottom: 10px;
+            cursor: move;
+        }
+
+        .widget-state-hover {
+            border: 1px dashed #000000;
+            min-height: 50px;
+        }
+
+        .ui-sortable-placeholder {
+            border: 1px dashed #000000;
+            min-height: 50px;
+        }
+
+        .open {
+            display: block;
+        }
+
+        .close {
+            display: none;
+        }
+
+        .expand_arrow {
+            position: absolute;
+            top: 6px;
+            right: 10px;
+            width: 50px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .placeholder {
+            border: 1px dashed #000000;
+            min-height: 50px;
+            text-align: center;
+        }
+
+        .sidebar-widget {
+            padding: 5px;
+            min-height: 50px;
+            overflow: auto;
+            z-index: 9999;
+        }
+
+        .information {
+            float: right;
+            padding-right: 10px;
+            color: #808080;
+            cursor: pointer;
+        }
+
+        .information:hover i {
+            color: #525252;
+        }
+
+        .tooltip.in {
+            opacity: 1;
+        }
+
+        .tooltip.top {
+            padding: 8px 4px 5px 4px;
+        }
+
+        .tooltip-inner {
+            text-align: left;
+            background-color: #f0eff0;
+            color: #000000;
+            border: 1px solid #d7d7d7;
+        }
+
+        .tooltip.top .tooltip-arrow {
+            border-top-color: #d7d7d7;
+        }
+
+        .maximize-toolbar, .minimize-toolbar {
+            border: 1px solid #ddd;
+            background-color: #f7fbff;
+        }
+
+        .maximize-toolbar {
+            padding: 5px 10px;
+        }
+
+        .minimize-toolbar {
+            margin: -6px -12px 12px -12px;
+            padding: 15px 20px;
+            font-size: 20px;
+        }
+
+        .maximize-toolbar a {
+            padding: 2px 5px;
+        }
+
+        .minimize-toolbar a {
+            padding: 6px 6px 2px 6px;
+        }
+
+        .maximize-toolbar a:hover, .minimize-toolbar a:hover {
+            background-color: #d5e1f3;
+        }
+
+        .maximize-toolbar a i, .minimize-toolbar a i {
+            color: #6b6b6b;
+        }
+
+        .maximize-toolbar a:hover i, .minimize-toolbar a:hover i {
+            color: #525252;
+        }
+
+        .CodeMirror.cm-s-default {
+            padding: 6px 12px;
+            border: 1px solid #d2d6de;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        {#<div class="col-md-12">#}
+            {#<div class="col-md-12">#}
+                {#{% include 'toolbar.html' %}#}
+            {#</div>#}
+        {#</div>#}
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <div class="box box-solid box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">Sidebar</h3>
+                    </div>
+
+                    <div class="box-body">
+                        <ul class="widget-list" id="widgets">
+                            {% for widget in widgets %}
+                                <li class="widget-item" data-alias="{{ widget.config.alias }}">
+                                    {{ widget.config.name }}
+                                    <a class="information" title="{{ widget.config.description }}">
+                                        <i class="fa fa-info-circle"></i>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9 sidebar-list">
+                <div class="row">
+                    {% macro sidebar_list(sidebar, widget_list) %}
+                        <div class="col-md-12">
+                            <div class="box box-solid box-info" id="{{ bar.name }}">
+                                <div class="box-header">
+                                    <h3 class="box-title">{{ bar.title }}</h3>
+
+                                    <div class="box-tools pull-right">
+                                        <button class="btn btn-box-tool" data-widget="collapse">
+                                            <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="box-body" id="{{ bar.alias }}">
+                                    <ul class="widget-list connect-list sidebar-widget">
+                                        {{ widget_list }}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% endmacro %}
+
+                    <div class="col-md-6">
+                        {% for bar in sidebars %}
+                            {% if loop.index <= sidebars.length/2 + 1 %}
+                                {{ sidebar_list(bar, bar.name|setting_sidebars|safe) }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-md-6">
+                        {% for bar in sidebars %}
+                            {% if loop.index > sidebars.length/2 + 1 %}
+                                {{ sidebar_list(bar, bar.name|setting_sidebars|safe) }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    <script src="/theme_resources/backend/default/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="/theme_resources/backend/default/plugins/codemirror/js/codemirror.min.js"></script>
+    <script src="/theme_resources/backend/default/plugins/codemirror/js/codemirror.mode.htmlmixed.min.js"></script>
+    <script src="/theme_resources/backend/default/js/widgets/sidebar.js"></script>
+{% endblock %}
+

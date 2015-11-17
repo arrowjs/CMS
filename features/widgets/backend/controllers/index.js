@@ -5,11 +5,8 @@ module.exports = function (controller, component, application) {
 
     controller.index = function (req, res) {
         // Get all widgets
-        component.models.widget.findAll().then(function (widgets) {
-            res.render('index', {
-                widgets: widgets
-            })
-        });
+        console.log("\x1b[33m", application.widgetManager.getAttribute(), "\x1b[0m");
+
     };
 
     controller.createWidget = function (req, res) {

@@ -32,7 +32,7 @@ module.exports = {
 
                 widgets.map(function (w) {
                     // Get widget by type
-                    let widget = app.widgetManager.getComponent(w.widget_type);
+                    let widget = app.widgetManager.getComponent(w.widget_name);
 
                     if (widget) {
                         // Get content of each widget in the sidebar

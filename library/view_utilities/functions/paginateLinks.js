@@ -13,49 +13,53 @@ module.exports = {
      * @param className - Class of pagination use for CSS
      * @param previousButton - Content of previous button
      * @param nextButton - Content of next button
-     * @param numberPageOfPagination - Limit number of page display in pagination
+     * @param numberPagesOfPagination - Limit number of page display in pagination
      * @returns HTML
      */
-    handler: function (totalPage, currentPage, itemLink, className, previousButton, nextButton, numberPageOfPagination) {
+    handler: function (totalPage, currentPage, itemLink, className, previousButton, nextButton, numberPagesOfPagination) {
         // Set default values
-        totalPage = _.isNumber(parseInt(totalPage)) ? parseInt(totalPage) : 1;
-        currentPage = _.isNumber(parseInt(currentPage)) ? parseInt(currentPage) : 1;
+        totalPage = parseInt(totalPage);
+        totalPage = (_.isNumber(totalPage) && totalPage > 0) ? totalPage : 1;
+        currentPage = parseInt(currentPage);
+        currentPage = (_.isNumber(currentPage) && currentPage > 0) ? currentPage : 1;
         className = className || 'pagination';
         previousButton = previousButton || '«';
         nextButton = nextButton || '»';
-        numberPageOfPagination = (_.isNumber(numberPageOfPagination) && parseInt(numberPageOfPagination) > 1) ? numberPageOfPagination : 3;
+        numberPagesOfPagination = parseInt(numberPagesOfPagination);
+        numberPagesOfPagination = (_.isNumber(numberPagesOfPagination) && numberPagesOfPagination > 1) ? numberPagesOfPagination : 5;
 
         let start, end;
+
         // Only display pagination when total page > 1
         if (totalPage > 1) {
-            if (numberPageOfPagination >= 3) {
-                if ((currentPage >= numberPageOfPagination) && (currentPage <= (totalPage - numberPageOfPagination + 1))) {
-                    start = currentPage - Math.floor(numberPageOfPagination/2);
+            if (numberPagesOfPagination >= 3) {
+                if ((currentPage >= numberPagesOfPagination) && (currentPage <= (totalPage - numberPagesOfPagination + 1))) {
+                    start = currentPage - Math.floor(numberPagesOfPagination / 2);
                     if (start < 1) {
                         start = 1;
                     }
 
-                    end = start + numberPageOfPagination -1;
+                    end = start + numberPagesOfPagination - 1;
                     if (end > totalPage) {
                         end = totalPage;
                     }
                 }
-                else if (currentPage < numberPageOfPagination) {
+                else if (currentPage < numberPagesOfPagination) {
                     start = 1;
-                    end = numberPageOfPagination;
+                    end = numberPagesOfPagination;
                 }
-                else if (currentPage > (totalPage - numberPageOfPagination + 1)) {
-                    start = totalPage - numberPageOfPagination + 1;
+                else if (currentPage > (totalPage - numberPagesOfPagination + 1)) {
+                    start = totalPage - numberPagesOfPagination + 1;
                     end = totalPage;
                 }
             }
             else {
                 start = currentPage;
-                if ((currentPage + numberPageOfPagination) > totalPage) {
-                    start = totalPage - numberPageOfPagination + 1;
+                if ((currentPage + numberPagesOfPagination) > totalPage) {
+                    start = totalPage - numberPagesOfPagination + 1;
                 }
 
-                end = currentPage + numberPageOfPagination - 1;
+                end = currentPage + numberPagesOfPagination - 1;
                 if (end > totalPage) {
                     end = totalPage;
                 }

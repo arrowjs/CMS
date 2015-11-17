@@ -35,12 +35,18 @@ module.exports = function (controller, component, application) {
     controller.postDetail = function (req, res) {
         let postId = req.params.postId;
 
-        component.models.post.findById(postId).then(function (post) {
-            console.log(post.dataValues);
+        component.models.post.find({
+            where: {
+                id: postId,
+                type: 'post',
+                published: 1
+            },
+            raw: true
+        }).then(function (post) {
             if (post) {
                 // Render view
                 res.frontend.render('post_detail', {
-                    post: post.dataValues
+                    post: post
                 });
             } else {
                 // Redirect to 404 if post not exist
