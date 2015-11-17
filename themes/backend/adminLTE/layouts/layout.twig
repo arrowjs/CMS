@@ -38,7 +38,8 @@
     </header>
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
-        {% include 'main-sidebar.twig' %}
+        {{ getBackendMenu(route,permissions) | async | safe }}
+        {#{% include 'main-sidebar.twig' %}#}
     </aside>
 
     <!-- Content Wrapper. Contains page content -->
