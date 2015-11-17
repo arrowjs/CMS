@@ -4,14 +4,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">{{ t('t_backend_default_delete_modal_confirm') }}</h4>
+                <h4 class="modal-title">{{ __('t_backend_default_delete_modal_confirm') }}</h4>
             </div>
             <div class="modal-body">
-                {{ t('t_backend_default_delete_modal_confirm_message') }}
+                {{ __('t_backend_default_delete_modal_confirm_message') }}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn default" data-dismiss="modal">{{ t('cancel') }}</button>
-                <button type="button" class="btn btn-danger" onclick="deleteRecords()">{{ t('delete') }}</button>
+                <button type="button" class="btn default" data-dismiss="modal">{{ __('cancel') }}</button>
+                <button type="button" class="btn btn-danger" onclick="deleteRecords()">{{ __('delete') }}</button>
             </div>
         </div>
     </div>
