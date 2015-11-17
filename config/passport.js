@@ -5,7 +5,6 @@
 let _log = require('arrowjs').logger;
 module.exports = function (passport, application) {
     return {
-        "defaultStrategy": "local",
         serializeUser: function (user, done) {
             done(null, user.id);
         },
@@ -25,6 +24,7 @@ module.exports = function (passport, application) {
                     include : application.models.role
                 }).then(function (user) {
                     req.session.permissions = JSON.parse(user.role.rules);
+                    res.locals.permissions = req.session.permissions;
                     return next();
                 }).catch(function (err) {
                     _log.error('Error at : checkAuthenticate :',err);

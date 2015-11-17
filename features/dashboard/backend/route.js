@@ -10,7 +10,7 @@ module.exports = function (component, app) {
             get: {
                 handler: comp.view,
                 authenticate: true,
-                permistions : 'view'
+                permissions : 'view'
             }
         }
     }
