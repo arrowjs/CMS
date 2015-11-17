@@ -28,26 +28,32 @@ module.exports = {
         let start, end;
         // Only display pagination when total page > 1
         if (totalPage > 1) {
-            if (numberPageOfPagination >= 3) {
-                if ((currentPage >= numberPageOfPagination) && (currentPage <= (totalPage - numberPageOfPagination + 1))) {
-                    start = currentPage - Math.floor(numberPageOfPagination/2);
-                    if (start < 1) {
-                        start = 1;
-                    }
+            if (totalPage > numberPageOfPagination) {
+                if (numberPageOfPagination >= 3) {
+                    if ((currentPage >= numberPageOfPagination) && (currentPage <= (totalPage - numberPageOfPagination + 1))) {
+                        start = currentPage - Math.floor(numberPageOfPagination / 2);
+                        if (start < 1) {
+                            start = 1;
+                        }
 
-                    end = start + numberPageOfPagination -1;
-                    if (end > totalPage) {
+                        end = start + numberPageOfPagination - 1;
+                        if (end > totalPage) {
+                            end = totalPage;
+                        }
+                    }
+                    else if (currentPage < numberPageOfPagination) {
+                        start = 1;
+                        end = numberPageOfPagination;
+                    }
+                    else if (currentPage > (totalPage - numberPageOfPagination + 1)) {
+                        start = totalPage - numberPageOfPagination + 1;
                         end = totalPage;
                     }
                 }
-                else if (currentPage < numberPageOfPagination) {
-                    start = 1;
-                    end = numberPageOfPagination;
-                }
-                else if (currentPage > (totalPage - numberPageOfPagination + 1)) {
-                    start = totalPage - numberPageOfPagination + 1;
-                    end = totalPage;
-                }
+            }
+            else if (totalPage <= numberPageOfPagination) {
+                start = 1;
+                end = totalPage;
             }
             else {
                 start = currentPage;
