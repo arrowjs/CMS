@@ -1,12 +1,12 @@
 'use strict';
 
 module.exports = {
-    secret: "helloArrow",
+    secret: 'helloArrow',
     key: 'sid',
     resave: true,
     saveUninitialized: true,
     cookie : {
         httpOnly: true
     },
-    redis_prefix : "sess : "
+    redis_prefix : 'sess : '
 };

@@ -24,7 +24,6 @@ module.exports = {
             order: ['ordering'],
             raw: true
         }).then(function (widgets) {
-
             // Check the sidebar has widget
             if (widgets && widgets.length) {
                 let html = '';

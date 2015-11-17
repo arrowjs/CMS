@@ -1,15 +1,15 @@
-"use strict";
+'use strict';
 
 module.exports = {
     redis_prefix: 'arrowCMS_',
     redis_key : {
-        configs : "site_setting",
-        features : "all_features",
-        backend_menus : "backend_menus",
-        plugins : "all_plugins"
+        configs : 'site_setting',
+        features : 'all_features',
+        backend_menus : 'backend_menus',
+        plugins : 'all_plugins'
     },
     redis_event : {
-        update_config : "config_update",
-        update_feature : "feature_update"
+        update_config : 'config_update',
+        update_feature : 'feature_update'
     }
 };

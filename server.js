@@ -2,6 +2,6 @@
 const Arrow = require('arrowjs');
 const application = new Arrow();
 application.start({
-    passport :true,
+    passport :false,
     role : false
 });

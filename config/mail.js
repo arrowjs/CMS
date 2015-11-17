@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = {
     mailer_config: {
@@ -7,7 +7,7 @@ module.exports = {
             user: 'test@gmail.com',
             pass: 'secret'
         },
-        mailer_from: "Techmaster <test@techmaster.vn>",
-        mailer_to: "test@techmaster.vn"
+        mailer_from: 'Techmaster <test@techmaster.vn>',
+        mailer_to: 'test@techmaster.vn'
     }
 };

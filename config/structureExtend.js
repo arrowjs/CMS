@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 let globalFunction = require('arrowjs').globalFunction;
 let path = require('path');

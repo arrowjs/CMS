@@ -5,14 +5,14 @@ let WidgetForm = require(__base + 'library/js_utilities/WidgetForm');
 
 module.exports = function (controller, component, application) {
 
-    controller.settingWidget = function (widget_name) {
+    controller.settingWidget = function (widget) {
         // Get all widget layouts
-        let layouts = component.getLayouts(widget_name);
+        let layouts = component.getLayouts(widget.widget_name);
 
         // Create setting form
         let form = new WidgetForm();
-        form.addText('title', 'Title');
-        form.addText('show_post_count', 'Show post count');
+        form.addText('title', 'Title', widget.data.title);
+        form.addText('show_post_count', 'Show post count', widget.data.show_post_count);
         form.addSelect('layout', 'Layout', layouts);
         return form.render();
     };

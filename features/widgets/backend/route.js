@@ -10,14 +10,9 @@ module.exports = function (component, application) {
                 handler: component.controllers.backend.index
             }
         },
-        "/widgets/create": {
+        "/widgets/create/:widgetName([a-zA-Z0-9_-]+)": {
             get: {
                 handler: component.controllers.backend.createWidget
-            }
-        },
-        "/widgets/save": {
-            get: {
-                handler: component.controllers.backend.saveWidget
             }
         }
     }

@@ -1,6 +1,6 @@
 'use strict';
 
 module.exports = {
-    langPath : "/lang",
+    langPath : '/lang',
     language: 'en_US'
 };

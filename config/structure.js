@@ -1,96 +1,96 @@
-"use strict";
+'use strict';
 
 let getLayouts = require('./structureExtend').getWidgetLayouts;
 
 module.exports = {
     feature: {
-        "path": {
-            "folder": "/features",
-            "file": "feature.js"
+        path: {
+            folder: '/features',
+            file: 'feature.js'
         },
-        "controller": [
+        controller: [
             {
-                "path": {
-                    "name": "backend",
-                    "folder": "backend/controllers",
-                    "file": "*.js"
+                path: {
+                    name: 'backend',
+                    folder: 'backend/controllers',
+                    file: '*.js'
                 }
             },
             {
-                "path": {
-                    "name": "frontend",
-                    "folder": "frontend/controllers",
-                    "file": "*.js"
+                path: {
+                    name: 'frontend',
+                    folder: 'frontend/controllers',
+                    file: '*.js'
                 }
             }
         ],
-        "view": [
+        view: [
             {
-                "path": {
-                    "name": "backend",
-                    "folder": [
-                        "/themes/backend/:backendTheme/features/$component",
-                        "backend/views",
-                        "/themes/backend/:backendTheme/layouts"
+                path: {
+                    name: 'backend',
+                    folder: [
+                        '/themes/backend/:backendTheme/features/$component',
+                        'backend/views',
+                        '/themes/backend/:backendTheme/layouts'
                     ]
                 }
             },
             {
-                "path": {
-                    "name": "frontend",
-                    "folder": [
-                        "/themes/frontend/:frontendTheme/features/$component",
-                        "frontend/views",
-                        "/themes/frontend/:frontendTheme/layouts"
+                path: {
+                    name: 'frontend',
+                    folder: [
+                        '/themes/frontend/:frontendTheme/features/$component',
+                        'frontend/views',
+                        '/themes/frontend/:frontendTheme/layouts'
                     ]
                 }
             }
         ],
-        "model": {
-            "path": {
-                "folder": "models",
-                "file": "*.js"
+        model: {
+            path: {
+                folder: 'models',
+                file: '*.js'
             }
         },
-        "route": [
+        route: [
             {
-                "path": {
-                    "name": "backend",
-                    "folder": "backend",
-                    "file": "route.js",
-                    "prefix": "/admin"
+                path: {
+                    'name': 'backend',
+                    'folder': 'backend',
+                    'file': 'route.js',
+                    'prefix': '/admin'
                 }
             },
             {
-                "path": {
-                    "name": "frontend",
-                    "folder": "frontend",
-                    "file": "route.js"
+                path: {
+                    'name': 'frontend',
+                    'folder': 'frontend',
+                    'file': 'route.js'
                 }
             }
         ]
     },
     widget: {
-        "path": {
-            "folder": "/widgets",
-            "file": "widget.js"
+        path: {
+            folder: '/widgets',
+            file: 'widget.js'
         },
-        "controller": {
-            "path": {
-                "folder": "controllers",
-                "file": "*.js"
+        controller: {
+            path: {
+                folder: 'controllers',
+                file: '*.js'
             }
         },
-        "view": {
-            "path": {
-                "folder": [
-                    "/themes/frontend/:frontendTheme/widgets/$component",
-                    "views"
+        view: {
+            path: {
+                folder: [
+                    '/themes/frontend/:frontendTheme/widgets/$component',
+                    'views'
                 ]
             }
         },
-        "extends": {
-            "getLayouts": getLayouts
+        extend: {
+            getLayouts: getLayouts
         }
     }
 };

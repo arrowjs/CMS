@@ -136,73 +136,100 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        {#<div class="col-md-12">#}
-            {#<div class="col-md-12">#}
-                {#{% include 'toolbar.html' %}#}
-            {#</div>#}
-        {#</div>#}
-        <div class="col-md-12">
-            <div class="col-md-3">
-                <div class="box box-solid box-primary">
-                    <div class="box-header">
-                        <h3 class="box-title">Sidebar</h3>
-                    </div>
+    {#<div class="col-md-12">#}
+    {#<div class="col-md-12">#}
+    {#{% include 'toolbar.html' %}#}
+    {#</div>#}
+    {#</div>#}
 
-                    <div class="box-body">
-                        <ul class="widget-list" id="widgets">
-                            {% for widget in widgets %}
-                                <li class="widget-item" data-alias="{{ widget.config.alias }}">
-                                    {{ widget.config.name }}
-                                    <a class="information" title="{{ widget.config.description }}">
-                                        <i class="fa fa-info-circle"></i>
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="box box-solid box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Available Widgets</h3>
+                </div>
+
+                <div class="box-body">
+                    {% macro widget_list(widget) %}
+                        <li class="widget-item" data-alias="{{ widget.name }}">
+                            {{ widget.title }}
+                            <a class="information" title="{{ widget.description }}">
+                                <i class="fa fa-info-circle"></i>
+                            </a>
+                        </li>
+                    {% endmacro %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="widget-list">
+                                {% for index, widget in widgets %}
+                                    {% if loop.index0 % 2 == 0 %}
+                                        {{ widget_list(widget) }}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="col-md-6">
+                            <ul class="widget-list">
+                                {% for index, widget in widgets %}
+                                    {% if loop.index0 % 2 != 0 %}
+                                        {{ widget_list(widget) }}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-md-9 sidebar-list">
-                <div class="row">
-                    {% macro sidebar_list(sidebar, widget_list) %}
-                        <div class="col-md-12">
-                            <div class="box box-solid box-info" id="{{ bar.name }}">
-                                <div class="box-header">
-                                    <h3 class="box-title">{{ bar.title }}</h3>
+        <div class="col-md-7 sidebar-list">
+            <div class="row">
+                {% macro sidebar_list(sidebar) %}
+                    <div class="box box-solid box-info" id="{{ sidebar.name }}">
+                        <div class="box-header">
+                            <h3 class="box-title">{{ sidebar.title }}</h3>
 
-                                    <div class="box-tools pull-right">
-                                        <button class="btn btn-box-tool" data-widget="collapse">
-                                            <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="box-body" id="{{ bar.alias }}">
-                                    <ul class="widget-list connect-list sidebar-widget">
-                                        {{ widget_list }}
-                                    </ul>
-                                </div>
+                            <div class="box-tools pull-right">
+                                <button class="btn btn-box-tool" data-widget="collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
                             </div>
                         </div>
-                    {% endmacro %}
 
-                    <div class="col-md-6">
-                        {% for bar in sidebars %}
-                            {% if loop.index <= sidebars.length/2 + 1 %}
-                                {{ sidebar_list(bar, bar.name|setting_sidebars|safe) }}
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+                        <div class="box-body" id="{{ sidebar.name }}">
+                            <ul class="widget-list connect-list sidebar-widget">
+                                {% for widget in sidebar.widgets %}
+                                    <li id="{{ widget.data.id }}">
+                                        <div class="widget-item">{{ widget.data.widget_name }}</div>
+                                        <a href="#" class="fa fa-caret-left expand_arrow"
+                                           onclick="return showDetail(this);"></a>
 
-                    <div class="col-md-6">
-                        {% for bar in sidebars %}
-                            {% if loop.index > sidebars.length/2 + 1 %}
-                                {{ sidebar_list(bar, bar.name|setting_sidebars|safe) }}
-                            {% endif %}
-                        {% endfor %}
+                                        <div class="box box-solid close">
+                                            <div class="box-body">{{ widget.setting | safe }}</div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
+                {% endmacro %}
+
+                <div class="col-md-6">
+                    {% for sidebar in sidebars %}
+                        {% if loop.index <= sidebars.length/2 %}
+                            {{ sidebar_list(sidebar) }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-6">
+                    {% for sidebar in sidebars %}
+                        {% if loop.index > sidebars.length/2 %}
+                            {{ sidebar_list(sidebar) }}
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -210,9 +237,9 @@
 {% endblock %}
 
 {% block jsExtends %}
-    <script src="/theme_resources/backend/default/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js"></script>
-    <script src="/theme_resources/backend/default/plugins/codemirror/js/codemirror.min.js"></script>
-    <script src="/theme_resources/backend/default/plugins/codemirror/js/codemirror.mode.htmlmixed.min.js"></script>
-    <script src="/theme_resources/backend/default/js/widgets/sidebar.js"></script>
+    <script src="/backend/{{ getConfig('backendTheme') }}/assets/plugins/jQueryUI/jquery-ui.min.js"></script>
+    {#<script src="/theme_resources/backend/default/plugins/codemirror/js/codemirror.min.js"></script>#}
+    {#<script src="/theme_resources/backend/default/plugins/codemirror/js/codemirror.mode.htmlmixed.min.js"></script>#}
+    <script src="/backend/{{ getConfig('backendTheme') }}/dist/js/pages/sidebars.js"></script>
 {% endblock %}
 

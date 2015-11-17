@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = {
     resource : {
@@ -7,13 +7,13 @@ module.exports = {
             maxAge: 3600
         }
     },
-    viewExtension : "twig",
+    viewExtension : 'twig',
     pagination: {
         numberItem: 20
     },
     date_format : 'DD-MM-YYYY',
-    backendTheme: "adminLTE",
-    frontendTheme: "acme",
+    backendTheme: 'adminLTE',
+    frontendTheme: 'acme',
     functionFolder : '/library/view_utilities/functions',
     filterFolder : '/library/view_utilities/filters',
     variableFile : '/library/view_utilities//variables/global.js',

@@ -9,7 +9,7 @@ $(function () {
     // Init tooltip for widget description
     $('.information').tooltip();
 
-    $("#widgets li").draggable({
+    $(".widget-list li").draggable({
         appendTo: "body",
         helper: "clone",
         start: function (event, ui) {
@@ -30,10 +30,10 @@ $(function () {
             var ul = $(this);
 
             $.ajax({
-                url: '/admin/widgets/sidebars/add/' + ui.draggable.attr('data-alias')
-            }).done(function (re) {
+                url: '/admin/widgets/create/' + ui.draggable.attr('data-alias')
+            }).done(function (result) {
                 var new_box = $("<div class='box box-solid open'><div class='box-body'></div></div>");
-                new_box.find(".box-body").first().append(re);
+                new_box.find(".box-body").first().append(result);
                 new_box.find("form").first().append("<input type='hidden' name='sidebar' value='" + ul.parents('.box').first().attr('id') + "'>");
                 new_box.find("form").first().append("<input type='hidden' name='ordering' value='" + (ul.find("li").length + 1) + "'>");
                 li.append(new_box);
