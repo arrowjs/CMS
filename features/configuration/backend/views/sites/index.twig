@@ -14,10 +14,6 @@
             <form id="edit-form" method="post" role="form">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs pull-right ui-sortable-handle">
-                        <li class=""><a href="#redis-setting" data-toggle="tab" aria-expanded="false">{{ __('m_configurations_backend_index_tab_redis') }}</a></li>
-                        <li class="">
-                            <a href="#database-setting" data-toggle="tab" aria-expanded="false">{{ __('m_configurations_backend_index_tab_database') }}</a>
-                        </li>
                         <li class="active"><a href="#site-setting" data-toggle="tab" aria-expanded="true">{{ __('m_configurations_backend_index_tab_site')  }}</a></li>
                         <li class="pull-left header"><i class="fa fa-inbox"></i>{{ __('m_configurations_backend_index_tab_setting') }}</li>
                     </ul>
@@ -65,78 +61,6 @@
                                                            value="{{ config.pagination.number_item }}">
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="tab-pane" id="database-setting">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label>{{ __('m_configurations_backend_index_label_host') }}</label>
-                                            <input type="text" name="db_host" class="form-control"
-                                                   value="{{ config.db.host }}">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>{{ __('m_configurations_backend_index_label_port') }}</label>
-                                            <input type="text" name="db_port" class="form-control"
-                                                   value="{{ config.db.port }}">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>{{ __('m_configurations_backend_index_tab_database') }}</label>
-                                            <input type="text" name="db_database" class="form-control"
-                                                   value="{{ config.db.database }}">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label>{{ __('all_table_column_username') }}</label>
-                                            <input type="text" name="db_username" class="form-control"
-                                                   value="{{ config.db.username }}">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>{{ ('all_table_column_password') }}</label>
-                                            <input type="password" name="db_password" class="form-control"
-                                                   value="{{ config.db.password }}">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>{{ __('m_configurations_backend_index_label_dialect') }}</label>
-                                            <input type="text" name="db_dialect" class="form-control"
-                                                   value="{{ config.db.dialect }}">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <label>{{ __('m_configurations_backend_index_label_logging') }}</label>
-                                            {% if config.db.logging %}
-                                                <input type="checkbox" name="db_logging" value="1"
-                                                       checked>
-                                            {% else %}
-                                                <input type="checkbox" name="db_logging" value="1">
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="tab-pane" id="redis-setting">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label>{{ __('m_configurations_backend_index_label_host') }}</label>
-                                            <input type="text" name="redis_host" class="form-control"
-                                                   value="{{ config.redis.host }}">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label>{{ __('m_configurations_backend_index_label_port') }}</label>
-                                            <input type="text" name="redis_port" class="form-control"
-                                                   value="{{ config.redis.port }}">
                                         </div>
                                     </div>
                                 </div>
