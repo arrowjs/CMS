@@ -14,5 +14,6 @@ module.exports = {
     bodyParser : {
         extended: true,
         limit: '5mb'
-    }
+    },
+    ArrowHelper : "/library/js_utilities/helper/"
 };

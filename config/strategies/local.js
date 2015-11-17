@@ -20,13 +20,12 @@ module.exports = function (passport,config,app) {
                 }
                 if (!user) {
                     return done(null, false, {
-                        err: 'Username or password invalid'
+                        message: 'Invalid Username ! Please login again.'
                     });
                 }
                 if (!user.authenticate(password)) {
-                    console.log('test');
-                    return done(null, false, {
-                        message: 'Username or password invalid'
+                    return done(null, false,{
+                        message: 'Invalid Password ! Please login again.'
                     });
                 }
                 return done(null, user);
