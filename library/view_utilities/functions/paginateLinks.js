@@ -17,23 +17,47 @@ module.exports = {
      */
     handler: function (totalPage, currentPage, itemLink, className, previousButton, nextButton, numberPageOfPagination) {
         // Set default values
-        totalPage = _.isNumber(parseInt(totalPage)) ? totalPage : 1;
-        currentPage = _.isNumber(parseInt(currentPage)) ? currentPage : 1;
+        totalPage = _.isNumber(parseInt(totalPage)) ? parseInt(totalPage) : 1;
+        currentPage = _.isNumber(parseInt(currentPage)) ? parseInt(currentPage) : 1;
         className = className || 'pagination';
         previousButton = previousButton || '«';
         nextButton = nextButton || '»';
-        numberPageOfPagination = (_.isNumber(numberPageOfPagination) && numberPageOfPagination > 1) ? numberPageOfPagination : 4;
+        numberPageOfPagination = (_.isNumber(numberPageOfPagination) && parseInt(numberPageOfPagination) > 1) ? numberPageOfPagination : 3;
 
+        let start, end;
         // Only display pagination when total page > 1
         if (totalPage > 1) {
-            let start = currentPage - numberPageOfPagination - 1;
-            if (start < 1) {
-                start = 1;
-            }
+            if (numberPageOfPagination >= 3) {
+                if ((currentPage >= numberPageOfPagination) && (currentPage <= (totalPage - numberPageOfPagination + 1))) {
+                    start = currentPage - Math.floor(numberPageOfPagination/2);
+                    if (start < 1) {
+                        start = 1;
+                    }
 
-            let end = currentPage + numberPageOfPagination - 1;
-            if (end > totalPage) {
-                end = totalPage;
+                    end = start + numberPageOfPagination -1;
+                    if (end > totalPage) {
+                        end = totalPage;
+                    }
+                }
+                else if (currentPage < numberPageOfPagination) {
+                    start = 1;
+                    end = numberPageOfPagination;
+                }
+                else if (currentPage > (totalPage - numberPageOfPagination + 1)) {
+                    start = totalPage - numberPageOfPagination + 1;
+                    end = totalPage;
+                }
+            }
+            else {
+                start = currentPage;
+                if ((currentPage + numberPageOfPagination) > totalPage) {
+                    start = totalPage - numberPageOfPagination + 1;
+                }
+
+                end = currentPage + numberPageOfPagination - 1;
+                if (end > totalPage) {
+                    end = totalPage;
+                }
             }
 
             let html = `<ul class="${className}">
