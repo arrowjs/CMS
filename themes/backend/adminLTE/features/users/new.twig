@@ -18,28 +18,28 @@
                                     <label>{{ t('all_table_column_username') }} <span
                                                 class="required"> *</span></label>
                                     <input type="text" class="form-control" name="user_login"
-                                           value="{{ user.user_login }}" required="required"/>
+                                           value="{{ item.user_login }}" required="required"/>
                                 </div>
                                 <div class="form-group">
                                     <label>{{ t('all_table_column_fullname') }}<span
                                                 class="required"> *</span></label>
                                     <input type="text" class="form-control" name="display_name"
-                                           value="{{ user.display_name }}" required="required"/>
+                                           value="{{ item.display_name }}" required="required"/>
                                 </div>
                                 <div class="form-group">
                                     <label>{{ t('all_table_column_email') }}<span class="required"> *</span></label>
                                     <input type="email" class="form-control" name="user_email"
-                                           value="{{ user.user_email }}" required="required"/>
+                                           value="{{ item.user_email }}" required="required"/>
                                 </div>
                                 <div class="form-group">
                                     <label>{{ t('all_table_column_phone') }}<span class="required"> *</span></label>
                                     <input type="text" class="form-control" name="phone"
-                                           value="{{ user.phone }}" required="required"/>
+                                           value="{{ item.phone }}" required="required"/>
                                 </div>
                                 <div class="form-group">
                                     <label>{{ t('all_table_column_url') }}</label>
                                     <input type="text" class="form-control" name="user_url"
-                                           value="{{ user.user_url }}"/>
+                                           value="{{ item.user_url }}"/>
                                 </div>
                                 {% if role_ids %}
                                     <div class="form-group">
@@ -73,8 +73,8 @@
                                         <label>{{ t('all_table_column_status') }}<span
                                                     class="required"> *</span></label>
                                         <select class="table-group-action-input form-control input-medium"
-                                                name="user_status" value="{{ user.user_status }}" required>
-                                            {% if user.user_status == 'publish' %}
+                                                name="user_status" value="{{ item.user_status }}" required>
+                                            {% if item.user_status == 'publish' %}
                                                 <option value="publish"
                                                         selected>{{ t('all_table_column_activation') }}</option>
                                                 <option value="un-publish">{{ t('all_table_column_deactivation') }}</option>
@@ -85,7 +85,7 @@
                                             {% endif %}
                                         </select>
                                     </div>
-                                    {% if user %}
+                                    {% if item %}
                                         <a class="btn btn-sm btn-danger" data-toggle="modal" href="#confirm">
                                             <i class="fa fa-remove"></i> {{ t('delete') }}
                                         </a>
@@ -94,10 +94,10 @@
                             </div>
 
                             <div class="col-md-6">
-                                {% if not user or create %}
+                                {% if not item or create %}
                                     <div class="form-group">
                                         <label>{{ t('all_table_column_password') }} <span class="required"> *</span></label>
-                                        <input type="password" class="form-control" id="user_pass" name="user_pass" value="{{ user.user_pass }}"
+                                        <input type="password" class="form-control" id="user_pass" name="user_pass"
                                                required="required"/>
                                     </div>
 
@@ -116,8 +116,8 @@
                                         {{ t('m_users_backend_views_new_choose_image') }}</a>
 
                                     <img style="margin: 15px 0" class="img img-thumbnail" id="user_image"
-                                         src="{{ user.user_image_url }}"/>
-                                    <input type="hidden" name="user_image_url" value="{{ user.user_image_url }}">
+                                         src="{{ item.user_image_url }}"/>
+                                    <input type="hidden" name="user_image_url" value="{{ item.user_image_url }}">
                                 </div>
                             </div>
                         </div>
@@ -173,8 +173,8 @@
                     return text;
                 }
             });
-            {% if user.role_ids %}
-            var temp = '{{ user.role_ids | safe }}';
+            {% if item.role_ids %}
+            var temp = '{{ item.role_ids | safe }}';
             temp = temp.split(',');
             select2.val(temp).trigger('change');
             {% endif %}
@@ -195,14 +195,13 @@
             confirm_password.onkeyup = validatePassword;
         }
 
-        {% if user and not create %}
+        {% if item and not create %}
         function deleteUser() {
-            console.log('delete user');
             $.ajax({
                 url: '/admin/users',
                 type: 'DELETE',
                 data: {
-                    ids: {{ user.id }}
+                    ids: {{ item.id }}
                 }
             }).done(function (result) {
                 window.location.href = "/admin/users/";

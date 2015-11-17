@@ -32,10 +32,10 @@
             <td class="{{ col.cls }}" style="{{ col.style }}">
                 {% if col.type=='inline' and col.link %}
                     <a href="#" data-name="{{ col.column }}" class="inline-edit"
-                       data-url="{{ col.link|table_link(item, acl) }}"
+                       data-url="{{ col.link|table_link(item) }}"
                        data-type="text" data-pk="{{ col.pk|inline_pk(item) }}">{{ getContent(col) }}</a>
                     {% elif col.link %}
-                    <a href="{{ col.link|table_link(item, acl) }}" target="{{ col.target }}"
+                    <a href="{{ col.link|table_link(item) }}" target="{{ col.target }}"
                        onclick="{{ col.onclick|table_link(item, acl) }}">
                         {{ getContent(col) }}
                     </a>

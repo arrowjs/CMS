@@ -2,16 +2,18 @@
 
 let _ = require('lodash');
 let fs = require('fs');
-let redis = require('redis').createClient();
+
 let path = require('path');
 let slug = require('slug');
 let promise = require('bluebird');
 let writeFileAsync = promise.promisify(require('fs').writeFile);
 let readdirAsync = promise.promisify(require('fs').readdir);
 let formidable = require('formidable');
-//
+//global function
 let global_functions = require(__base+'/library/js_utilities/global');
 let acl = require(__base+'/library/js_utilities/acl');
+
+let _log = require('arrowjs').logger;
 
 //
 promise.promisifyAll(formidable);
@@ -21,14 +23,15 @@ let folder_upload = '/img/users/';
 let route = 'users';
 
 module.exports = function (controller,component,app) {
-
+    let redis = app.redisClient;
     let adminPrefix = app.getConfig('admin_prefix') || 'admin';
     let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
+    let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
     controller.list = function (req, res) {
         // Add button
         res.locals.createButton = '/admin/users/create';
-        res.locals.user = req.user;
+        res.locals.user = req.user;// Add locals user for view or get infomation of user
         //// Config ordering
         let page = req.params.page || 1;
         let column = req.params.sort || 'id';
@@ -96,7 +99,7 @@ module.exports = function (controller,component,app) {
                 filter: {
                     type: 'select',
                     filter_key: 'role_id',
-                    data_source: 'arr_role',
+                    data_source: 'role', // name of models (in older version is name of table)
                     display_key: 'name',
                     value_key: 'id'
                 }
@@ -121,75 +124,76 @@ module.exports = function (controller,component,app) {
                 }
             }
         ]);
-
         // List users
         app.models.user.findAndCountAll({
-            //attributes: filter.attributes,
-            //include: [
-            //    {
-            //        model: app.models.role
-            //    }
-            //]//,
-            //order: filter.sort,
-            //limit: config.pagination.number_item,
-            //offset: (page - 1) * config.pagination.number_item,
-            //where: filter.values
+            attributes: filter.attributes,
+            include: [
+                {
+                    model: app.models.role
+                }
+            ],
+            order: filter.sort,
+            limit: itemOfPage,
+            offset: (page - 1) * itemOfPage,
+            where: filter.values
         }).then(function (results) {
-            //let totalPage = Math.ceil(results.count / config.pagination.number_item);
-            res.backend.render(req, res, 'index', {
+            let totalPage = Math.ceil(results.count / itemOfPage);
+            /*
+            * Attention : not allows request, response on render function
+            * */
+            res.backend.render('index', {
                 title: t('m_users_backend_controllers_index_list'),
-                totalPage: totalPage,
                 items: results.rows,
+                totalPage: totalPage,
                 currentPage: page
 
             });
 
         }).catch(function (error) {
-            //req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+            _log.error(error);
+            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.backend.render('index', {
                 title: t('m_users_backend_controllers_index_list'),
                 totalPage: 1,
-                users: null,
+                items: null,
                 currentPage: 1
             });
         });
-
-        res.backend.render('index');
     };
 
     controller.view = function (req, res) {
         // Add button
-        res.locals.user = req.user;
+        res.locals.user = req.user;// Add locals user for view or get infomation of user
         let back_link = '/admin/users';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
-        //res.locals.backButton = __acl.addButton(req, route, 'index', back_link);
-        //res.locals.saveButton = __acl.addButton(req, route, 'create');
+        res.locals.backButton = back_link;//acl.addButton(req, route, 'index', back_link);
+        res.locals.saveButton = 'update';//acl.addButton(req, route, 'update');
 
         // Get user by session and list roles
-        //app.models.role.findAll().then(function (roles) {
-        //    res.backend.render(req, res, edit_template, {
-        //        title: t('m_users_backend_controllers_index_update'),
-        //        roles: roles,
-        //        user: req._user,
-        //        id: req.params.uid
-        //    });
-        //}).catch(function (error) {
-        //    req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-        //    res.backend.render(req, res, edit_template, {
-        //        title: t('m_users_backend_controllers_index_update'),
-        //        roles: null,
-        //        users: null,
-        //        id: 0
-        //    });
-        //});
-        res.backend.render("new");
+        app.models.role.findAll().then(function (roles) {
+            res.backend.render( edit_template, {
+                title: t('m_users_backend_controllers_index_update'),
+                roles: roles,
+                item: req.user,
+                id: req.params.uid
+            });
+        }).catch(function (err) {
+            _log.error(err);
+            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+            res.backend.render( edit_template, {
+                title: t('m_users_backend_controllers_index_update'),
+                roles: null,
+                item: null,
+                id: 0
+            });
+        });
     };
 
     controller.course_of = function (req, res) {
-        res.locals.user = req.user;
+        res.locals.user = req.user;// Add locals user for view or get infomation of user
         let email = req.params.email;
         app.models.customer_register.findAll({
             include: [{
@@ -211,9 +215,8 @@ module.exports = function (controller,component,app) {
     controller.update = function (req, res, next) {
         let edit_user = null;
         let data = req.body;
-        res.locals.user = req.user;
+        res.locals.user = req.user;// Add locals user for view or get infomation of user
          //Get user by id
-        console.log('update',JSON.stringify(data,null,3));
         app.models.user.findById(req.params.uid).then(function (user) {
             edit_user = user;
             return new Promise(function (fulfill, reject) {
@@ -232,7 +235,6 @@ module.exports = function (controller,component,app) {
         }).then(function (data) {
             return edit_user.updateAttributes(data).then(function (result) {
                 req.flash.success(t('m_users_backend_controllers_index_update_flash_success'));
-
                 if (req.url.indexOf('profile') !== -1) {
                     redis.del(req.user.key, function (err, reply) {
                         if (!err)
@@ -267,7 +269,7 @@ module.exports = function (controller,component,app) {
 
     controller.create = function (req, res) {
         // Add button
-        res.locals.user = req.user;
+        res.locals.user = req.user; // Add locals user for view or get infomation of user
         let back_link = '/admin/users';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_index_list']) {
@@ -280,11 +282,12 @@ module.exports = function (controller,component,app) {
         app.models.role.findAll({
             order: "id asc"
         }).then(function (roles) {
-            res.backend.render(req, res, edit_template, {
+            res.backend.render(edit_template, {
                 title: t('m_users_backend_controllers_index_add_user'),
                 roles: roles
             });
         }).catch(function (error) {
+            _log.error(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.backend.render( edit_template, {
                 title: t('m_users_backend_controllers_index_add_user'),
@@ -294,7 +297,7 @@ module.exports = function (controller,component,app) {
     };
 
     controller.save = function (req, res, next) {
-        res.locals.user = req.user;
+        res.locals.user = req.user;// Add locals user for view or get infomation of user
         let back_link = '/admin/users';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_index_list']) {
@@ -342,15 +345,14 @@ module.exports = function (controller,component,app) {
                 res.locals.saveButton =  'create';
                 res.backend.render(edit_template,{
                     title: t('m_users_backend_controllers_index_update'),
-                    user : data,
+                    item : data,
                     create : true
                 });
             })
     };
 
     controller.delete = function (req, res) {
-        res.locals.user = req.user;
-        console.log('delete');
+        res.locals.user = req.user;// Add locals user for view or get infomation of user
         // Check delete current user
         let ids = req.body.ids;
         let id = req.user.id;
@@ -380,7 +382,7 @@ module.exports = function (controller,component,app) {
      * Profile
      */
     controller.profile = function (req, res) {
-        res.locals.user = req.user;
+        res.locals.user = req.user;// Add locals user for view or get infomation of user
         // Add button
         //console.log('profile : ',JSON.stringify(req.user,null,3));
         let role_ids = [];
@@ -396,47 +398,11 @@ module.exports = function (controller,component,app) {
             //console.log(JSON.stringify(roles,null,2));
             res.locals.backButton = '/admin'
             res.locals.saveButton = 'save';
-            res.locals.user = req.user;
             res.backend.render('new', {
-                user: req.user,
+                item: req.user,
                 role_ids: roles
             });
         })
-
-
-        //app.models.user.find({
-        //    include: [
-        //        {
-        //            model: app.models.role
-        //        }
-        //    ],
-        //    where: {
-        //        id: req.user.id
-        //    }
-        //}).then(function (user) {
-        //    let role_ids = [];
-        //    if(!req.user.role_ids) role_ids.push(req.user.role_id);
-        //    else role_ids = req.user.role_ids;
-        //
-        //})
-
-        //console.log('profile : '+JSON.stringify(req.user));
-        //app.models.role.findAll({
-        //    where: {
-        //        id: {
-        //            $in: role_ids
-        //        }
-        //    },
-        //    raw: true
-        //}).then(function (results) {
-        //    //res.locals.saveButton = __acl.addButton(req, route, 'update_profile');
-        //    res.backend.render(req, res, 'new.twig', {
-        //        user: req._user,
-        //        role_ids: results
-        //    });
-        //}).catch(function (err) {
-        //    res.status(500).send(err.stack);
-        //})
 
     };
     /**
@@ -453,9 +419,14 @@ module.exports = function (controller,component,app) {
     /**
      * Change pass view
      */
+
+
     controller.changePass = function (req, res) {
-        res.backend.render(req, res, 'change-pass', {
-            user: req.user
+        res.locals.backButton = '/admin/users';
+        res.locals.user = req.user;
+        res.backend.render('change-pass', {
+            title : "Change User's password",
+            item: req.user
         });
     };
 
@@ -463,7 +434,8 @@ module.exports = function (controller,component,app) {
      * Update pass view
      */
     controller.updatePass = function (req, res) {
-        res.locals.user = req.user;
+        res.locals.user = req.user;// Add locals user for view or get infomation of user
+        res.locals.backButton = '/admin/users';
         let old_pass = req.body.old_pass;
         let user_pass = req.body.user_pass;
 
@@ -476,7 +448,7 @@ module.exports = function (controller,component,app) {
                 }).catch(function (error) {
                     req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
                 }).finally(function () {
-                    res.backend.render(req, res, 'change-pass');
+                    res.backend.render('change-pass');
                 });
             } else {
                 req.flash.warning(t('m_users_backend_controllers_index_update_pass_flash_error'));
@@ -502,7 +474,6 @@ module.exports = function (controller,component,app) {
     };
 
     controller.userById = function (req, res, next, id) {
-        console.log("userById called by param")
         app.models.user.find({
             include: [
                 {
@@ -522,7 +493,7 @@ module.exports = function (controller,component,app) {
     };
 
     controller.hasAuthorization = function (req, res, next) {
-        if (req._user.id !== req.user.id) {
+        if (req.user.id !== req.user.id) {
             return false;
         }
         return true;

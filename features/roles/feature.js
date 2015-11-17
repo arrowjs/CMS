@@ -8,7 +8,7 @@ module.exports = {
         author: 'Nguyen Van Thang',
         version: '0.1.0',
         description: t('m_roles_backend_module_desc'),
-        roles: [
+        permistions: [
             {
                 name: 'index',
                 title: t('m_roles_backend_module_rules_index')

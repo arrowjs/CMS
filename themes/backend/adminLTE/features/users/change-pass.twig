@@ -2,27 +2,32 @@
 {% block content %}
     <div class="row">
         <div class="col-md-12">
+            {% include 'toolbar.twig' %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="box box-solid box-primary">
                 <div class="box-body">
                     <form id="edit-form" method="post">
                         <div class="form-group">
-                            <label class="control-label">{{ 'm_users_backend_views_change_pass_old_pass' | trans }}</label>
+                            <label class="control-label">{{ t('m_users_backend_views_change_pass_old_pass') }}</label>
                             <input type="password" class="form-control" name="old_pass" id="old_pass">
                         </div>
                         <div class="form-group">
-                            <label class="control-label">{{ 'm_users_backend_views_change_pass_new_pass' | trans }}</label>
+                            <label class="control-label">{{ t('m_users_backend_views_change_pass_new_pass') }}</label>
                             <input type="password" class="form-control" id="user_pass" name="user_pass">
                         </div>
                         <div class="form-group">
-                            <label class="control-label">{{ 'm_users_backend_views_change_pass_confirm' | trans }}</label>
+                            <label class="control-label">{{ t('m_users_backend_views_change_pass_confirm') }}</label>
                             <input type="password" class="form-control" id="confirm_pass">
                         </div>
                         <div class="margin-top-10">
                             <button type="submit" class="btn btn-danger">
-                                {{ 'change' | trans }}
+                                {{ t('change') }}
                             </button>
                             <a href="/admin" class="btn btn-default">
-                                {{ 'cancel' | trans }} </a>
+                                {{ t('cancel') }} </a>
                         </div>
                     </form>
                 </div>
@@ -37,7 +42,7 @@
 
         function validatePassword() {
             if (password.value != confirm_password.value) {
-                confirm_password.setCustomValidity("{{ 'm_users_backend_views_change_pass_validate_not_match' | trans }}");
+                confirm_password.setCustomValidity("{{ t('m_users_backend_views_change_pass_validate_not_match') }}");
             } else {
                 confirm_password.setCustomValidity('');
             }

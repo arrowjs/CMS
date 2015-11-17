@@ -2,7 +2,7 @@
 
 module.exports = {
     resource : {
-        path : 'themes',
+        path : ['themes','upload'],
         option : {
             maxAge: 3600
         }
@@ -11,6 +11,7 @@ module.exports = {
     pagination: {
         numberItem: 20
     },
+    date_format : 'DD-MM-YYYY',
     backendTheme: "adminLTE",
     frontendTheme: "acme",
     functionFolder : '/library/view_utilities/functions',

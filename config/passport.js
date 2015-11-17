@@ -2,6 +2,7 @@
 /**
  * Module init function.
  */
+let _log = require('arrowjs').logger;
 module.exports = function (passport, application) {
     return {
         "defaultStrategy": "local",
@@ -17,9 +18,29 @@ module.exports = function (passport, application) {
         },
         checkAuthenticate : function (req,res,next) {
             if(req.isAuthenticated()){
-                return next();
+                application.models.user.find({
+                    where : {
+                        id : req.user.id
+                    },
+                    include : application.models.role
+                }).then(function (user) {
+                    req.session.permissions = JSON.parse(user.role.rules);
+                    return next();
+                }).catch(function (err) {
+                    _log.error('Error at : checkAuthenticate :',err);
+                    res.redirect('/admin/login');
+                })
+
             } else {
                 res.redirect('/admin/login');
+            }
+        },
+        handlePermission : function(req,res,next) {
+            if(req.hasPermission) {
+                return  next()
+            }else{
+                req.flash.error("You do not have permission to access");
+                res.redirect('/admin');
             }
         },
         local_login: {
