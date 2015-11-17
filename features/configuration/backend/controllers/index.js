@@ -30,13 +30,3 @@ module.exports = function (controller, component, application) {
     };
 };
 
-
-//let redis = require('redis').createClient();
-//
-//let _module = new BackModule;
-//var configManager = require('arrowjs/configManager');
-//var moduleManager = require('arrowjs/moduleManager');
-//
-//_module.
-//
-//_module.update_setting =

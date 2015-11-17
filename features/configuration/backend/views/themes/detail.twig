@@ -1,25 +1,25 @@
-{% extends "layout.html" %}
+{% extends "layout.twig" %}
 
 {% block content %}
     <div class="row">
         <div class="col-md-12">
-            {% include 'toolbar.html' %}
+            {#{% include 'toolbar.html' %}#}
             <div class="box box-solid box-primary">
                 <div class="box-header">
-                    <h3 class="box-title"> {{ 'm_configurations_backend_themes_detail_title' | trans(current_theme.name) }}</h3>
+                    <h3 class="box-title"> {{ __('m_configurations_backend_themes_detail_title',current_theme.name)  }}</h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-bordered">
                         <tr>
-                            <th width="5%">{{ 'all_table_column_alias' | trans }}</th>
+                            <th width="5%">{{ __('all_table_column_alias') }}</th>
                             <td>{{ current_theme.alias }}</td>
                         </tr>
                         <tr>
-                            <th width="5%">{{ 'all_table_column_author' | trans }}</th>
+                            <th width="5%">{{ __('all_table_column_author') }}</th>
                             <td>{{ current_theme.author }}</td>
                         </tr>
                         <tr>
-                            <th width="5%">{{ 'link' | trans }}</th>
+                            <th width="5%">{{ __('link') }}</th>
                             <td><a href="{{ current_theme.link }}">{{ current_theme.link }}</a></td>
                         </tr>
                     </table>
@@ -30,7 +30,7 @@
         <div class="col-md-12">
             <div class="box box-solid box-primary">
                 <div class="box-header">
-                    <h3 class="box-title">{{ 'm_configurations_backend_themes_detail_events' | trans(current_theme.name) }}</h3>
+                    <h3 class="box-title">{{ __('m_configurations_backend_themes_detail_events',current_theme.name) }}</h3>
                 </div>
 
                 <div class="box-body">
