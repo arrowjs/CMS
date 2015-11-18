@@ -29,8 +29,8 @@ module.exports = function (passport, application) {
                 }).catch(function (err) {
                     _log.error('Error at : checkAuthenticate :',err);
                     res.redirect('/admin/login');
-                })
-
+                });
+                res.locals.user = req.user;
             } else {
                 res.redirect('/admin/login');
             }

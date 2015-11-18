@@ -7,7 +7,7 @@
                 <div class="col-md-3">
                     <div class="box box-solid box-primary">
                         <div class="box-body">
-                            <a href="/admin/configurations/themes/{{ theme.information.theme_name|lower }}">
+                            <a href="/admin/configuration/themes/{{ theme.information.theme_name|lower }}">
                                 <img style="width: 100%;"
                                      src="/frontend/{{ theme.folder }}/screenshot.jpg"
                                      alt="{{ theme.information.theme_name }}">
@@ -15,11 +15,11 @@
 
                             <div class="caption" style="text-align: center">
                                 <h3>{{ theme.information.theme_name }}</h3>
-                                {% if theme.information.theme_name == current_theme.information.theme_name %}
+                                {% if theme.folder == current_theme.folder %}
                                     <i class="fa fa-check-circle-o text-success" style="font-size: 34px;"></i>
                                 {% else %}
                                     <button class="btn btn-primary"
-                                            onclick="return changeTheme('{{ theme.information.theme_name }}', '{{ theme.information.theme_name }}')">
+                                            onclick="return changeTheme('{{ theme.folder }}', '{{ theme.information.theme_name }}')">
                                         {{ __('select') }}
                                     </button>
                                 {% endif %}
@@ -68,10 +68,10 @@
 
         function confirmTheme() {
             $.ajax({
-                url: '/admin/configurations/themes/' + current_theme,
+                url: '/admin/configuration/themes/' + current_theme,
                 type: 'POST'
             }).done(function (re) {
-                window.location.href = "/admin/configurations/themes/";
+                window.location.href = "/admin/configuration/themes/";
             });
         }
     </script>

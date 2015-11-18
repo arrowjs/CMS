@@ -11,6 +11,7 @@ let readdirAsync = promise.promisify(require('fs').readdir);
 let formidable = require('formidable');
 //global function
 let global_functions = require(__base+'/library/js_utilities/global');
+let createFilter = require(__base+'/library/js_utilities/createFilter');
 let acl = require(__base+'/library/js_utilities/acl');
 
 let _log = require('arrowjs').logger;
@@ -28,26 +29,11 @@ module.exports = function (controller,component,app) {
     let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
+
+
     controller.list = function (req, res) {
-        // Add button
-        res.locals.createButton = '/admin/users/create';
-        res.locals.user = req.user;// Add locals user for view or get infomation of user
-        //// Config ordering
-        let page = req.params.page || 1;
-        let column = req.params.sort || 'id';
-        let order = req.params.order || 'asc';
-        res.locals.root_link = '/admin/users/page/' + page + '/sort';
 
-        // Store search data to session
-        let session_search = {};
-        if (req.session.search) {
-            session_search = req.session.search;
-        }
-        session_search[route + '_index_list'] = req.url;
-        req.session.search = session_search;
-
-        // Config columns
-        let filter = global_functions.createFilter(req, res, route, '/admin/users', column, order, [
+        let tableStructure = [
             {
                 column: "id",
                 width: '8%',
@@ -62,7 +48,6 @@ module.exports = function (controller,component,app) {
                 width: '15%',
                 header: __('m_users_backend_full_name'),
                 link: '/admin/users/{id}',
-                acl: 'users.update',
                 filter: {
                     data_type: 'string'
                 }
@@ -123,7 +108,19 @@ module.exports = function (controller,component,app) {
                     value_key: 'name'
                 }
             }
-        ]);
+        ];
+
+        // Config columns
+        let filter = createFilter(req, res, tableStructure,{
+            button : {
+                searchButton : "users",
+                createButton : '/admin/users/create',
+                resetFilterButton : '/admin/users'
+            },
+            rootLink : '/admin/users/page/$page/sort',
+            itemOfPage : 10
+        });
+
         // List users
         app.models.user.findAndCountAll({
             attributes: filter.attributes,
@@ -132,21 +129,17 @@ module.exports = function (controller,component,app) {
                     model: app.models.role
                 }
             ],
-            order: filter.sort,
-            limit: itemOfPage,
-            offset: (page - 1) * itemOfPage,
-            where: filter.values
+            order: filter.order,
+            limit: filter.limit,
+            offset: filter.offset,
+            where: filter.conditions
         }).then(function (results) {
             let totalPage = Math.ceil(results.count / itemOfPage);
-            /*
-            * Attention : not allows request, response on render function
-            * */
+
             res.backend.render('index', {
                 title: __('m_users_backend_controllers_index_list'),
                 items: results.rows,
-                totalPage: totalPage,
-                currentPage: page
-
+                totalPage: totalPage
             });
 
         }).catch(function (error) {
@@ -155,8 +148,7 @@ module.exports = function (controller,component,app) {
             res.backend.render('index', {
                 title: __('m_users_backend_controllers_index_list'),
                 totalPage: 1,
-                items: null,
-                currentPage: 1
+                items: null
             });
         });
     };

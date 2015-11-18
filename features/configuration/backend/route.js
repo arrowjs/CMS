@@ -38,22 +38,22 @@ module.exports = function (component,application) {
             //    handler : component.controllers.backend.theme_delete,
             //    permissions : "delete_themes"
             //}
-        }
+        },
         //"/configuration/import" : {
         //    get : {
         //        handler : component.controllers.backend.theme_import,
         //        permissions : "import_themes"
         //    }
         //}
-        //"/configuration/themes/:themeName" : {
-        //    get : {
-        //        handler : component.controllers.backend.theme_detail,
-        //        permissions : "change_themes"
-        //    },
-        //    post : {
-        //        handler : component.controllers.backend.theme_change,
-        //        permissions : "change_themes"
-        //    }
-        //}
+        "/configuration/themes/:themeName" : {
+            get : {
+                handler : component.controllers.backend.theme_detail,
+                permissions : "change_themes"
+            },
+            post : {
+                handler : component.controllers.backend.theme_change,
+                permissions : "change_themes"
+            }
+        }
     }
 };

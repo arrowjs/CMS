@@ -1,8 +1,5 @@
 {% extends 'layout.twig' %}
 
-{#{% block cssExtends %}#}
-    {#<link href="/theme_resources/backend/default/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>#}
-{#{% endblock %}#}
 
 {% block content %}
     <button type="submit" id="saveForm" class="btn btn-success" form="edit-form" style="margin-bottom: 5px;">
@@ -58,7 +55,7 @@
                                                 <div class="form-group">
                                                     <label>{{ __('m_configurations_backend_index_label_item_per_page') }}</label>
                                                     <input type="text" name="number_item" class="form-control"
-                                                           value="{{ config.pagination.number_item }}">
+                                                           value="{{ config.pagination.numberItem }}">
                                                 </div>
                                             </div>
                                         </div>
