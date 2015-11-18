@@ -41,18 +41,19 @@ module.exports = function (controller, component, application) {
                             let resolve = Promise.resolve();
 
                             // Get widget data foreach widget
-                            widgets.map(function (widget_data) {
+                            widgets.map(function (widgetData) {
                                 // Get widget by name
-                                let widget = application.widget[widget_data.widget_name];
+                                let widget = application.widget[widgetData.widget_name];
 
                                 if (widget) {
                                     // Get settings of each widget
                                     resolve = resolve.then(function () {
-                                        return widget.controllers.settingWidget(widget_data)
+                                        return widget.controllers.settingWidget(widgetData)
                                     }).then(function (widget_settings) {
                                         // Set widget value to sidebars
+                                        widgetData.widget_title = application.widgetManager.getComponent(widgetData.widget_name).title;
                                         sidebars[index].widgets.push({
-                                            data: widget_data,
+                                            data: widgetData,
                                             setting: widget_settings
                                         });
 

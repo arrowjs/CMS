@@ -101,7 +101,7 @@ module.exports = {
                         } else {
                             html = html.replace('{{link}}', '/admin' + subMenu.menus[0].link);
                         }
-                        html += '</li>';
+                        html += '</a></li>';
                     }
                 }
             }
