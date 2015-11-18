@@ -25,6 +25,7 @@ module.exports = function (passport, application) {
                 }).then(function (user) {
                     req.session.permissions = JSON.parse(user.role.rules);
                     res.locals.permissions = req.session.permissions;
+                    res.locals.user=user;
                     return next();
                 }).catch(function (err) {
                     _log.error('Error at : checkAuthenticate :',err);

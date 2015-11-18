@@ -43,7 +43,7 @@ module.exports = function (component,app) {
             }
 
         },
-        "roles/:rid" : {
+        "/roles/:rid" : {
             get : {
                 handler : comp.view,
                 authenticate : true,
