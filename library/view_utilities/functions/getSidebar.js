@@ -29,14 +29,14 @@ module.exports = {
                 let html = '';
                 let resolve = Promise.resolve();
 
-                widgets.map(function (w) {
+                widgets.map(function (widgetData) {
                     // Get widget by type
-                    let widget = app.widgetManager.getComponent(w.widget_name);
+                    let widget = app.widgetManager.getComponent(widgetData.widget_name);
 
                     if (widget) {
                         // Get content of each widget in the sidebar
                         resolve = resolve.then(function () {
-                            return widget.controllers.renderWidget(w.data)
+                            return widget.controllers.renderWidget(widgetData)
                         }).then(function (view) {
                             return html += view;
                         }).catch(function (err) {

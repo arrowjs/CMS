@@ -1,16 +1,20 @@
 {% extends 'layout.twig' %}
 
 {% block cssExtends %}
-    {#<link rel="stylesheet" href="/theme_resources/backend/default/plugins/codemirror/css/codemirror.min.css">#}
     <style>
         .widget-list {
-            list-style: none;
-            padding-left: 0;
             font-size: 15px;
         }
 
-        .widget-list .box {
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        .widget-list > li, .sidebar-widget > li {
+            position: relative;
+        }
+
+        .sidebar-widget {
+            padding: 5px;
+            min-height: 50px;
+            overflow: auto;
+            z-index: 9999;
         }
 
         .widget-item {
@@ -23,14 +27,14 @@
             cursor: move;
         }
 
-        .widget-state-hover {
-            border: 1px dashed #000000;
-            min-height: 50px;
+        .widget-list .placeholder {
+            display: none;
         }
 
-        .ui-sortable-placeholder {
+        .placeholder {
+            margin-bottom: 10px;
+            height: 37px;
             border: 1px dashed #000000;
-            min-height: 50px;
         }
 
         .open {
@@ -48,89 +52,6 @@
             width: 50px;
             font-size: 24px;
             text-align: center;
-        }
-
-        .placeholder {
-            border: 1px dashed #000000;
-            min-height: 50px;
-            text-align: center;
-        }
-
-        .sidebar-widget {
-            padding: 5px;
-            min-height: 50px;
-            overflow: auto;
-            z-index: 9999;
-        }
-
-        .information {
-            float: right;
-            padding-right: 10px;
-            color: #808080;
-            cursor: pointer;
-        }
-
-        .information:hover i {
-            color: #525252;
-        }
-
-        .tooltip.in {
-            opacity: 1;
-        }
-
-        .tooltip.top {
-            padding: 8px 4px 5px 4px;
-        }
-
-        .tooltip-inner {
-            text-align: left;
-            background-color: #f0eff0;
-            color: #000000;
-            border: 1px solid #d7d7d7;
-        }
-
-        .tooltip.top .tooltip-arrow {
-            border-top-color: #d7d7d7;
-        }
-
-        .maximize-toolbar, .minimize-toolbar {
-            border: 1px solid #ddd;
-            background-color: #f7fbff;
-        }
-
-        .maximize-toolbar {
-            padding: 5px 10px;
-        }
-
-        .minimize-toolbar {
-            margin: -6px -12px 12px -12px;
-            padding: 15px 20px;
-            font-size: 20px;
-        }
-
-        .maximize-toolbar a {
-            padding: 2px 5px;
-        }
-
-        .minimize-toolbar a {
-            padding: 6px 6px 2px 6px;
-        }
-
-        .maximize-toolbar a:hover, .minimize-toolbar a:hover {
-            background-color: #d5e1f3;
-        }
-
-        .maximize-toolbar a i, .minimize-toolbar a i {
-            color: #6b6b6b;
-        }
-
-        .maximize-toolbar a:hover i, .minimize-toolbar a:hover i {
-            color: #525252;
-        }
-
-        .CodeMirror.cm-s-default {
-            padding: 6px 12px;
-            border: 1px solid #d2d6de;
         }
     </style>
 {% endblock %}
@@ -153,17 +74,14 @@
                     {% macro widget_list(widget) %}
                         <li class="widget-item" data-alias="{{ widget.name }}">
                             {{ widget.title }}
-                            <a class="information" title="{{ widget.description }}">
-                                <i class="fa fa-info-circle"></i>
-                            </a>
                         </li>
                     {% endmacro %}
 
                     <div class="row">
                         <div class="col-md-6">
-                            <ul class="widget-list">
-                                {% for index, widget in widgets %}
-                                    {% if loop.index0 % 2 == 0 %}
+                            <ul class="widget-list list-unstyled">
+                                {% for widget in widgets %}
+                                    {% if loop.index <= sidebars.length/2 %}
                                         {{ widget_list(widget) }}
                                     {% endif %}
                                 {% endfor %}
@@ -171,9 +89,9 @@
                         </div>
 
                         <div class="col-md-6">
-                            <ul class="widget-list">
-                                {% for index, widget in widgets %}
-                                    {% if loop.index0 % 2 != 0 %}
+                            <ul class="widget-list list-unstyled">
+                                {% for widget in widgets %}
+                                    {% if loop.index > sidebars.length/2 %}
                                         {{ widget_list(widget) }}
                                     {% endif %}
                                 {% endfor %}
@@ -199,7 +117,7 @@
                         </div>
 
                         <div class="box-body" id="{{ sidebar.name }}">
-                            <ul class="widget-list connect-list sidebar-widget">
+                            <ul class="sidebar-widget list-unstyled">
                                 {% for widget in sidebar.widgets %}
                                     <li id="{{ widget.data.id }}">
                                         <div class="widget-item">{{ widget.data.widget_name }}</div>
@@ -238,8 +156,6 @@
 
 {% block jsExtends %}
     <script src="/backend/{{ getConfig('backendTheme') }}/assets/plugins/jQueryUI/jquery-ui.min.js"></script>
-    {#<script src="/theme_resources/backend/default/plugins/codemirror/js/codemirror.min.js"></script>#}
-    {#<script src="/theme_resources/backend/default/plugins/codemirror/js/codemirror.mode.htmlmixed.min.js"></script>#}
     <script src="/backend/{{ getConfig('backendTheme') }}/dist/js/pages/sidebars.js"></script>
 {% endblock %}
 

@@ -10,15 +10,11 @@ module.exports = function (controller, component, application) {
         let layouts = component.getLayouts(widget.widget_name);
 
         // Create setting form
-        let form = new WidgetForm();
+        let form = new WidgetForm(widget);
         form.addText('title', 'Title');
-        form.addTextArea('content', 'Content', widget.data.content);
+        form.addTextArea('content', 'Content');
         form.addSelect('layout', 'Layout', layouts);
         return form.render();
-    };
-
-    controller.updateWidget = function () {
-
     };
 
     controller.renderWidget = function (widget) {

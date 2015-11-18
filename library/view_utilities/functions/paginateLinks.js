@@ -9,14 +9,14 @@ module.exports = {
      *
      * @param totalPage - Total page
      * @param currentPage - Current page
-     * @param itemLink - Link of page item
+     * @param routePattern - Pattern for link of page items, must contains {page}. It will replace {page} with page number
      * @param numberPagesOfPagination - Limit number of page display in pagination
-     * @param previousButton - Content of previous button
-     * @param nextButton - Content of next button
+     * @param prevText - Content of previous button
+     * @param nextText - Content of next button
      * @param className - Class of pagination use for CSS
      * @returns HTML
      */
-    handler: function (totalPage, currentPage, itemLink, numberPagesOfPagination, previousButton, nextButton, className) {
+    handler: function (totalPage, currentPage, routePattern, numberPagesOfPagination, prevText, nextText, className) {
         // Default total page = 1
         totalPage = parseInt(totalPage);
         totalPage = (_.isNumber(totalPage) && totalPage > 0) ? totalPage : 1;
@@ -30,11 +30,11 @@ module.exports = {
         numberPagesOfPagination = (_.isNumber(numberPagesOfPagination) && numberPagesOfPagination > 1) ? numberPagesOfPagination : 5;
 
         // Default item link = '?p={page}'
-        itemLink = itemLink.match(/\{page\}/) ? itemLink : '?p={page}';
+        routePattern = routePattern.match(/\{page\}/) ? routePattern : '?p={page}';
 
         // Default previous and next button
-        previousButton = previousButton || '«';
-        nextButton = nextButton || '»';
+        prevText = prevText || '«';
+        nextText = nextText || '»';
 
         // Default pagination class name
         className = className || 'pagination';
@@ -84,30 +84,30 @@ module.exports = {
 
             let html = `<ul class="${className}">
                             <li class="previous ${currentPage == 1 ? 'disabled' : ''}">
-                                <a href="${currentPage == 1 ? '#' : itemLink.replace('{page}', currentPage - 1)}">
-                                    ${previousButton}
+                                <a href="${currentPage == 1 ? '#' : routePattern.replace('{page}', currentPage - 1)}">
+                                    ${prevText}
                                 </a>
                             </li>`;
 
             if (start > 1) {
-                let url = itemLink.replace('{page}', start - 1);
+                let url = routePattern.replace('{page}', start - 1);
                 html += `<li><a href="${url}">...</a></li>`
             }
 
             for (let i = start; i <= end; i++) {
-                let url = itemLink.replace('{page}', i);
+                let url = routePattern.replace('{page}', i);
                 let active = currentPage == i ? "active" : "";
                 html += `<li class="${active}"><a href="${url}">${i}</a></li>`
             }
 
             if (end < totalPage) {
-                let url = itemLink.replace('{page}', end + 1);
+                let url = routePattern.replace('{page}', end + 1);
                 html += `<li><a href="${url}">...</a></li>`
             }
 
             html += `<li class="next ${currentPage == totalPage ? 'disabled' : ''}">
-                        <a href="${currentPage == totalPage ? '#' : itemLink.replace('{page}', currentPage + 1)}">
-                            ${nextButton}
+                        <a href="${currentPage == totalPage ? '#' : routePattern.replace('{page}', currentPage + 1)}">
+                            ${nextText}
                         </a>
                     </li>
                 </ul>`;

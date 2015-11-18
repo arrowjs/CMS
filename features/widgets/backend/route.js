@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Map final part of URL to equivalent functions in controller
+ * Widgets routes
  */
 module.exports = function (component, application) {
     return {
@@ -10,9 +10,24 @@ module.exports = function (component, application) {
                 handler: component.controllers.backend.index
             }
         },
-        "/widgets/create/:widgetName([a-zA-Z0-9_-]+)": {
+        "/widgets/add/:widgetName([a-zA-Z0-9_-]+)": {
             get: {
-                handler: component.controllers.backend.createWidget
+                handler: component.controllers.backend.addWidget
+            }
+        },
+        "/widgets/save": {
+            post: {
+                handler: component.controllers.backend.saveWidget
+            }
+        },
+        "/widgets/sort": {
+            post: {
+                handler: component.controllers.backend.sortWidget
+            }
+        },
+        "/widgets/delete": {
+            post: {
+                handler: component.controllers.backend.deleteWidget
             }
         }
     }

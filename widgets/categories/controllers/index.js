@@ -10,26 +10,21 @@ module.exports = function (controller, component, application) {
         let layouts = component.getLayouts(widget.widget_name);
 
         // Create setting form
-        let form = new WidgetForm();
-        form.addText('title', 'Title', widget.data.title);
-        form.addText('show_post_count', 'Show post count', widget.data.show_post_count);
+        let form = new WidgetForm(widget);
+        form.addText('title', 'Title');
+        form.addText('show_post_count', 'Show post count');
         form.addSelect('layout', 'Layout', layouts);
         return form.render();
     };
 
-    controller.updateWidget = function () {
-
-    };
-
     controller.renderWidget = function (widget) {
+        // Get layouts
+        let layout = widget.data.layout || component.getLayouts(widget.widget_name)[0];
+
+        // Render view with layout
         let renderWidget = Promise.promisify(component.render);
-
-        //todo: get layout from db
-        let layout = 'default';
-
-        // Mockup render widget with default layout
         return renderWidget(layout, {
-            widget: widget
+            widget: widget.data
         })
     };
 };

@@ -1,5 +1,6 @@
 'use strict';
 
+let _ = require("lodash");
 let Promise = require("bluebird");
 
 let fs = require("fs");
@@ -8,10 +9,15 @@ let readFileAsync = Promise.promisify(fs.readFile);
 let log = require('arrowjs').logger;
 
 module.exports = function (controller, component, application) {
-    let mockWidgetName = 'categories';
 
+    let widgetModel = application.models.widget;
+
+    /**
+     * Manage sidebars page
+     */
     controller.index = function (req, res) {
-        let widgets = application.widgetManager.getAttribute();
+        // Read widget lists in widget directory and convert to array
+        let widgets = _.values(application.widgetManager.getAttribute());
 
         // Read file theme.json to get registered sidebars
         readFileAsync(__base + "themes/frontend/" + application.getConfig('frontendTheme') + "/theme.json", "utf8")
@@ -24,7 +30,7 @@ module.exports = function (controller, component, application) {
                     sidebars[index].widgets = [];
 
                     // Find all widgets with sidebar name
-                    let action = application.models.widget.findAll({
+                    let action = widgetModel.findAll({
                         where: {
                             sidebar: sidebar.name
                         },
@@ -65,6 +71,7 @@ module.exports = function (controller, component, application) {
                     actions.push(action);
                 });
 
+                // Promise all actions
                 Promise.all(actions).then(function () {
                     return res.render('sidebars', {
                         widgets: widgets,
@@ -81,19 +88,109 @@ module.exports = function (controller, component, application) {
             });
     };
 
-    controller.createWidget = function (req, res) {
+    /**
+     * Add widget to sidebar
+     */
+    controller.addWidget = function (req, res) {
         let widgetName = req.params.widgetName;
         let widget = application.widget[widgetName];
 
         if (widget) {
-            res.send(widget.controllers.settingWidget({widget_name: widgetName, data: {}}));
+            // Get widget setting form
+            res.send(widget.controllers.settingWidget({
+                widget_name: widgetName,
+                data: {}
+            }));
         } else {
             res.send('');
         }
     };
 
+    /**
+     * Save widget
+     */
     controller.saveWidget = function (req, res) {
-        // Mockup save user settings
-        res.send(application.widgetManager.getComponent(mockWidgetName).controllers.saveWidget());
+        // Optimize post data
+        let data = req.body;
+        let mainAttributes = ['id', 'widget_name', 'sidebar', 'ordering'];
+        let optionAttributes = {};
+        for (let i in data) {
+            if (data.hasOwnProperty(i) && mainAttributes.indexOf(i) == -1) {
+                optionAttributes[i] = data[i];
+                delete data[i];
+            }
+        }
+        data.data = JSON.stringify(optionAttributes);
+
+        // Save widget depend on data.id
+        if (data.id && parseInt(data.id) && parseInt(data.id) > 0) {
+            // Update widget
+            widgetModel.findById(data.id).then(function (widget) {
+                return widget.updateAttributes(data);
+            }).then(function (widget) {
+                // Return string ID
+                res.send(widget.dataValues.id + '');
+            }).catch(function (error) {
+                res.send(error);
+            })
+        } else {
+            delete data.id;
+
+            // Create new widget
+            widgetModel.create(data).then(function (widget) {
+                // Return string ID
+                res.send(widget.dataValues.id + '');
+            }).catch(function (error) {
+                res.send(error);
+            })
+        }
     };
+
+    /**
+     * Sort widgets in sidebar
+     */
+    controller.sortWidget = function (req, res) {
+        let ids = req.body.ids.split(',');
+        let sidebar = req.body.sidebar;
+        let index = 1;
+        let promises = [];
+
+        for (let i in ids) {
+            if (ids[i] == '') {
+                index++;
+                continue;
+            }
+
+            promises.push(
+                // Update sidebar, ordering of widget
+                application.models.rawQuery("UPDATE " + widgetModel.getTableName() + " SET ordering=?, sidebar=? WHERE id=?", {
+                    replacements: [index++, sidebar, ids[i]]
+                })
+            );
+        }
+
+        Promise.all(promises).then(function (result) {
+            res.sendStatus(200);
+        }).catch(function(err){
+            res.sendStatus(500);
+        });
+    };
+
+    /**
+     * Delete widget from sidebar
+     */
+    controller.deleteWidget = function (req, res) {
+        // Delete widget by id
+        widgetModel.destroy({
+            where: {
+                id: req.body.id
+            }
+        }).then(function (count) {
+            // Return number of deleted records (string)
+            res.send(count + '');
+        }).catch(function (err) {
+            res.send(err);
+        });
+    }
+
 };

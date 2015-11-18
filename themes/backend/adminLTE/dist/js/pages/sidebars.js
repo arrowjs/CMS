@@ -1,50 +1,46 @@
-var maximize_button = '<div class="maximize-toolbar text-right">' +
-    '<a href="javascript:void(0)" title="Maximize" onclick="maximizeEditor(this)">' +
-    '<i class="fa fa-arrows-alt"></i></a></div>';
-var minimize_button = '<div class="minimize-toolbar">' +
-    '<a href="javascript:void(0)" title="Save" onclick="minimizeEditor(this)">' +
-    '<i class="fa fa-save"></i></a></div>';
-
 $(function () {
-    // Init tooltip for widget description
-    $('.information').tooltip();
+    // Allow drag widget from Widget List to Sidebar
+    $('.widget-list').sortable({
+        connectWith: ".sidebar-widget",
+        placeholder: "placeholder",
+        helper: function (event, ui) {
+            copyHelper = ui.clone().insertAfter(ui);
+            return ui.clone();
+        },
+        stop: function (event, ui) {
+            copyHelper && copyHelper.remove();
+        },
+        update: function (event, ui) {
+            var dropItem = $(ui.item[0]);
 
-    $(".widget-list li").draggable({
-        appendTo: "body",
-        helper: "clone",
-        start: function (event, ui) {
-            $(ui.helper).width($(this).width());
-        }
-    });
-
-    $(".sidebar-widget").droppable({
-        activeClass: "ui-state-default",
-        hoverClass: "widget-state-hover",
-        accept: ":not(.ui-sortable-helper)",
-        drop: function (event, ui) {
-            $(this).find(".placeholder").remove();
-            var li = $("<li style='position: relative' id=''></li>");
-            li.append("<div class='widget-item'></div>");
+            var li = $('<li id=""></li>');
+            li.append('<div class="widget-item">' + dropItem.text().trim() + '</div>');
             li.append('<a href="#" class="fa fa-caret-down expand_arrow" onclick="return showDetail(this);"></a>');
-            li.find(".widget-item").first().text(ui.draggable.text());
+
             var ul = $(this);
 
             $.ajax({
-                url: '/admin/widgets/create/' + ui.draggable.attr('data-alias')
+                url: '/admin/widgets/add/' + dropItem.attr('data-alias')
             }).done(function (result) {
-                var new_box = $("<div class='box box-solid open'><div class='box-body'></div></div>");
-                new_box.find(".box-body").first().append(result);
-                new_box.find("form").first().append("<input type='hidden' name='sidebar' value='" + ul.parents('.box').first().attr('id') + "'>");
-                new_box.find("form").first().append("<input type='hidden' name='ordering' value='" + (ul.find("li").length + 1) + "'>");
-                li.append(new_box);
-                ul.append(li);
+                if (result) {
+                    // Render widget setting form after drop item
+                    var new_box = $("<div class='box box-solid open'><div class='box-body'></div></div>");
+                    new_box.find(".box-body").first().append(result);
+                    new_box.find("form").first().append("<input type='hidden' name='sidebar' value='" + ul.parents('.box').first().attr('id') + "'>");
+                    new_box.find("form").first().append("<input type='hidden' name='ordering' value='" + (ul.find("li").length + 1) + "'>");
+                    li.append(new_box);
+                    dropItem.after(li);
+                }
 
-                // Create code mirror instance after drop widget
-                var textarea = $(li)[0].getElementsByClassName('arr-codemirror');
-                createCodeMirrorInstance(textarea);
+                // Remove drop item
+                dropItem.remove();
             });
         }
-    }).sortable({
+    });
+
+    // Allow sort widgets in sidebar
+    $(".sidebar-widget").sortable({
+        connectWith: ".sidebar-widget",
         handle: ".widget-item",
         delay: 100,
         items: "li",
@@ -60,99 +56,30 @@ $(function () {
 
             if (box.hasClass('open')) {
                 box.removeClass('open').addClass('close');
-
-                // Remove code mirror instance when close box
-                removeCodeMirorInstance(box.get(0).querySelectorAll('.arr-codemirror'));
             }
         },
         sort: function () {
             $(this).removeClass("ui-state-default");
         },
-        connectWith: ".sidebar-widget",
-        receive: function (event, ui) {
-            $(this).find(".placeholder").remove();
+        receive: function () {
+            copyHelper = null;
             var ids = $(this).sortable('toArray');
             sorting(this, ids);
         },
-        remove: function (event, ui) {
+        remove: function () {
             if ($(this).find('.widget-item').length == 0 && $(this).find('.placeholder').length == 0) {
                 $(this).find("ul").append("<li class='placeholder'>Drop widget here</li>");
             }
         },
-        stop: function (event, ui) {
+        stop: function () {
             var ids = $(this).sortable('toArray');
             sorting(this, ids);
         }
     });
 });
 
-function codeMirorFromTextarea(t) {
-    return t.cm = CodeMirror.fromTextArea(t, {
-        lineNumbers: true,
-        indentUnit: 4
-    });
-}
-
-function createCodeMirrorInstance(textarea) {
-    if (textarea.length > 0) {
-        for (var j = 0; j < textarea.length; j++) {
-            var t = textarea[j];
-
-            $(t).before(maximize_button);
-
-            codeMirorFromTextarea(t).on('change', function (cm) {
-                cm.save();
-            });
-        }
-    }
-}
-
-function removeCodeMirorInstance(textarea) {
-    if (textarea.length > 0) {
-        for (var i = 0; i < textarea.length; i++) {
-            var input = textarea[i];
-            input.cm.toTextArea();
-            $(input).prev('.maximize-toolbar').remove();
-        }
-    }
-}
-
-function maximizeEditor(button) {
-    var editor = $(button).parent('.maximize-toolbar').next('textarea').next('.CodeMirror');
-    editor.css({
-        'position': 'fixed',
-        'width': '100%',
-        'height': '100%',
-        'top': '0',
-        'left': '0',
-        'z-index': '9999'
-    });
-
-    editor.children().first().before(minimize_button);
-}
-
-function minimizeEditor(button) {
-    // Minimize the editor
-    var editor = $(button).parent().parent('.CodeMirror');
-    editor.css({
-        'position': 'relative',
-        'width': '',
-        'height': '',
-        'top': '',
-        'left': '',
-        'z-index': ''
-    });
-
-    // Remove minimize button
-    $(button).parent('.minimize-toolbar').remove();
-
-    // Save the editor and current widget
-    editor.parents('form').first().find('.arr-btn-submit').first().trigger('click');
-}
-
 function showDetail(element, changeIcon) {
     var box = $(element).parents("li").find('.box').first();
-    var textarea = box.get(0).querySelectorAll('.arr-codemirror');
 
     if (box.hasClass('open')) {
         box.removeClass('open');
@@ -166,8 +93,6 @@ function showDetail(element, changeIcon) {
             $(el).removeClass('fa-caret-down');
             $(el).addClass('fa-caret-left');
         }
-
-        removeCodeMirorInstance(textarea);
     } else {
         box.removeClass('close');
         box.addClass('open');
@@ -176,8 +101,6 @@ function showDetail(element, changeIcon) {
             $(element).removeClass('fa-caret-left');
             $(element).addClass('fa-caret-down');
         }
-
-        createCodeMirrorInstance(textarea);
     }
 
     return false;
@@ -190,14 +113,22 @@ function saveWidget(button) {
     showBlock(box);
 
     $.ajax({
-        type: "POST",
-        url: '/admin/widgets/sidebars/save',
+        type: 'POST',
+        url: '/admin/widgets/save',
         data: form.serialize()
     }).done(function (id) {
-        form.find('input[name="id"]').val(id);
-        form.find('input[name="ordering"]').remove();
+        if (parseInt(id)) {
+            form.find('input[name="id"]').val(id);
+            form.find('input[name="ordering"]').remove();
+        } else {
+            console.log(id);
+        }
+
         removeBlock(box);
         return false;
+    }).fail(function (err) {
+        console.log(err);
+        removeBlock(box);
     });
 
     return false;
@@ -211,26 +142,26 @@ function removeWidget(button) {
         showBlock(box);
 
         $.ajax({
-            url: '/admin/widgets/sidebars/' + id,
-            type: "DELETE"
-        }).done(function (re) {
-            $(button).parents('li').first().remove();
+            type: 'POST',
+            url: '/admin/widgets/delete',
+            data: {id: id}
+        }).done(function (result) {
+            if (parseInt(result) == 1) {
+                $(button).parents('li').first().remove();
+            } else {
+                alert('Fail to delete this widget!');
+            }
+
             removeBlock(box);
             return false;
+        }).fail(function (error) {
+            console.log(error);
         });
     } else {
         $(button).parents('li').first().remove();
     }
 
     return false;
-}
-
-function showBlock(element) {
-    $(element).append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-}
-
-function removeBlock(element) {
-    $(element).find(".overlay").remove();
 }
 
 function sorting(element, ids) {
@@ -245,7 +176,7 @@ function sorting(element, ids) {
     showBlock(box);
 
     $.ajax({
-        url: '/admin/widgets/sidebars/sort',
+        url: '/admin/widgets/sort',
         type: 'POST',
         data: {
             ids: ids.join(','),
@@ -253,5 +184,16 @@ function sorting(element, ids) {
         }
     }).done(function (re) {
         removeBlock(box);
+    }).fail(function(error){
+        console.log(error);
+        removeBlock(box);
     });
+}
+
+function showBlock(element) {
+    $(element).append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+}
+
+function removeBlock(element) {
+    $(element).find(".overlay").remove();
 }
