@@ -7,11 +7,11 @@ module.exports = function (req,res,next) {
             Object.keys(buttons).map(function (name) {
                 let btn = {};
                 if(_.isString(buttons[name])) {
-                    btn.link = buttons[name];
+                    res.locals[name] = buttons[name];
                 } else {
-                    btn = buttons[name];
+                    res.locals[name] = true;
+                    res.locals.btn = buttons[name];
                 }
-                res.locals[name] = btn;
             })
         }
     };
