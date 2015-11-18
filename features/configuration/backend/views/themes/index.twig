@@ -15,11 +15,11 @@
 
                             <div class="caption" style="text-align: center">
                                 <h3>{{ theme.information.theme_name }}</h3>
-                                {% if theme.information.theme_name == current_theme.information.theme_name %}
+                                {% if theme.folder == current_theme.folder %}
                                     <i class="fa fa-check-circle-o text-success" style="font-size: 34px;"></i>
                                 {% else %}
                                     <button class="btn btn-primary"
-                                            onclick="return changeTheme('{{ theme.information.theme_name }}', '{{ theme.information.theme_name }}')">
+                                            onclick="return changeTheme('{{ theme.folder }}', '{{ theme.information.theme_name }}')">
                                         {{ __('select') }}
                                     </button>
                                 {% endif %}

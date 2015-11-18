@@ -19,9 +19,10 @@ module.exports = function (controller, component, application) {
         config.app.description = data.description;
         config.app.language = data.language;
         config.language = data.language;
-        //config.pagination.number_item = data.number_item || 0;
+        config.pagination = {};
+        config.pagination.numberItem = data.number_item || 5;
 
-        application.updateConfig(config).then(function (config) {
+        application.updateConfig(config).then(function () {
             req.flash.success(__('m_configurations_backend_index_flash_update_setting_success'));
             next();
         }).catch(function (err) {

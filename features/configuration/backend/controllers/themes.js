@@ -9,15 +9,14 @@ module.exports = function (controller, component, application) {
         let themes = [];
 
         arrowFunction.getGlobbedFiles(__base + 'themes/frontend/*/theme.json').forEach(function (filePath) {
-            let arrayName = path.dirname(filePath).split('/');
             let data = require(filePath);
-            data.folder = arrayName[arrayName.length - 1];
+            data.folder = path.basename(path.dirname(filePath));
             themes.push(data);
         });
 
         let current_theme = application.getConfig("frontendTheme");
         themes.map(function (theme_info) {
-            if (_.isString(current_theme) && theme_info.information.theme_name.toLowerCase() === current_theme.toLowerCase()) {
+            if (_.isString(current_theme) && theme_info.folder.toLowerCase() === current_theme.toLowerCase()) {
                 current_theme = theme_info;
             }
         });
@@ -34,15 +33,14 @@ module.exports = function (controller, component, application) {
         let themes = [];
 
         arrowFunction.getGlobbedFiles(__base + 'themes/frontend/*/theme.json').forEach(function (filePath) {
-            let arrayName = path.dirname(filePath).split('/');
             let data = require(filePath);
-            data.folder = arrayName[arrayName.length - 1];
+            data.folder = path.basename(path.dirname(filePath));
             themes.push(data);
         });
 
         let current_theme = application.getConfig("frontendTheme");
         themes.map(function (theme_info) {
-            if (_.isString(current_theme) && theme_info.information.theme_name.toLowerCase() === current_theme.toLowerCase()) {
+            if (_.isString(current_theme) && theme_info.folder.toLowerCase() === current_theme.toLowerCase()) {
                 current_theme = theme_info;
             }
         });
