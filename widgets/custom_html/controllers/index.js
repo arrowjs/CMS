@@ -18,14 +18,13 @@ module.exports = function (controller, component, application) {
     };
 
     controller.renderWidget = function (widget) {
+        // Get layouts
+        let layout = widget.data.layout || component.getLayouts(widget.widget_name)[0];
+
+        // Render view with layout
         let renderWidget = Promise.promisify(component.render);
-
-        //todo: get layout from db
-        let layout = 'default';
-
-        // Mockup render widget with default layout
         return renderWidget(layout, {
-            widget: widget
+            widget: widget.data
         })
     };
 };
