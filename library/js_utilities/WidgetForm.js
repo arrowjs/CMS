@@ -26,7 +26,7 @@ class WidgetForm {
     }
 
     /**
-     * Add generic element
+     * Add general element
      */
     addGeneralElement(name, label, content) {
         if (!name) {
