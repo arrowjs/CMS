@@ -1,18 +1,17 @@
-"use strict"
-
+'use strict';
 
 let _ = require('lodash');
-let logger = require("arrowjs").logger;
+let logger = require('arrowjs').logger;
 
 function createFilter(req, res, columns, options) {
     let customCondition;
-    let itemOfPage;
+    let limit;
     let current_column = req.params.sort || columns[0].column || "id";
     let order = req.params.order || 'asc';
     let page = req.params.page || 1;
 
     if (options) {
-        itemOfPage = options.itemOfPage || 10;
+        limit = options.limit || 10;
         customCondition = options.customCondition;
 
         if (options.rootLink) {
@@ -57,7 +56,6 @@ function createFilter(req, res, columns, options) {
             }
         });
 
-
     for (let i in columns) {
         if (columns[i].column != '') attributes.push(columns[i].column);
     }
@@ -71,16 +69,15 @@ function createFilter(req, res, columns, options) {
     res.locals.filters = req.query;
     res.locals.currentPage = page;
 
-
     if (current_column.indexOf('.') > -1) current_column = current_column.replace(/(.*)\.(.*)/, '"$1"."$2"');
 
     return {
         order: current_column + " " + order,
-        limit: itemOfPage,
-        offset: (page - 1) * itemOfPage,
+        limit: limit,
+        offset: (page - 1) * limit,
         conditions: values
     };
-};
+}
 
 function parseCondition(column_name, value, col) {
     if (col.filter.filter_key) {
@@ -115,7 +112,7 @@ function parseCondition(column_name, value, col) {
             return column_name + " = ?";
         }
     }
-};
+}
 
 function parseValue(value, col) {
 
@@ -156,7 +153,6 @@ function parseValue(value, col) {
     } else {
         return value.replace(/[><]/g, "");
     }
-};
-
+}
 
 module.exports = createFilter;
