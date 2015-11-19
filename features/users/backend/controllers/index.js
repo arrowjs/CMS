@@ -9,14 +9,12 @@ let promise = require('bluebird');
 let writeFileAsync = promise.promisify(require('fs').writeFile);
 let readdirAsync = promise.promisify(require('fs').readdir);
 let formidable = require('formidable');
-
-let global_functions = require(__base + '/library/js_utilities/helper/global');
-let createFilter = require(__base + '/library/js_utilities/createFilter');
-let acl = require(__base + '/library/js_utilities/helper/acl');
-
-let _log = require('arrowjs').logger;
-
 promise.promisifyAll(formidable);
+
+let createFilter = require(__base + '/library/js_utilities/createFilter');
+let _log = require('arrowjs').logger;
+//get function to check permissions of modules
+let isAllow = ArrowHelper.isAllow;
 
 let edit_template = 'new';
 let folder_upload = '/img/users/';
@@ -27,9 +25,7 @@ module.exports = function (controller, component, app) {
     let adminPrefix = app.getConfig('admin_prefix') || 'admin';
     let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
-
     controller.list = function (req, res) {
-
         let tableStructure = [
             {
                 column: "id",
@@ -109,10 +105,9 @@ module.exports = function (controller, component, app) {
 
         // Add toolbar
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addSearchButton(true);
+        toolbar.addSearchButton(isAllow(req,'index'));
         toolbar.addRefreshButton('/admin/users');
-        //todo: check permission for create button
-        toolbar.addCreateButton(true, '/admin/users/create');
+        toolbar.addCreateButton(isAllow(req,'create'), '/admin/users/create');
         toolbar = toolbar.render();
 
         // Config columns
@@ -156,22 +151,25 @@ module.exports = function (controller, component, app) {
 
     controller.view = function (req, res) {
         // Add button
-        res.locals.user = req.user;// Add locals user for view or get infomation of user
+
         let back_link = '/admin/users';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
-        res.locals.backButton = back_link;//acl.addButton(req, route, 'index', back_link);
-        res.locals.saveButton = 'update';//acl.addButton(req, route, 'update');
-
+        //add button on view
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton(back_link);
+        toolbar.addSaveButton(isAllow(req,'index'));
+        toolbar=toolbar.render();
         // Get user by session and list roles
         app.models.role.findAll().then(function (roles) {
             res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_update'),
                 roles: roles,
                 item: req.user,
-                id: req.params.uid
+                id: req.params.uid,
+                toolbar : toolbar //pass params to view button
             });
         }).catch(function (err) {
             _log.error(err);
@@ -180,29 +178,10 @@ module.exports = function (controller, component, app) {
                 title: __('m_users_backend_controllers_index_update'),
                 roles: null,
                 item: null,
-                id: 0
+                id: 0,
+                toolbar : toolbar //pass params to view button
             });
         });
-    };
-
-    controller.course_of = function (req, res) {
-        res.locals.user = req.user;// Add locals user for view or get infomation of user
-        let email = req.params.email;
-        app.models.customer_register.findAll({
-            include: [{
-                model: app.models.course, attributes: [
-                    'title'
-                ]
-            }],
-            where: {
-                email: email
-            },
-            attributes: ['full_name', 'email', 'register_date']
-        }).then(function (results) {
-            res.json(results);
-        }).catch(function (err) {
-            req.flash.error("Error: ", err.stack);
-        })
     };
 
     controller.update = function (req, res, next) {
@@ -268,8 +247,11 @@ module.exports = function (controller, component, app) {
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
-        res.locals.backButton = back_link;
-        res.locals.saveButton = 'create';
+        //add button on view
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton(back_link);
+        toolbar.addSaveButton(isAllow(req,'index'));
+        toolbar=toolbar.render();
 
         //Get list roles
         app.models.role.findAll({
@@ -277,14 +259,16 @@ module.exports = function (controller, component, app) {
         }).then(function (roles) {
             res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_add_user'),
-                roles: roles
+                roles: roles,
+                toolbar : toolbar
             });
         }).catch(function (error) {
             _log.error(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_add_user'),
-                roles: null
+                roles: null,
+                toolbar : toolbar
             });
         });
     };
@@ -419,11 +403,14 @@ module.exports = function (controller, component, app) {
 
 
     controller.changePass = function (req, res) {
-        res.locals.backButton = '/admin/users';
-        res.locals.user = req.user;
+        //add button on view
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton(back_link);
+        toolbar=toolbar.render();
         res.backend.render('change-pass', {
             title: "Change User's password",
-            item: req.user
+            item: req.user,
+            toolbar : toolbar
         });
     };
 

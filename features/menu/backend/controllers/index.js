@@ -184,9 +184,9 @@ module.exports = function (controller, component, application) {
     };
 
     controller.sortAdminMenu = function (req, res) {
-        res.addButton({
-            saveButton : true
-        });
+        //res.addButton({
+        //    saveButton : true
+        //});
         application.redisClient.getAsync(application.getConfig("redis_prefix") + application.getConfig("redis_key.backend_menus"))
             .then(function (data) {
                 let menus = JSON.parse(data);
