@@ -6,7 +6,6 @@ let createFilter = require(__base + '/library/js_utilities/createFilter');
 
 module.exports = function (controller, component, application) {
     controller.index = function (req, res) {
-
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
         //todo: check permission
@@ -82,6 +81,7 @@ module.exports = function (controller, component, application) {
             toolbar: toolbar
         });
     };
+
     controller.menuById = function (req, res, next, id) {
         component.models.menus.findById(id).then(function (menu) {
             res.locals.menu = menu;
@@ -195,7 +195,6 @@ module.exports = function (controller, component, application) {
                     menus: menus
                 });
             })
-
     };
 
     controller.save = function (req, res) {
@@ -248,16 +247,17 @@ module.exports = function (controller, component, application) {
         //    back_link = '/admin' + search_params[route + '_index_index'];
         //}
 
-        res.addButton({
-            backButton: back_link
-        });
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton(back_link);
+        toolbar = toolbar.render();
 
         // Get module links
         //res.locals.setting_menu_module = __setting_menu_module;
 
         // Render view
         res.render('new', {
-            title: __('m_menus_backend_controller_read_render_title')
+            title: __('m_menus_backend_controller_read_render_title'),
+            toolbar: toolbar
         });
     };
 };
