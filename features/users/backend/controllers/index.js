@@ -9,27 +9,26 @@ let promise = require('bluebird');
 let writeFileAsync = promise.promisify(require('fs').writeFile);
 let readdirAsync = promise.promisify(require('fs').readdir);
 let formidable = require('formidable');
-//global function
-let global_functions = require(__base+'/library/js_utilities/helper/global');
-let createFilter = require(__base+'/library/js_utilities/createFilter');
-let acl = require(__base+'/library/js_utilities/helper/acl');
+
+let global_functions = require(__base + '/library/js_utilities/helper/global');
+let createFilter = require(__base + '/library/js_utilities/createFilter');
+let acl = require(__base + '/library/js_utilities/helper/acl');
+
+let Toolbar = require(__base + '/library/js_utilities/BackendToolbar');
 
 let _log = require('arrowjs').logger;
 
-//
 promise.promisifyAll(formidable);
 
 let edit_template = 'new';
 let folder_upload = '/img/users/';
 let route = 'users';
 
-module.exports = function (controller,component,app) {
+module.exports = function (controller, component, app) {
     let redis = app.redisClient;
     let adminPrefix = app.getConfig('admin_prefix') || 'admin';
     let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
-
-
 
     controller.list = function (req, res) {
 
@@ -110,15 +109,18 @@ module.exports = function (controller,component,app) {
             }
         ];
 
+        // Add toolbar
+        let toolbar = new Toolbar();
+        //todo: check permission for create button
+        toolbar.addCreateButton(true, '/admin/users/create');
+        toolbar.addSearchButton(true);
+        toolbar.addRefreshButton('/admin/users');
+        toolbar = toolbar.render();
+
         // Config columns
-        let filter = createFilter(req, res, tableStructure,{
-            button : {
-                searchButton : "users",
-                createButton : '/admin/users/create',
-                resetFilterButton : '/admin/users'
-            },
-            rootLink : '/admin/users/page/$page/sort',
-            itemOfPage : 10
+        let filter = createFilter(req, res, tableStructure, {
+            rootLink: '/admin/users/page/$page/sort',
+            itemOfPage: 10
         });
 
         // List users
@@ -139,7 +141,8 @@ module.exports = function (controller,component,app) {
             res.backend.render('index', {
                 title: __('m_users_backend_controllers_index_list'),
                 items: results.rows,
-                totalPage: totalPage
+                totalPage: totalPage,
+                toolbar: toolbar
             });
 
         }).catch(function (error) {
@@ -166,7 +169,7 @@ module.exports = function (controller,component,app) {
 
         // Get user by session and list roles
         app.models.role.findAll().then(function (roles) {
-            res.backend.render( edit_template, {
+            res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_update'),
                 roles: roles,
                 item: req.user,
@@ -175,7 +178,7 @@ module.exports = function (controller,component,app) {
         }).catch(function (err) {
             _log.error(err);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.backend.render( edit_template, {
+            res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_update'),
                 roles: null,
                 item: null,
@@ -208,7 +211,7 @@ module.exports = function (controller,component,app) {
         let edit_user = null;
         let data = req.body;
         res.locals.user = req.user;// Add locals user for view or get infomation of user
-         //Get user by id
+        //Get user by id
         app.models.user.findById(req.params.uid).then(function (user) {
             edit_user = user;
             return new Promise(function (fulfill, reject) {
@@ -267,10 +270,10 @@ module.exports = function (controller,component,app) {
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
-        res.locals.backButton =  back_link;
-        res.locals.saveButton =  'create';
+        res.locals.backButton = back_link;
+        res.locals.saveButton = 'create';
 
-         //Get list roles
+        //Get list roles
         app.models.role.findAll({
             order: "id asc"
         }).then(function (roles) {
@@ -281,7 +284,7 @@ module.exports = function (controller,component,app) {
         }).catch(function (error) {
             _log.error(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.backend.render( edit_template, {
+            res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_add_user'),
                 roles: null
             });
@@ -298,8 +301,8 @@ module.exports = function (controller,component,app) {
         // Get form data
         var data = req.body;
 
-        if (!data.role_ids){
-            console.log('DATA : ',JSON.stringify(data,null,3));
+        if (!data.role_ids) {
+            console.log('DATA : ', JSON.stringify(data, null, 3));
         }
 
         return new Promise(function (fulfill, reject) {
@@ -320,25 +323,29 @@ module.exports = function (controller,component,app) {
                     res.locals.title = __('m_users_backend_controllers_index_list');
                     res.redirect(back_link);
                 }).catch(function (error) {
-                    res.locals.backButton =  back_link;
-                    res.locals.saveButton =  'create';
+                    res.locals.backButton = back_link;
+                    res.locals.saveButton = 'create';
                     if (error.name == 'SequelizeUniqueConstraintError') {
                         res.locals.title = __('m_users_backend_controllers_index_update');
                         req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
                         res.redirect(back_link);
                     } else {
                         req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                        res.backend.render(edit_template,{user:data,create : 'true',title: __('m_users_backend_controllers_index_update')});
+                        res.backend.render(edit_template, {
+                            user: data,
+                            create: 'true',
+                            title: __('m_users_backend_controllers_index_update')
+                        });
                     }
                 });
             }).catch(function (error) {
                 req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                res.locals.backButton =  back_link;
-                res.locals.saveButton =  'create';
-                res.backend.render(edit_template,{
+                res.locals.backButton = back_link;
+                res.locals.saveButton = 'create';
+                res.backend.render(edit_template, {
                     title: __('m_users_backend_controllers_index_update'),
-                    item : data,
-                    create : true
+                    item: data,
+                    create: true
                 });
             })
     };
@@ -378,12 +385,12 @@ module.exports = function (controller,component,app) {
         // Add button
         //console.log('profile : ',JSON.stringify(req.user,null,3));
         let role_ids = [];
-        if(!req.user.role_ids) role_ids.push(req.user.role_id);
+        if (!req.user.role_ids) role_ids.push(req.user.role_id);
         else role_ids = req.user.role_ids.split(/\D/);
         app.models.role.findAll({
-            where :{
-                id : {
-                    $in : role_ids
+            where: {
+                id: {
+                    $in: role_ids
                 }
             }
         }).then(function (roles) {
@@ -417,7 +424,7 @@ module.exports = function (controller,component,app) {
         res.locals.backButton = '/admin/users';
         res.locals.user = req.user;
         res.backend.render('change-pass', {
-            title : "Change User's password",
+            title: "Change User's password",
             item: req.user
         });
     };
@@ -475,12 +482,12 @@ module.exports = function (controller,component,app) {
             where: {
                 id: id
             },
-            raw : true
+            raw: true
         }).then(function (user) {
             req.user = user;
             next();
         }).catch(function (err) {
-            console.log('ERROR : '+err);
+            console.log('ERROR : ' + err);
         })
     };
 

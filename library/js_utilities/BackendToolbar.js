@@ -17,11 +17,12 @@ class BackendToolbar {
     /**
      * Add general button
      */
-    addGeneralButton(permission, title, link, icon, cssClass, onclickFunction, target) {
+    addGeneralButton(permission, title, link, icon, wrapperClass, buttonClass, onclickFunction, target) {
         permission = permission || false;
         icon = icon || '';
         link = link || 'javascript: void(0);';
-        cssClass = cssClass || 'btn btn-default';
+        wrapperClass = wrapperClass || '';
+        buttonClass = buttonClass || 'btn btn-default';
         onclickFunction = (onclickFunction) ? ` onclick="${onclickFunction}"` : ``;
         target = (target) ? ` target="${target}"` : ``;
 
@@ -29,8 +30,8 @@ class BackendToolbar {
 
         // Display button if permission = true
         if (permission)
-            button = `<a href="${link}"${target}>
-                        <button class="${cssClass}"${onclickFunction}>${icon} ${title}</button>
+            button = `<a href="${link}"${target} class=${wrapperClass}>
+                        <button class="${buttonClass}"${onclickFunction}>${icon} ${title}</button>
                     </a>`;
 
         this.addButton(button);
@@ -48,7 +49,7 @@ class BackendToolbar {
      * Add create button
      */
     addCreateButton(permission, link) {
-        this.addGeneralButton(permission, 'Create new', link, '<i class="fa fa-plus"></i>', 'btn btn-primary');
+        this.addGeneralButton(permission, 'Create new', link, '<i class="fa fa-plus"></i>', '', 'btn btn-primary');
     }
 
     /**
@@ -96,14 +97,15 @@ class BackendToolbar {
      * Add reset button
      */
     addRefreshButton(link) {
-        this.addGeneralButton(true, 'Refresh', link, '<i class="fa fa-refresh"></i>', 'btn btn-info');
+        this.addGeneralButton(true, 'Refresh', link, '<i class="fa fa-refresh"></i>', '', 'btn btn-info');
     }
 
     /**
      * Render toolbar
      */
     render() {
-        return this.toolbar.join('');
+        let toolbar = this.toolbar.join('');
+        return `<div class="toolbar">${toolbar}</div>`;
     }
 
 }

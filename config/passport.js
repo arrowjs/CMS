@@ -10,25 +10,25 @@ module.exports = function (passport, application) {
         },
         deserializeUser: function (id, done) {
             application.models.user.findById(id).then(function (user) {
-                done(null,user);
+                done(null, user);
             }).catch(function (err) {
                 done(err)
             });
         },
-        checkAuthenticate : function (req,res,next) {
-            if(req.isAuthenticated()){
+        checkAuthenticate: function (req, res, next) {
+            if (req.isAuthenticated()) {
                 application.models.user.find({
-                    where : {
-                        id : req.user.id
+                    where: {
+                        id: req.user.id
                     },
-                    include : application.models.role
+                    include: application.models.role
                 }).then(function (user) {
                     req.session.permissions = JSON.parse(user.role.rules);
                     res.locals.permissions = req.session.permissions;
-                    res.locals.user=user;
+                    res.locals.user = user;
                     return next();
                 }).catch(function (err) {
-                    _log.error('Error at : checkAuthenticate :',err);
+                    _log.error('Error at : checkAuthenticate :', err);
                     res.redirect('/admin/login');
                 });
                 res.locals.user = req.user;
@@ -36,20 +36,20 @@ module.exports = function (passport, application) {
                 res.redirect('/admin/login');
             }
         },
-        handlePermission : function(req,res,next) {
-            if(req.hasPermission) {
-                return  next()
-            }else{
+        handlePermission: function (req, res, next) {
+            if (req.hasPermission) {
+                return next()
+            } else {
                 req.flash.error("You do not have permission to access");
                 res.redirect('/admin');
             }
         },
         local_login: {
-            strategy : 'local',
+            strategy: 'local',
             option: {
                 successRedirect: '/admin',
                 failureRedirect: '/admin/login',
-                failureFlash : true
+                failureFlash: true
 
             }
         },
