@@ -73,7 +73,15 @@ class Toolbar {
      * Add delete button
      */
     addDeleteButton(permission) {
-        this.addGeneralButton(permission, 'Delete', null, '<i class="fa fa-remove"></i>', 'pull-right', 'btn btn-danger');
+        let button = '';
+
+        if (permission)
+            button = `<a class="pull-right" data-toggle="modal" onclick="openDeleteConfirmModal()">
+                        <button class="btn btn-danger">
+                            <i class="fa fa-remove"></i> Delete
+                        </button>
+                    </a>`;
+        this.addButton(button);
     }
 
     /**
