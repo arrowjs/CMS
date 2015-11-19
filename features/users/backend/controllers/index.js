@@ -14,8 +14,6 @@ let global_functions = require(__base + '/library/js_utilities/helper/global');
 let createFilter = require(__base + '/library/js_utilities/createFilter');
 let acl = require(__base + '/library/js_utilities/helper/acl');
 
-let Toolbar = require(__base + '/library/js_utilities/BackendToolbar');
-
 let _log = require('arrowjs').logger;
 
 promise.promisifyAll(formidable);
@@ -110,11 +108,11 @@ module.exports = function (controller, component, app) {
         ];
 
         // Add toolbar
-        let toolbar = new Toolbar();
-        //todo: check permission for create button
-        toolbar.addCreateButton(true, '/admin/users/create');
+        let toolbar = new ArrowHelper.Toolbar();
         toolbar.addSearchButton(true);
         toolbar.addRefreshButton('/admin/users');
+        //todo: check permission for create button
+        toolbar.addCreateButton(true, '/admin/users/create');
         toolbar = toolbar.render();
 
         // Config columns

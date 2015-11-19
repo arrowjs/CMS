@@ -8,7 +8,10 @@
             <div class="box box-solid box-primary">
                 <div class="box-body table-responsive no-padding">
                     {% include 'basic_table/table.twig' %}
-                    {{ paginateLinks(totalPage, currentPage, '/admin/users/page/{page}/sort/' + currentColumn + '/' + currentOrder) | safe }}
+
+                    <div class="dataTables_paginate col-md-12">
+                        {{ paginateLinks(totalPage, currentPage, '/admin/users/page/{page}/sort/' + currentColumn + '/' + currentOrder) | safe }}
+                    </div>
                 </div>
             </div>
         </div>

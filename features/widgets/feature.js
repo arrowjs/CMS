@@ -5,6 +5,12 @@ module.exports = {
     author: 'Techmaster',
     version: '0.1.0',
     description: "Backend Widget manager",
+    permissions: [
+        {
+            name: 'index',
+            title: 'Widget manager'
+        }
+    ],
     backend_menu: {
         title: 'Widget manager',
         icon: 'fa fa-file-text',

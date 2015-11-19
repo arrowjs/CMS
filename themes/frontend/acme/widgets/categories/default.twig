@@ -4,40 +4,12 @@
     </h3>
 
     <ul class="list-unstyled">
-        <li>
-            <a href="javascript:;">
-                <i class="fa fa-angle-right pr-10">
-                </i>
-                Animals
-            </a>
-        </li>
-        <li>
-            <a href="javascript:;">
-                <i class="fa fa-angle-right pr-10">
-                </i>
-                Landscape
-            </a>
-        </li>
-        <li>
-            <a href="javascript:;">
-                <i class="fa fa-angle-right pr-10">
-                </i>
-                Portait
-            </a>
-        </li>
-        <li>
-            <a href="javascript:;">
-                <i class="fa fa-angle-right pr-10">
-                </i>
-                Wild Life
-            </a>
-        </li>
-        <li>
-            <a href="javascript:;">
-                <i class="fa fa-angle-right pr-10">
-                </i>
-                Video
-            </a>
-        </li>
+        {% for category in categories %}
+            <li>
+                <a href="javascript:;">
+                    <i class="fa fa-angle-right pr-10"></i> {{ category.name }}
+                </a>
+            </li>
+        {% endfor %}
     </ul>
 </div>

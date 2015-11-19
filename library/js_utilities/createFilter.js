@@ -12,16 +12,12 @@ function createFilter(req, res, columns, options) {
     let page = req.params.page || 1;
 
     if (options) {
-        if (!_.isEmpty(options.button)) {
-            res.addButton(options.button);
-        }
         itemOfPage = options.itemOfPage || 10;
         customCondition = options.customCondition;
 
         if (options.rootLink) {
             res.locals.root_link = options.rootLink.replace("$page", page);
         }
-
     }
 
     let conditions = [];

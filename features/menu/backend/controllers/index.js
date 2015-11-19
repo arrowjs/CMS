@@ -1,5 +1,5 @@
 'use strict';
-//
+
 let _ = require('lodash');
 let promise = require('bluebird');
 let createFilter = require(__base + '/library/js_utilities/createFilter');
@@ -8,14 +8,15 @@ module.exports = function (controller, component, application) {
     controller.index = function (req, res) {
 
         // Add button
-        res.addButton({
-            createButton: '/admin/menu/create',
-            deleteButton: 'delete'
-        });
+        let toolbar = new ArrowHelper.Toolbar();
+        //todo: check permission
+        toolbar.addCreateButton(true, '/admin/menu/create');
+        toolbar.addDeleteButton(true);
+        toolbar = toolbar.render();
 
         // Config ordering
         let column = req.params.sort || 'id';
-        let order = req.params.order || '';
+        let order = req.params.order || 'desc';
 
         let table = [
             {
@@ -44,7 +45,8 @@ module.exports = function (controller, component, application) {
             // Render view
             res.render('index', {
                 title: __('m_menus_backend_controller_index_render_title'),
-                items: menus
+                items: menus,
+                toolbar: toolbar
             });
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
@@ -64,17 +66,20 @@ module.exports = function (controller, component, application) {
         //    back_link = '/admin' + search_params[route + '_index_index'];
         //}
 
-        res.addButton({
-            backButton: "/admin/menu",
-            saveButton: true
-        })
+        // Add button
+        let toolbar = new ArrowHelper.Toolbar();
+        //todo: check permission
+        toolbar.addBackButton('/admin/menus');
+        toolbar.addSaveButton(true);
+        toolbar = toolbar.render();
 
         // Get module links
         //res.locals.setting_menu_module = __setting_menu_module;
 
         // Render view
         res.render('new', {
-            title: __('m_menus_backend_controller_create_render_title')
+            title: __('m_menus_backend_controller_create_render_title'),
+            toolbar: toolbar
         });
     };
     controller.menuById = function (req, res, next, id) {

@@ -87,22 +87,6 @@ exports.sortMenus = function (menus) {
 };
 
 /**
- * Get widget by alias
- * @param {string} alias
- * @returns {object}
- */
-exports.getWidget = function (alias) {
-    let widgets = __widget;//require(__dirname + '/widgets_manager')();
-    for (let i in widgets) {
-        if (widgets.hasOwnProperty(i)) {
-            if (widgets[i].config && widgets[i].config.alias == alias) {
-                return widgets[i];
-            }
-        }
-    }
-};
-
-/**
  * Create Environment to handles templates
  * @param {array} views - List of loaders
  * @returns {object}
@@ -429,20 +413,6 @@ exports.checkDirectorySecurity = function (path, result) {
 };
 
 /**
- * Translate text with language in lang folder
- * @params {string} - String arguments to translate, argument 0 is translate key
- * @returns {string} - Translated string or Undefined if translate key is not exists
- */
-exports.t = function () {
-    let currentLang = __config.app.language;
-
-    var args = Array.prototype.slice.call(arguments);
-    args[0] = __lang[currentLang][args[0]] || 'Undefined';
-    return util.format.apply(util, args);
-};
-
-
-/**
  * Get files by glob patterns
  */
 module.exports.getGlobbedFiles = function (globPatterns, removeRoot) {
@@ -526,26 +496,4 @@ module.exports.mergePath = function (paths, routePath, checkIndex) {
     }
 
     return paths;
-};
-
-/**
- * Get the modules JavaScript files
- */
-module.exports.getJavaScriptAssets = function (includeTests) {
-    let output = this.getGlobbedFiles(this.assets.lib.js.concat(this.assets.js), 'public/');
-
-    // To include tests
-    if (includeTests) {
-        output = _.union(output, this.getGlobbedFiles(this.assets.tests));
-    }
-
-    return output;
-};
-
-/**
- * Get the modules CSS files
- */
-module.exports.getCSSAssets = function () {
-    let output = this.getGlobbedFiles(this.assets.lib.css.concat(this.assets.css), 'public/');
-    return output;
 };

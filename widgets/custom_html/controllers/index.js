@@ -1,7 +1,6 @@
 'use strict';
 
 let Promise = require('bluebird');
-let WidgetForm = require(__base + 'library/js_utilities/WidgetForm');
 
 module.exports = function (controller, component, application) {
 
@@ -10,7 +9,7 @@ module.exports = function (controller, component, application) {
         let layouts = component.getLayouts(widget.widget_name);
 
         // Create setting form
-        let form = new WidgetForm(widget);
+        let form = new ArrowHelper.WidgetForm(widget);
         form.addText('title', 'Title');
         form.addTextArea('content', 'Content');
         form.addSelect('layout', 'Layout', layouts);
@@ -22,8 +21,7 @@ module.exports = function (controller, component, application) {
         let layout = widget.data.layout || component.getLayouts(widget.widget_name)[0];
 
         // Render view with layout
-        let renderWidget = Promise.promisify(component.render);
-        return renderWidget(layout, {
+        return component.render(layout, {
             widget: widget.data
         })
     };

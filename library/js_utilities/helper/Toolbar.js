@@ -2,7 +2,7 @@
 
 let log = require('arrowjs').logger;
 
-class BackendToolbar {
+class Toolbar {
     constructor() {
         this.toolbar = [];
     }
@@ -31,7 +31,9 @@ class BackendToolbar {
         // Display button if permission = true
         if (permission)
             button = `<a href="${link}"${target} class=${wrapperClass}>
-                        <button class="${buttonClass}"${onclickFunction}>${icon} ${title}</button>
+                        <button type="button" class="${buttonClass}"${onclickFunction}>
+                            ${icon} ${title}
+                        </button>
                     </a>`;
 
         this.addButton(button);
@@ -59,9 +61,11 @@ class BackendToolbar {
         let button = '';
 
         if (permission)
-            button = `<button type="submit" id="saveForm" class="btn btn-success">
-                        <i class="fa fa-check"></i> Save
-                    </button>`;
+            button = `<a href="javascript: void(0);">
+                        <button type="submit" id="saveForm" class="btn btn-success">
+                            <i class="fa fa-check"></i> Save
+                        </button>
+                    </a>`;
         this.addButton(button);
     }
 
@@ -69,14 +73,7 @@ class BackendToolbar {
      * Add delete button
      */
     addDeleteButton(permission) {
-        let button = '';
-
-        if (permission)
-            button = `<a class="btn btn-danger pull-right" data-toggle="modal" href="javascript: void(0);"
-                       onclick="openDeleteConfirmModal()">
-                        <i class="fa fa-remove"></i> Delete
-                    </a>`;
-        this.addButton(button);
+        this.addGeneralButton(permission, 'Delete', null, '<i class="fa fa-remove"></i>', 'pull-right', 'btn btn-danger');
     }
 
     /**
@@ -86,10 +83,12 @@ class BackendToolbar {
         let button = '';
 
         if (permission)
-            button = `<button type="submit" form="search-form" class="btn btn-warning"
-                       onclick='return document.forms["search-form"].submit();'>
-                        <i class="fa fa-search"></i> Search
-                    </button>`;
+            button = `<a href="javascript: void(0);">
+                        <button type="submit" form="search-form" class="btn btn-warning"
+                           onclick='return document.forms["search-form"].submit();'>
+                            <i class="fa fa-search"></i> Search
+                        </button>
+                    </a>`;
         this.addButton(button);
     }
 
@@ -110,4 +109,6 @@ class BackendToolbar {
 
 }
 
-module.exports = BackendToolbar;
+module.exports = {
+    Toolbar: Toolbar
+};
