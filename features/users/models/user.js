@@ -156,30 +156,6 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         timestamps: false,
         tableName: 'arr_user',
-        classMethods : {
-            associate: function () {
-                return {
-                    //"menu" : {
-                    //    type : "hasMany",
-                    //    option : {
-                    //        foreignKey: 'id'
-                    //    }
-                    //},
-                    //"menu_detail" : {
-                    //    type : "hasMany",
-                    //    option : {
-                    //        foreignKey: 'id'
-                    //    }
-                    //},
-                    "role" : {
-                        type : "belongsTo",
-                        option : {
-                            foreignKey: 'role_id'
-                        }
-                    }
-                }
-            }
-        },
         instanceMethods: {
             authenticate: function (password) {
                 return this.user_pass === this.hashPassword(password);

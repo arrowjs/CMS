@@ -10,9 +10,9 @@ let writeFileAsync = promise.promisify(require('fs').writeFile);
 let readdirAsync = promise.promisify(require('fs').readdir);
 let formidable = require('formidable');
 //global function
-let global_functions = require(__base+'/library/js_utilities/global');
+let global_functions = require(__base+'/library/js_utilities/helper/global');
 let createFilter = require(__base+'/library/js_utilities/createFilter');
-let acl = require(__base+'/library/js_utilities/acl');
+let acl = require(__base+'/library/js_utilities/helper/acl');
 
 let _log = require('arrowjs').logger;
 

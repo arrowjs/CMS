@@ -6,9 +6,6 @@ let _ = require('lodash');
 let fs = require('fs');
 let path = require('path');
 
-let global_functions = require(__base+'/library/js_utilities/global');
-let acl = require(__base+'/library/js_utilities/acl');
-
 let _log = require('arrowjs').logger;
 let route = 'roles';
 
@@ -34,7 +31,7 @@ module.exports = function (controller,component,app) {
         req.session.search = session_search;
 
         // Config columns
-        let filter = global_functions.createFilter(req, res, route, '/admin/roles', column, order, [
+        let filter = ArrowHelper.createFilter(req, res, route, '/admin/roles', column, order, [
             {
                 column: "id",
                 width: '1%',
@@ -107,7 +104,6 @@ module.exports = function (controller,component,app) {
         }
         res.locals.backButton =  back_link;
         res.locals.saveButton =  'update';
-
         // Get role by id
         app.models.role.find({
             where: {
@@ -116,7 +112,7 @@ module.exports = function (controller,component,app) {
         }).then(function (roles) {
             res.backend.render('new', {
                 title: __('m_roles_backend_controllers_index_view_title'),
-                modules: 'roles',
+                features: app.permissions.feature,
                 role: roles,
                 rules: JSON.parse(roles.rules)
             });
@@ -124,7 +120,7 @@ module.exports = function (controller,component,app) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.backend.render('new', {
                 title: __('m_roles_backend_controllers_index_view_title'),
-                modules: "roles",
+                features: app.permissions.feature,
                 role: null,
                 rules: null
             });
@@ -134,25 +130,29 @@ module.exports = function (controller,component,app) {
     controller.update = function (req, res) {
         let back_link = '/admin/roles';
         let search_params = req.session.search;
+        let rules = {feature : {}};
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
 
+        console.log(JSON.stringify(req.body,null,2));
         // Get role by id
         app.models.role.find({
             where: {
                 id: req.params.rid
             }
         }).then(function (role) {
-            let rules = {};
             for (let k in req.body) {
-                if (req.body.hasOwnProperty(k)) {
-                    if (k != 'title' && k != 'status' ) {
-                        rules[k] = req.body[k].join(':');
+                if (k != 'title' && k != 'status') {
+                    rules.feature[k]=[];
+                    if(typeof req.body[k] == 'string'){
+                        req.body[k] = new Array(req.body[k]);
+                    }
+                    for(let temp of req.body[k]){
+                        rules.feature[k].push({name :temp});
                     }
                 }
             }
-
             // Update role
             return role.updateAttributes({
                 name: req.body.title,
@@ -160,6 +160,7 @@ module.exports = function (controller,component,app) {
                 rules: JSON.stringify(rules)
             });
         }).then(function () {
+            console.log(JSON.stringify(rules,null,2));
             req.flash.success(__('m_roles_backend_controllers_index_update_flash_success'));
             res.redirect(back_link);
         }).catch(function (error) {
@@ -180,7 +181,7 @@ module.exports = function (controller,component,app) {
 
         res.backend.render('new', {
             title: __('m_roles_backend_controllers_index_create_title'),
-            modules: "roles"
+            features: app.permissions.feature
         });
     };
 
@@ -191,15 +192,18 @@ module.exports = function (controller,component,app) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
 
-        let rules = {};
+        let rules = {feature : {}};
         for (let k in req.body) {
             if (req.body.hasOwnProperty(k)) {
                 if (k != 'title' && k != 'status') {
-                    rules[k] = req.body[k].join(':');
+                    rules.feature[k]=[];
+                    for(let temp of req.body[k]){
+                        rules.feature[k].push({name :temp});
+                    }
                 }
             }
         }
-
+        //req.body.rules = rules;
         // Create role
         app.models.role.create({
             name: req.body.title,

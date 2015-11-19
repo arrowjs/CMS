@@ -38,19 +38,7 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: true,
         createdAt: "created_at",
         updatedAt: "modified_at",
-        deletedAt: false,
-        classMethods: {
-            associate: function () {
-                return {
-                    "menu_detail": {
-                        type: "hasMany",
-                        option: {
-                            foreignKey: 'id'
-                        }
-                    }
-                }
-            }
-        }
+        deletedAt: false
     });
     Menu.sync();
     return Menu;

@@ -53,28 +53,27 @@
                                 <div class="tab-content">
                                     <!-- Morris chart - Sales -->
                                     <div class="tab-pane active" id="backend">
-                                        {% for key, module in modules %}
+                                        {% for name,values in features %}
+                                            {% if values.length > 0 %}
                                             <div class="col-md-3 col-sm-3">
                                                 <div class="rule-item">
                                                     <div class="form-group">
                                                         <label class="label-rule">
                                                             <input type="checkbox" class="check-rule-parent"/>&nbsp;
-                                                            {{ module.title }}
+                                                            {{ name }}
                                                         </label>
-                                                        {% for rule in module.rules %}
+                                                        {% for v in values %}
                                                             <div class="checkbox">
                                                                 <label>
-                                                                    <input type="checkbox" name="{{ key }}[]"
-                                                                           class="check-rule-children"
-                                                                           value="{{ rule.name }}"
-                                                                            {{ rules|check_state(key, rule.name) }} />
-                                                                    {{ rule.title }}
+                                                                    <input type="checkbox" name="{{ name }}" class="check-rule-children" value="{{ v.name }}" {{ rules|check_state(name, v) }}/>
+                                                                    {{ v.title }}
                                                                 </label>
                                                             </div>
                                                         {% endfor %}
                                                     </div>
                                                 </div>
                                             </div>
+                                            {% endif %}
                                         {% endfor %}
                                     </div>
                                 </div>

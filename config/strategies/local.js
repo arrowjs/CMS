@@ -13,6 +13,11 @@ module.exports = function (passport,config,app) {
             app.models.user.find({
                 where: [
                     "(lower(user_login) = ? or lower(user_email) = ?) and user_status='publish'", username.toLowerCase(), username.toLowerCase()
+                ],
+                include : [
+                    {
+                        model : app.models.role
+                    }
                 ]
             }).then(function (user, err) {
                 if (err) {
