@@ -5,6 +5,7 @@ let log = require('arrowjs').logger;
 class Toolbar {
     constructor() {
         this.toolbar = [];
+        this.useDeleteModal = false;
     }
 
     /**
@@ -73,6 +74,7 @@ class Toolbar {
      * Add delete button
      */
     addDeleteButton(permission) {
+        this.useDeleteModal = true;
         let button = '';
 
         if (permission)
@@ -112,7 +114,41 @@ class Toolbar {
      */
     render() {
         let toolbar = this.toolbar.join('');
-        return `<div class="toolbar">${toolbar}</div>`;
+        let content = `<div class="toolbar">${toolbar}</div>`;
+
+        if (this.useDeleteModal)
+            content += `<div class="modal fade" id="confirm-delete-modal" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Confirm Delete</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to permanently delete these items ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn default" data-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-danger" onclick="deleteRecords()">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            function openDeleteConfirmModal() {
+                                var ids = [];
+                                $("input:checkbox[name='ids[]']:checked").each(function () {
+                                    ids.push($(this).val());
+                                });
+
+                                if (ids.length > 0 || $('#edit-form').length > 0) {
+                                    $('#confirm-delete-modal').modal('show');
+                                }
+                            }
+                        </script>`;
+
+        return content;
     }
 
 }
