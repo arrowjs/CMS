@@ -4,11 +4,11 @@
             {{ col.alias }}
         {% else %}
             {% if col.type=='datetime' %}
-                {#{% if col.dateFormat and col.dateFormat == 'withTime' %}#}
-                    {#{{ col.column|get_value(item)|moment('DD-MM-YYYY') }}#}
-                {#{% else %}#}
-                    {#{{ col.column|get_value(item)|date_time }}#}
-                {#{% endif %}#}
+                {% if col.dateFormat and col.dateFormat == 'withTime' %}
+                    {{ col.column|get_value(item)|moment }}
+                {% else %}
+                    {{ col.column|get_value(item)|moment }}
+                {% endif %}
             {% elif col.type=='price' %}
                 {{ col.column|get_value(item)|vnd }}
             {% elif col.type=='size' %}
