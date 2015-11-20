@@ -3,7 +3,7 @@
 let _ = require('lodash');
 let logger = require('arrowjs').logger;
 
-function createFilter(req, res, columns, options) {
+exports.createFilter = function(req, res, columns, options) {
     let customCondition;
     let limit;
     let current_column = req.params.sort || columns[0].column || "id";
@@ -79,7 +79,7 @@ function createFilter(req, res, columns, options) {
     };
 }
 
-function parseCondition(column_name, value, col) {
+exports.parseCondition = function(column_name, value, col) {
     if (col.filter.filter_key) {
         column_name = col.filter.filter_key;
     }
@@ -114,7 +114,7 @@ function parseCondition(column_name, value, col) {
     }
 }
 
-function parseValue(value, col) {
+exports.parseValue = function (value, col) {
 
     if (col.filter.data_type == 'array') {
         return '{' + value + '}';
@@ -154,5 +154,3 @@ function parseValue(value, col) {
         return value.replace(/[><]/g, "");
     }
 }
-
-module.exports = createFilter;
