@@ -9,8 +9,7 @@ module.exports = function (component, app) {
         "/": {
             get: {
                 handler: comp.view,
-                authenticate: true,
-                permissions : 'view'
+                authenticate: true
             }
         }
     }

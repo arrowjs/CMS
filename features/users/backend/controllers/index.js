@@ -1,17 +1,16 @@
 'use strict';
 
-let _ = require('lodash');
+let _ = Arrow._;
 let fs = require('fs');
 
 let path = require('path');
 let slug = require('slug');
-let promise = require('bluebird');
+let promise = Arrow.Promise;
 let writeFileAsync = promise.promisify(require('fs').writeFile);
 let readdirAsync = promise.promisify(require('fs').readdir);
 let formidable = require('formidable');
 promise.promisifyAll(formidable);
 
-let createFilter = require(__base + '/library/js_utilities/createFilter');
 let _log = require('arrowjs').logger;
 //get function to check permissions of modules
 let isAllow = ArrowHelper.isAllow;
@@ -111,7 +110,7 @@ module.exports = function (controller, component, app) {
         toolbar = toolbar.render();
 
         // Config columns
-        let filter = createFilter(req, res, tableStructure, {
+        let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: '/admin/users/page/$page/sort',
             itemOfPage: 10
         });

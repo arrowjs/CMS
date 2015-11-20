@@ -18,6 +18,11 @@ module.exports = function (component,app) {
             get : {
                 handler : comp.logout
             }
+        },
+        "/not-permission" : {
+            get : {
+                handler : comp.notPermission
+            }
         }
     }
 }

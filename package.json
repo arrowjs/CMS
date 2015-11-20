@@ -11,15 +11,11 @@
   "dependencies": {
     "adm-zip": "^0.4.7",
     "arrowjs": "*",
-    "bluebird": "^2.10.1",
-    "callsite": "^1.0.0",
-    "connect-redis": "^2.5.1",
     "express": "*",
     "formidable": "~1.0.16",
     "glob": "^6.0.1",
     "image-size": "~0.3.5",
     "imagemagick": "~0.1.3",
-    "lodash": "^3.9.3",
     "moment": "^2.9.0",
     "morgan": "~1.6.1",
     "nodemailer": "^1.5.0",
@@ -27,7 +23,6 @@
     "passport-facebook": "^2.0.0",
     "passport-google-oauth": "^0.2.0",
     "passport-local": "~1.0.0",
-    "redis": "^2.0.1",
     "slug": "^0.9.1"
   },
   "devDependencies": {}

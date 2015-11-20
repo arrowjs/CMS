@@ -1,12 +1,12 @@
 'use strict';
 
-let _ = require("lodash");
-let Promise = require("bluebird");
+let _ = Arrow._;
+let Promise = Arrow.Promise;
 
 let fs = require("fs");
 let readFileAsync = Promise.promisify(fs.readFile);
 
-let log = require('arrowjs').logger;
+let log = Arrow.log;
 
 module.exports = function (controller, component, application) {
 

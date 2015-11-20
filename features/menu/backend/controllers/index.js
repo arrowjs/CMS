@@ -1,8 +1,7 @@
 'use strict';
 
-let _ = require('lodash');
-let promise = require('bluebird');
-let createFilter = require(__base + '/library/js_utilities/createFilter');
+let _ = Arrow._;
+let promise = Arrow.Promise;
 
 module.exports = function (controller, component, application) {
     controller.index = function (req, res) {
@@ -33,7 +32,7 @@ module.exports = function (controller, component, application) {
         ];
 
         // Config columns
-        let filter = createFilter(req, res, table, {
+        let filter = ArrowHelper.createFilter(req, res, table, {
             rootLink: '/admin/menu/sort'
         });
 

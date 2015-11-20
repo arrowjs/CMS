@@ -36,11 +36,12 @@ module.exports = function (passport, application) {
             }
         },
         handlePermission: function (req, res, next) {
+            console.log(req.hasPermission);
             if (req.hasPermission) {
                 return next()
             } else {
                 req.flash.error("You do not have permission to access");
-                res.redirect('/admin');
+                res.redirect('/admin/not-permission');
             }
         },
         local_login: {
