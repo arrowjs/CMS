@@ -6,8 +6,9 @@ let promise = require('bluebird');
 //global function
 let createFilter = require(__base+'/library/js_utilities/helper/createFilter');
 let _log = require('arrowjs').logger;
-let route = 'blog';
 
+//get function to check permissions of modules
+let isAllow = ArrowHelper.isAllow;
 
 module.exports = function (controller,component,app) {
     let redis = app.redisClient;
@@ -55,12 +56,12 @@ module.exports = function (controller,component,app) {
 
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton('/admin/categories');
-        toolbar.addSearchButton('category_index');
-        toolbar.addDeleteButton('category_delete');
+        toolbar.addSearchButton(isAllow(req, 'category_index'));
+        toolbar.addDeleteButton(isAllow(req, 'category_delete'));
         toolbar = toolbar.render();
 
         // Config columns
-        let filter = createFilter(req, res, tableStructure, {
+        let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: '/admin/categories/page/$page/sort',
             limit: itemOfPage
         });
