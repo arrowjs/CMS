@@ -1,0 +1,65 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row toolbar">
+                <div class="col-md-12">
+                    {{ toolbar | safe }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12" style="margin-bottom: 10px">
+                    <form method="post" action="/admin/categories/create">
+                        <div class="col-md-6 col-sm-6">
+                            <div class="row">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-plus"></i></span>
+                                    <input type="text" class="form-control" name="name">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary btn-flat"
+                                                type="submit">{{ __('m_category_backend_views_category_create') }}</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="box box-solid box-primary">
+                <div class="box-body table-responsive no-padding">
+                    {% include 'basic_table/table.twig' %}
+                    <div class="text-center">
+                        {#{{ paginateLinks(totalPage, currentPage, '/admin/categories/page/{page}/sort/'+currentColumn+'/'+currentOrder) | safe }}#}
+                        {{ paginateLinks(totalPage, currentPage, '/admin/categories/page/{page}') | safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    <script>
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+
+            if (ids.length > 0) {
+                $.ajax({
+                    url: '/admin/categories',
+                    type: 'DELETE',
+                    data: {
+                        ids: ids.join()
+                    }
+                }).done(function () {
+                    window.location.href = "/admin/categories";
+                });
+            }
+        }
+    </script>
+{% endblock %}
