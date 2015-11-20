@@ -2,7 +2,7 @@
 
 let arrowFunction = require('arrowjs').globalFunction;
 let path = require('path');
-let _ = Arrow._;
+let _ = require('lodash');
 
 module.exports = function (controller, component, application) {
     controller.theme_index = function (req, res) {

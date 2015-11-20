@@ -28,12 +28,12 @@ module.exports = {
         icon: "fa fa-cog",
         menus: [
             {
-                rule: 'update_info',
+                permission: 'update_info',
                 title: __('m_configurations_backend_module_backend_menu_update_info'),
                 link: '/site-info'
             },
             {
-                rule: 'change_themes',
+                permission: 'change_themes',
                 title: __('m_configurations_backend_module_backend_menu_change_themes'),
                 link: '/themes'
             }

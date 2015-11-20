@@ -11,6 +11,9 @@
 exports.isAllow = function (req,permission) {
     let permissions = req.session.permissions;
     let featureName =  req.arrowUrl.split('.').pop();
+    if(!this.arrowSettings.role){
+        return true;
+    }
     if (typeof permissions === 'object'){
         if (permissions.hasOwnProperty('feature')){
             for (let k in permissions.feature){

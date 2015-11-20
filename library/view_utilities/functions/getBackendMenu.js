@@ -14,8 +14,9 @@ module.exports = {
      * @param sidebarName - Name of sidebar
      * @param callback - Content of sidebar
      */
-    handler: function (current_url, permissions, callback) {
+    handler: function (current_url, callback) {
         let app = this;
+        let permissions = app.permissions || {};
         let feature_data = app.featureManager.getAttribute();
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus")).then(function (data) {
             let menus;
@@ -80,26 +81,32 @@ module.exports = {
 
                     if (subMenu.menus.length > 1) {
                         html = html.replace('{{link}}', '#');
-                        html += '<i class="fa fa-angle-right pull-right"></i></a>';
+                        html += '<i class="fa fa-angle-left pull-right"></i></a>';
                         html += '<ul class="treeview-menu">';
 
                         for (let z in subMenu.menus) {
                             let mn = subMenu.menus[z];
-                            //if (permissions.feature[moduleName].indexOf(mn.rule) > -1) {
-                            //TODO :need check role here
-                            menu_class = active_menu(current_url, mn.link.replace('/', ''), "active", 3);
-                            html += `<li class="treeview ${menu_class}">
-                            <a href="${'/admin/' + (moduleName + mn.link)}">
-                            <i class="fa fa-circle-o"></i> <span> ${mn.title}</span>
-                            </a>`;
-                            //}
+                            let flag = false;
+                            //console.log('dsds : ',JSON.stringify(permissions));
+                            if (permissions.hasOwnProperty('feature'))
+                            for(let t of permissions.feature[moduleName]){
+                                if(t.name === mn.permission)
+                                    flag = true;
+                            }
+                            if (flag || !app.arrowSettings.role) {
+                                menu_class = active_menu(current_url, mn.link.replace('/', ''), "active", 3);
+                                html += `<li class="treeview ${menu_class}">
+                                <a href="${'/'+app.getConfig("admin_prefix")+'/' + (moduleName + mn.link)}">
+                                <i class="fa fa-circle-o"></i> <span> ${mn.title}</span>
+                                </a>`;
+                            }
                         }
                         html += '</ul></li>';
                     } else {
-                        if (group.title == 'Systems') {
-                            html = html.replace('{{link}}', '/admin/' + moduleName);
+                        if (typeof subMenu.menus.length == 'number') {
+                            html = html.replace('{{link}}', '/'+app.getConfig("admin_prefix")+'/'+ subMenu.menus[0].link);
                         } else {
-                            html = html.replace('{{link}}', '/admin' + subMenu.menus[0].link);
+                            html = html.replace('{{link}}', '/'+app.getConfig("admin_prefix")+'/'+ moduleName);
                         }
                         html += '</a></li>';
                     }

@@ -31,12 +31,12 @@ module.exports = {
             icon: "fa fa-group",
             menus: [
                 {
-                    rule: 'view',
+                    permission: 'view',
                     title: __('m_roles_backend_module_backend_menu_menus_index'),
                     link: '/'
                 },
                 {
-                    rule: 'create',
+                    permission: 'create',
                     title: __('m_roles_backend_module_backend_menu_menus_create'),
                     link: '/create'
                 }
