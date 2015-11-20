@@ -1,7 +1,7 @@
 'use strict';
 
-let _ = Arrow._;
-let promise = Arrow.Promise;
+let _ = require('lodash');
+let promise = require('bluebird');
 
 module.exports = function (controller, component, application) {
     controller.index = function (req, res) {

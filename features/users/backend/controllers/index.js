@@ -1,11 +1,11 @@
 'use strict';
 
-let _ = Arrow._;
+let _ = require('lodash');
 let fs = require('fs');
 
 let path = require('path');
 let slug = require('slug');
-let promise = Arrow.Promise;
+let promise = require('bluebird');
 let writeFileAsync = promise.promisify(require('fs').writeFile);
 let readdirAsync = promise.promisify(require('fs').readdir);
 let formidable = require('formidable');

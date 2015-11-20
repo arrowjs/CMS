@@ -1,5 +1,5 @@
 "use strict";
-let _ = Arrow._;
+let _ = require('lodash');
 
 module.exports = function (controller, component, application) {
     controller.index = function (req, res) {
