@@ -13,6 +13,6 @@ module.exports = function (cont,comp,app) {
         res.redirect('/admin/login');
     };
     cont.notPermission = function (req,res) {
-        res.backend.render('nopermit');
+        res.backend.render('403');
     }
 }
