@@ -6,8 +6,8 @@ let fs = require('fs'),
     formidable = require('formidable'),
     path = require('path');
 
-let rootPath = '/upload';
-let standardPath = __base ;
+let rootPath = '/fileman/uploads';
+let standardPath = __base + 'upload';
 
 function checkFileExist(fileName, index, extension) {
     return new Promise(function (fulfill, reject) {
@@ -237,7 +237,7 @@ function getDirectories(srcpath, results) {
     let totalSubFolders = 0;
     let totalSubFiles = 0;
     let dirs = files_and_dirs.filter(function (file) {
-        if (fs.statSync(path.join('public/' + srcpath, file)).isDirectory()) {
+        if (fs.statSync(path.join('upload' + srcpath, file)).isDirectory()) {
             totalSubFolders++;
             return true;
         } else {

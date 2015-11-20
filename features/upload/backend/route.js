@@ -4,77 +4,77 @@ module.exports = function (component,application) {
     return {
         "/uploads/dirtree" : {
             post : {
-                handler :component.controllers.dirtree
+                handler :component.controllers.backend.dirtree
             }
         },
         "/uploads/createdir" : {
             post : {
-                handler :component.controllers.createdir
+                handler :component.controllers.backend.createdir
             }
         },
         "/uploads/deletedir" : {
             post : {
-                handler :component.controllers.deletedir
+                handler :component.controllers.backend.deletedir
             }
         },
         "/uploads/movedir" : {
             post : {
-                handler :component.controllers.movedir
+                handler :component.controllers.backend.movedir
             }
         },
         "/uploads/copydir" : {
             post : {
-                handler :component.controllers.copydir
+                handler :component.controllers.backend.copydir
             }
         },
         "/uploads/renamedir" : {
             post : {
-                handler :component.controllers.renamedir
+                handler :component.controllers.backend.renamedir
             }
         },
         "/uploads/fileslist" : {
             post : {
-                handler :component.controllers.fileslist
+                handler :component.controllers.backend.fileslist
             }
         },
         "/uploads/upload" : {
             post : {
-                handler :component.controllers.upload
+                handler :component.controllers.backend.upload
             }
         },
         "/uploads/download" : {
             post : {
-                handler :component.controllers.download
+                handler :component.controllers.backend.download
             }
         },
         "/uploads/downloaddir" : {
             post : {
-                handler :component.controllers.downloaddir
+                handler :component.controllers.backend.downloaddir
             }
         },
         "/uploads/deletefile" : {
             post : {
-                handler :component.controllers.deletefile
+                handler :component.controllers.backend.deletefile
             }
         },
         "/uploads/movefile" : {
             post : {
-                handler :component.controllers.movefile
+                handler :component.controllers.backend.movefile
             }
         },
         "/uploads/copyfile" : {
             post : {
-                handler :component.controllers.copyfile
+                handler :component.controllers.backend.copyfile
             }
         },
         "/uploads/renamefile" : {
             post : {
-                handler :component.controllers.renamefile
+                handler :component.controllers.backend.renamefile
             }
         },
         "/uploads/thumb" : {
             post : {
-                handler :component.controllers.thumb
+                handler :component.controllers.backend.thumb
             }
         }
 
