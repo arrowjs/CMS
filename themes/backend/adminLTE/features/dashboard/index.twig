@@ -77,10 +77,10 @@
                             <!-- /.item -->
                             <li class="item">
                                 <div class="product-img">
-                                    <img src="{{ '/img/noImage.png' if not post.image else image }}" alt="Product Image">
+                                    <img src="{{ '/img/noImage.png' if not post.image else post.image }}" alt="Product Image">
                                 </div>
                                 <div class="product-info">
-                                    <a href="#" class="product-title">{{ post.title | title(30,'...') | safe }} <span class="label label-danger pull-right"></span></a>
+                                    <a href="/admin/blog/posts/{{ post.id }}" class="product-title">{{ post.title | title(30,'...') | safe }} <span class="label label-danger pull-right"></span></a>
                             <span class="product-description">
                               {{ post.intro_text | title(60,'...') | safe }}
                             </span>
