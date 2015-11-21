@@ -162,23 +162,17 @@ module.exports = function (controller, component, app) {
 
 
     controller.postView = function (req, res) {
-        res.locals.user = req.user;
-
-        // Add button
         let back_link = '/admin/blog/posts/page/1';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_post_list']) {
             back_link = '/admin' + search_params[route + '_post_list'];
         }
-
+        // Add button
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
         //todo: check permission
         toolbar.addSaveButton(isAllow(req,'post_create'));
         toolbar.addDeleteButton(isAllow(req,'post_delete'));
-
-
-
         promise.all([
             app.models.category.findAll({
                 order: "id asc"
@@ -194,15 +188,10 @@ module.exports = function (controller, component, app) {
                 }
             })
         ]).then(function (results) {
-
-            //res.locals.viewButton = 'admin/blog/posts/' + results[2].id;
-
             let data = results[2];
             data.full_text = data.full_text.replace(/&lt/g, "&amp;lt");
-            data.full_text = data.full_text.replace(/&gt/g, "&amp;gt");
-
-            toolbar.addGeneralButton(true,'View','/admin/blog/posts/preview/' + results[2].id );
-
+            //add button for preview
+            toolbar.addGeneralButton(isAllow(req,'post_index'),'Preview','/admin/blog/posts/preview/' + results[2].id,'<i class="fa fa-eye"></i>','','btn btn-info','','_blank' );
             res.backend.render(edit_view, {
                 title: __('m_blog_backend_post_render_update'),
                 categories: results[0],

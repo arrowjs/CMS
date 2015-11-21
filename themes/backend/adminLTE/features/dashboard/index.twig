@@ -80,9 +80,9 @@
                                     <img src="{{ '/img/noImage.png' if not post.image else image }}" alt="Product Image">
                                 </div>
                                 <div class="product-info">
-                                    <a href="#" class="product-title">{{ post.title }} <span class="label label-danger pull-right">$350</span></a>
+                                    <a href="#" class="product-title">{{ post.title | title(30,'...') | safe }} <span class="label label-danger pull-right"></span></a>
                             <span class="product-description">
-                              {{ post.intro_text }}
+                              {{ post.intro_text | title(60,'...') | safe }}
                             </span>
                                 </div>
                             </li>
@@ -123,7 +123,7 @@
                                     {% set url_image = user_image_url %}
                                 {% endif %}
                                 <img src="{{ '/img/users/admin.png' if not newUser.user_image_url else newUser.user_image_url }}" alt="User Image">
-                                <a class="users-list-name" href="#">{{ newUser.display_name }}</a>
+                                <a class="users-list-name" href="/admin/users/{{ newUser.id }}">{{ newUser.display_name | title(15,'..') }}</a>
                                 <span class="users-list-date">{{ newUser.user_registered | moment }}</span>
                             </li>
                             {% endfor %}
