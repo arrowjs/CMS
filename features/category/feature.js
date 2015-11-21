@@ -26,13 +26,11 @@ module.exports = {
     backend_menu: {
         title: __('m_category_backend_module_title'),
         icon: 'fa fa-tags',
-        menus: [
-            {
-                title: 'Category Manager',
-                permission : 'category_index',
-                link: 'categories'
-            }
-        ]
+        menus: {
+            permission: 'index',
+            title: 'Widget Manager',
+            link: 'categories'
+        }
     }
 
 };

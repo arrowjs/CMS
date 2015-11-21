@@ -1,5 +1,11 @@
 {% extends 'layout.twig' %}
 
+{% block cssExtends %}
+    <link rel="stylesheet" href="/backend/adminLTE/assets/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css"/>
+{% endblock %}
+
+
+
 {% block content %}
     <div class="row">
         <div class="col-md-12">
@@ -29,12 +35,11 @@
             </div>
 
             <div class="box box-solid box-primary">
-                <div class="box-body table-responsive no-padding">
+                <div class="box-body table-responsive">
                     {% include 'basic_table/table.twig' %}
-                    <div class="text-center">
-                        {#{{ paginateLinks(totalPage, currentPage, '/admin/categories/page/{page}/sort/'+currentColumn+'/'+currentOrder) | safe }}#}
-                        {{ paginateLinks(totalPage, currentPage, '/admin/categories/page/{page}') | safe }}
-                    </div>
+
+                    {#{{ paginateLinks(totalPage, currentPage, '/admin/categories/page/{page}/sort/'+currentColumn+'/'+currentOrder) | safe }}#}
+                    {{ paginateLinks(totalPage, currentPage, '/admin/categories/page/{page}') | safe }}
                 </div>
             </div>
         </div>
@@ -42,6 +47,9 @@
 {% endblock %}
 
 {% block jsExtends %}
+
+    <script src = "/backend/adminLTE/assets/plugins/bootstrap-editable/bootstrap-editable/js/bootstrap-editable.js"></script>
+
     <script>
         function deleteRecords() {
             var ids = [];

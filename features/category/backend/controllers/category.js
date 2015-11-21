@@ -7,13 +7,11 @@ let promise = require('bluebird');
 let createFilter = require(__base+'/library/js_utilities/helper/createFilter');
 let _log = require('arrowjs').logger;
 
-//get function to check permissions of modules
-let isAllow = ArrowHelper.isAllow;
-
 module.exports = function (controller,component,app) {
     let redis = app.redisClient;
     let adminPrefix = app.getConfig('admin_prefix') || 'admin';
     let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
+    let isAllow = ArrowHelper.isAllow;
     //let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let itemOfPage = 5;
 
@@ -56,8 +54,9 @@ module.exports = function (controller,component,app) {
 
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton('/admin/categories');
-        toolbar.addSearchButton(isAllow(req, 'category_index'));
-        toolbar.addDeleteButton(isAllow(req, 'category_delete'));
+        toolbar.addSearchButton('true');
+        //toolbar.addDeleteButton(isAllow(req, 'category_delete'));
+        toolbar.addDeleteButton('true');
         toolbar = toolbar.render();
 
         // Config columns
@@ -117,31 +116,33 @@ module.exports = function (controller,component,app) {
         let data = req.body;
 
         if (data.name == 'name') {
-            data.name = data.value;
+            data.name = data.value.trim();
         }
 
         if (data.name == 'alias') {
             delete data['name'];
-            data.alias = slug(data.value).toLowerCase();
-
-            app.models.category.find({
-                where: {
-                    id: req.params.catId
-                }
-            }).then(function () {
-                let response = {
-                    type: 'success',
-                    message: __('m_category_backend_category_update_success')
-                };
-                res.json(response);
-            }).catch(function (err) {
-                let response = {
-                    type: 'error',
-                    message: err.message
-                };
-                res.json(response);
-            })
+            data.alias = slug(data.value.trim()).toLowerCase();
         }
+
+        app.models.category.find({
+            where: {
+                id: req.params.catId
+            }
+        }).then(function (cat) {
+            return cat.updateAttributes(data);
+        }).then(function () {
+            let response = {
+                type: 'success',
+                message: __('m_category_backend_category_update_success')
+            };
+            res.json(response);
+        }).catch(function (err) {
+            let response = {
+                type: 'error',
+                message: err.message
+            };
+            res.json(response);
+        })
     };
 
     controller.category_delete = function (req, res, next) {
