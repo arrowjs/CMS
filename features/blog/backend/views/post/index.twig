@@ -4,9 +4,9 @@
         <div class="col-md-12">
             {{ toolbar | safe }}
             <div class="box box-solid box-primary">
-                <div class="box-body table-responsive no-padding">
+                <div class="box-body table-responsive">
                     {% include 'basic_table/table.twig' %}
-                    {#// {{ totalPage|pagination(currentPage,'/admin/blog/posts/page/{page}/sort/'+currentColumn+'/'+currentOrder)|safe }}#}
+                    {{ paginateLinks(totalPage, currentPage,'/admin/blog/posts/page/{page}/sort/'+currentColumn+'/'+currentOrder)|safe }}
                 </div>
             </div>
         </div>
