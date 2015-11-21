@@ -33,7 +33,7 @@ module.exports = {
 
                 // System group
                 menus.systems = {
-                    title: 'Systems',
+                    title: 'MAIN NAVIGATION',
                     sort: 2,
                     modules: {}
                 };
@@ -65,6 +65,7 @@ module.exports = {
 
                 if (!group.title) continue;
 
+                if (JSON.stringify(group.modules) === '{}') continue;
                 html += `<li class="header">${group.title}</li>`;
 
                 let sortModules = menus.sorting[sortGroups[i].menu];
