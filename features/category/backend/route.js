@@ -25,7 +25,7 @@ module.exports = function (component, application) {
         		permissions: "category_index"
         	}
         },
-        "/categories/page/:page/sort/(:order)?": {
+        "/categories/page/:page/sort/:sort/(:order)?": {
         	get: {
         		handler: comp.category_list,
         		authenticate: true,

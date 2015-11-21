@@ -38,8 +38,7 @@
                 <div class="box-body table-responsive">
                     {% include 'basic_table/table.twig' %}
 
-                    {#{{ paginateLinks(totalPage, currentPage, '/admin/categories/page/{page}/sort/'+currentColumn+'/'+currentOrder) | safe }}#}
-                    {{ paginateLinks(totalPage, currentPage, '/admin/categories/page/{page}') | safe }}
+                    {{ paginateLinks(totalPage, currentPage, '/admin/categories/page/{page}/sort/'+currentColumn+'/'+currentOrder) | safe }}
                 </div>
             </div>
         </div>
