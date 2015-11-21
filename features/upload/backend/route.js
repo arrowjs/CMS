@@ -73,7 +73,7 @@ module.exports = function (component,application) {
             }
         },
         "/uploads/thumb" : {
-            post : {
+            get : {
                 handler :component.controllers.backend.thumb
             }
         }
