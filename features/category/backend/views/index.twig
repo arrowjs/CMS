@@ -69,6 +69,7 @@
             }
         }
         $('.inline-edit').editable({
+            type: 'text',
             success: function (response, newValue) {
                 if (response != null) {
                     var type, icon, title;

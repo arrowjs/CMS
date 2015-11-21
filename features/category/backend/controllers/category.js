@@ -12,8 +12,7 @@ module.exports = function (controller,component,app) {
     let adminPrefix = app.getConfig('admin_prefix') || 'admin';
     let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
     let isAllow = ArrowHelper.isAllow;
-    //let itemOfPage = app.getConfig('pagination').numberItem || 10;
-    let itemOfPage = 2;
+    let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
     controller.category_list = function (req, res) {
         let page = req.params.page || 1;
@@ -56,7 +55,6 @@ module.exports = function (controller,component,app) {
         toolbar.addRefreshButton('/admin/categories');
         toolbar.addSearchButton('true');
         toolbar.addDeleteButton(isAllow(req, 'category_delete'));
-        //toolbar.addDeleteButton('true');
         toolbar = toolbar.render();
 
         // Config columns
