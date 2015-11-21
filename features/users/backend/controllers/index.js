@@ -169,7 +169,7 @@ module.exports = function (controller, component, app) {
             res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_update'),
                 roles: roles,
-                item: req.user,
+                item: req._user,
                 id: req.params.uid,
                 toolbar : toolbar //pass params to view button
             });
@@ -243,7 +243,6 @@ module.exports = function (controller, component, app) {
 
     controller.create = function (req, res) {
         // Add button
-        res.locals.user = req.user; // Add locals user for view or get infomation of user
         let back_link = '/admin/users';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_index_list']) {
@@ -276,7 +275,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.save = function (req, res, next) {
-        res.locals.user = req.user;// Add locals user for view or get infomation of user
         let back_link = '/admin/users';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_index_list']) {
@@ -334,18 +332,13 @@ module.exports = function (controller, component, app) {
     };
 
     controller.delete = function (req, res) {
-        // Check delete current user
-        let ids = req.body.ids;
-        let id = req.user.id;
-        let index = ids.indexOf(id);
+
 
         // Delete user
         if (index == -1) {
             app.models.user.destroy({
                 where: {
-                    id: {
-                        "in": ids.split(',')
-                    }
+                    id: req.params.uid
                 }
             }).then(function () {
                 req.flash.success(__('m_users_backend_controllers_index_delete_flash_success'));
@@ -472,7 +465,7 @@ module.exports = function (controller, component, app) {
             },
             raw: true
         }).then(function (user) {
-            req.user = user;
+            req._user = user;
             next();
         }).catch(function (err) {
             console.log('ERROR : ' + err);
@@ -480,7 +473,7 @@ module.exports = function (controller, component, app) {
     };
 
     controller.hasAuthorization = function (req, res, next) {
-        if (req.user.id !== req.user.id) {
+        if (req._user.id !== req.user.id) {
             return false;
         }
         return true;

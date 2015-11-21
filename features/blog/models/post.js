@@ -39,6 +39,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         image: {
             type: DataTypes.STRING(255),
+            defaultValue : '/img/noImage.png',
             len: {
                 args: [0, 255],
                 msg: 'Image is too long'

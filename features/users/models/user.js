@@ -54,11 +54,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         user_registered: {
             type : DataTypes.DATE,
-            validate : {
-                isDate : {
-                    msg : 'Please input datetime value'
-                }
-            }
+            defaultValue:sequelize.fn('now')
         },
         user_activation_key: {
             type : DataTypes.STRING(60),
@@ -98,7 +94,8 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         user_image_url: {
-            type : DataTypes.TEXT
+            type : DataTypes.TEXT,
+            defaultValue : '/img/noImage.png'
         },
         salt: {
             type : DataTypes.STRING(255),

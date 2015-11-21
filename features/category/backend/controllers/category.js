@@ -73,7 +73,7 @@ module.exports = function (controller,component,app) {
         }).then(function (results) {
             let totalPage = Math.ceil(results.count / itemOfPage);
 
-            res.backend.render('category/index',  {
+            res.backend.render('index',  {
                 title: __('m_category_backend_category_render_title'),
                 totalPage: totalPage,
                 currentPage: page,
@@ -86,7 +86,7 @@ module.exports = function (controller,component,app) {
             req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
 
             // Render view if has error
-            res.backend.render('category/index', {
+            res.backend.render('index', {
                 title: __('m_category_backend_category_render_title'),
                 totalPage: 1,
                 items: null,

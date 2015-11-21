@@ -14,11 +14,13 @@ module.exports = function (cont, comp, app) {
                 limit : 8,
                 order : 'id DESC'
             }),
-            app.models.post.count({
+            app.models.post.findAndCountAll({
                 where : {
                     published : 1,
                     type : 'post'
-                }
+                },
+                limit : 4,
+                order : 'id DESC'
             }),
             app.models.post.count({
                 where : {
@@ -28,13 +30,13 @@ module.exports = function (cont, comp, app) {
             }),
             app.models.category.count()
         ]).then(function (results) {
-            console.log(results[0].rows);
             res.backend.render('index', {
                 pageStatistic : results[2],
-                postStatistic : results[1],
+                postStatistic : results[1].count,
                 userStatistic : results[0].count,
                 categoryStatistic : results[3],
-                newestUsers : results[0].rows
+                newestUsers : results[0].rows,
+                newestPosts : results[1].rows
 
             });
         }).catch(function (err) {
