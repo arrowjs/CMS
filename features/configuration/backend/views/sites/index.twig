@@ -38,8 +38,8 @@
                                         <div class="form-group">
                                             <label>{{ __('m_configurations_backend_index_label_language_code') }}</label>
                                             <select name="language" id="language" class="form-control">
-                                                {% for key, value in lang %}
-                                                    {% if key == config.app.language %}
+                                                {% for key in lang %}
+                                                    {% if key == config.language %}
                                                         <option value="{{ key }}" selected>{{ key }}</option>
                                                     {% else %}
                                                         <option value="{{ key }}">{{ key }}</option>
