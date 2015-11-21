@@ -48,7 +48,5 @@ module.exports = function (sequelize, DataTypes) {
             }
         }
     });
-
-    Category.sync();
     return Category
 };

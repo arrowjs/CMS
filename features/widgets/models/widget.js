@@ -48,7 +48,5 @@ module.exports = function (sequelize, DataTypes) {
         updatedAt: "modified_at",
         deletedAt: false
     });
-
-    Widget.sync();
     return Widget
 };

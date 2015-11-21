@@ -130,7 +130,5 @@ module.exports = function (sequelize, DataTypes) {
         //    }
         //}
     });
-
-    Posts.sync();
     return Posts;
 };

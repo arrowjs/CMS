@@ -40,6 +40,5 @@ module.exports = function (sequelize, DataTypes) {
         updatedAt: "modified_at",
         deletedAt: false
     });
-    Menu.sync();
     return Menu;
 };
