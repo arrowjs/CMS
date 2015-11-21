@@ -16,7 +16,7 @@ module.exports = function (controller, component, app) {
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let isAllow = ArrowHelper.isAllow;
 
-    controller.postlist = function (req, res) {
+    controller.postList = function (req, res) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
 
@@ -161,7 +161,7 @@ module.exports = function (controller, component, app) {
     };
 
 
-    controller.postview = function (req, res) {
+    controller.postView = function (req, res) {
         res.locals.user = req.user;
 
         // Add button
@@ -176,7 +176,7 @@ module.exports = function (controller, component, app) {
         //todo: check permission
         toolbar.addSaveButton(isAllow(req,'post_create'));
         toolbar.addDeleteButton(isAllow(req,'post_delete'));
-        toolbar = toolbar.render();
+
 
 
         promise.all([
@@ -194,18 +194,21 @@ module.exports = function (controller, component, app) {
                 }
             })
         ]).then(function (results) {
-            res.locals.viewButton = 'admin/blog/posts/' + results[2].id;
+
+            //res.locals.viewButton = 'admin/blog/posts/' + results[2].id;
 
             let data = results[2];
             data.full_text = data.full_text.replace(/&lt/g, "&amp;lt");
             data.full_text = data.full_text.replace(/&gt/g, "&amp;gt");
+
+            toolbar.addGeneralButton(true,'View','/admin/blog/posts/preview/' + results[2].id );
 
             res.backend.render(edit_view, {
                 title: __('m_blog_backend_post_render_update'),
                 categories: results[0],
                 users: results[1],
                 post: data,
-                toolbar: toolbar
+                toolbar: toolbar.render()
             });
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
@@ -214,7 +217,7 @@ module.exports = function (controller, component, app) {
     };
 
 
-    controller.postdelete = function (req, res) {
+    controller.postDelete = function (req, res) {
 
         res.locals.user = req.user;
         app.models.post.findAll({
@@ -260,7 +263,7 @@ module.exports = function (controller, component, app) {
     };
 
 
-    controller.postupdate = function (req, res, next) {
+    controller.postUpdate = function (req, res, next) {
 
         res.locals.user = req.user;
 
@@ -337,8 +340,7 @@ module.exports = function (controller, component, app) {
     };
 
 
-    controller.postcreate = function (req, res) {
-        res.locals.user = req.user;
+    controller.postCreate = function (req, res) {
 
         // Add button
         let back_link = '/admin/blog/posts/page/1';
@@ -350,6 +352,7 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
         //todo: check permission
+
         toolbar.addSaveButton(isAllow(req,'post_create'));
         toolbar = toolbar.render();
 
@@ -361,6 +364,7 @@ module.exports = function (controller, component, app) {
                 order: "id asc"
             })
         ]).then(function (results) {
+
             res.backend.render(edit_view, {
                 title: __('m_blog_backend_post_render_create'),
                 categories: results[0],
@@ -368,17 +372,17 @@ module.exports = function (controller, component, app) {
                 toolbar: toolbar
             });
         }).catch(function (error) {
+            console.log(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.redirect(back_link);
         });
     };
 
-    controller.postsave = function (req, res) {
+    controller.postSave = function (req, res) {
 
-        res.locals.user = req.user;
-        //console.log(req.user);
         let data = req.body;
         data.created_by = req.user.id;
+        console.log(req.user.id);
         if (data.alias == null || data.alias == '')
             data.alias = slug(data.title).toLowerCase();
         data.type = 'post';
@@ -388,6 +392,7 @@ module.exports = function (controller, component, app) {
         let post_id = 0;
 
         app.models.post.create(data).then(function (post) {
+            console.log(post);
             post_id = post.id;
             let tag = post.categories;
 
@@ -397,12 +402,15 @@ module.exports = function (controller, component, app) {
                 tag.pop(tag.length - 1);
 
                 return promise.map(tag, function (id) {
+
                     return app.models.category.findById(id).then(function (tag) {
                         let count = +tag.count + 1;
                         return tag.updateAttributes({
                             count: count
                         })
                     });
+                }).catch(function(err){
+                    console.log(err);
                 });
             }
         }).then(function () {
@@ -418,7 +426,7 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.postread = function (req, res, next, id) {
+    controller.postRead = function (req, res, next, id) {
 
         res.locals.user = req.user;
         app.models.post.findById(id).then(function (post) {
@@ -427,10 +435,33 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    //controller.hasAuthorization = function (req, res, next) {
-    //    console.log("====hasAuthorization====");
-    //    res.locals.user = req.user;
-    //    return next((req.post.created_by !== req.user.id));
-    //}
+    controller.hasAuthorization = function (req, res, next) {
+        res.locals.user = req.user;
+        return next((req.post.created_by !== req.user.id));
+    };
+
+
+    controller.postPreView = function (req, res) {
+
+        let postId = req.params.postId;
+
+        component.models.post.find({
+            where: {
+                id: postId,
+                type: 'post'
+            },
+            raw: true
+        }).then(function (post) {
+            if (post) {
+                // Render view
+                res.frontend.render('post_detail', {
+                    post: post
+                });
+            } else {
+                // Redirect to 404 if post not exist
+                res.frontend.render('_404');
+            }
+        });
+    };
 
 };

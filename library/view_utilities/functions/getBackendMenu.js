@@ -16,8 +16,7 @@ module.exports = {
      */
     handler: function (current_url,currPermission, callback) {
         let app = this;
-        let permissions = {};
-        permissions =  currPermission || app.permissions;
+        let permissions =  currPermission || app.permissions;
         let feature_data = app.featureManager.getAttribute();
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus")).then(function (data) {
             let menus;

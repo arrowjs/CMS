@@ -114,8 +114,8 @@ module.exports = function (controller, component, app) {
 
         // Config columns
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/users/page/$page/sort',
-            itemOfPage: itemOfPage
+            rootLink: '/admin/users/$page',
+            limit: itemOfPage
         });
 
         // List users

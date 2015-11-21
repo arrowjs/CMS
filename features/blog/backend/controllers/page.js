@@ -8,14 +8,16 @@ let route = 'blog';
 
 module.exports = function (controller, component, app) {
 
-    controller.pagelist = function (req, res) {
+    let isAllow = ArrowHelper.isAllow;
+
+    controller.pageList = function (req, res) {
 
         res.locals.user = req.user;
 
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addCreateButton(true, '/admin/blog/pages/create');
-        toolbar.addDeleteButton(true);
+        toolbar.addCreateButton(isAllow(req,'page_create'), '/admin/blog/pages/create');
+        toolbar.addDeleteButton(isAllow(req,'page_delete'));
         toolbar = toolbar.render();
 
 
@@ -152,7 +154,7 @@ module.exports = function (controller, component, app) {
 
     };
 
-    controller.pagedelete = function (req, res) {
+    controller.pageDelete = function (req, res) {
 
         res.locals.user = req.user;
         app.models.post.destroy({
@@ -167,7 +169,7 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.pagecreate = function (req, res) {
+    controller.pageCreate = function (req, res) {
 
         res.locals.user = req.user;
         // Add button
@@ -180,7 +182,7 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(true);
+        toolbar.addSaveButton(isAllow(req,'page_create'));
         toolbar = toolbar.render();
 
 
@@ -198,7 +200,7 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.pagesave = function (req, res) {
+    controller.pageSave = function (req, res) {
 
         res.locals.user = req.user;
         // Add button
@@ -211,8 +213,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(true);
-        toolbar.addDeleteButton(true);
+        toolbar.addSaveButton(isAllow(req,'page_create'));
+        toolbar.addDeleteButton(isAllow(req,'page_delete'));
         toolbar = toolbar.render();
 
 
@@ -233,7 +235,7 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.pageview = function (req, res) {
+    controller.pageView = function (req, res) {
 
         res.locals.user = req.user;
         // Add button
@@ -246,8 +248,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(true);
-        toolbar.addDeleteButton(true);
+        toolbar.addSaveButton(isAllow(req,'page_create'));
+        toolbar.addDeleteButton(isAllow(req,'page_delete'));
         toolbar = toolbar.render();
 
 
@@ -291,11 +293,10 @@ module.exports = function (controller, component, app) {
         })
     };
 
-    controller.pageupdate = function (req, res) {
+    controller.pageUpdate = function (req, res) {
 
         res.locals.user = req.user;
 
-        // Add button
         let back_link = '/admin/blog/pages/page/1';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_page_list']) {
@@ -305,8 +306,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(true);
-        toolbar.addDeleteButton(true);
+        toolbar.addSaveButton(isAllow(req,'page_create'));
+        toolbar.addDeleteButton(isAllow(req,'page_delete'));
         toolbar = toolbar.render();
 
 

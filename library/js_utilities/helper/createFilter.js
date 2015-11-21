@@ -79,7 +79,7 @@ exports.createFilter = function(req, res, columns, options) {
     };
 }
 
-exports.parseCondition = function(column_name, value, col) {
+function parseCondition(column_name, value, col) {
     if (col.filter.filter_key) {
         column_name = col.filter.filter_key;
     }
@@ -114,7 +114,7 @@ exports.parseCondition = function(column_name, value, col) {
     }
 }
 
-exports.parseValue = function (value, col) {
+function parseValue(value, col) {
 
     if (col.filter.data_type == 'array') {
         return '{' + value + '}';
