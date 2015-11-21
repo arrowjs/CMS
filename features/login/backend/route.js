@@ -21,7 +21,8 @@ module.exports = function (component,app) {
         },
         "/403" : {
             get : {
-                handler : comp.notPermission
+                handler : comp.notPermission,
+                authenticate : true
             }
         }
     }
