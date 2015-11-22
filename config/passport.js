@@ -31,17 +31,17 @@ module.exports = function (passport, application) {
                     _log.error('Error at : checkAuthenticate :', err);
                     res.redirect('/admin/login');
                 });
-                res.locals.user = req.user;
             } else {
                 res.redirect('/admin/login');
             }
         },
         handlePermission: function (req, res, next) {
             if (req.hasPermission) {
+                res.locals.user = req.user;
                 return next()
             } else {
                 req.flash.error("You do not have permission to access");
-                res.redirect('/admin');
+                res.redirect('/admin/403');
             }
         },
         local_login: {

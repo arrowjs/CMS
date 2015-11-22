@@ -39,6 +39,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         image: {
             type: DataTypes.STRING(255),
+            defaultValue : '/img/noImage.png',
             len: {
                 args: [0, 255],
                 msg: 'Image is too long'
@@ -62,6 +63,16 @@ module.exports = function (sequelize, DataTypes) {
                 }
             }
         },
+        categories: {
+            type: DataTypes.TEXT
+        },
+        type: {
+            type: DataTypes.STRING(15),
+            len: {
+                args: [1, 15],
+                msg: 'Invalid data type'
+            }
+        },
         created_at: {
             type: DataTypes.DATE,
             validate: {
@@ -70,6 +81,15 @@ module.exports = function (sequelize, DataTypes) {
                 }
             }
         },
+        created_by: {
+            type: DataTypes.INTEGER,
+            validate: {
+                isInt: {
+                    msg: 'Please input integer value'
+                }
+            },
+            allowNull: false
+        },
         modified_at: {
             type: DataTypes.DATE,
             validate: {
@@ -77,13 +97,38 @@ module.exports = function (sequelize, DataTypes) {
                     msg: 'Please input datetime value'
                 }
             }
+        },
+        modified_by: {
+            type: DataTypes.INTEGER,
+            validate: {
+                isInt: {
+                    msg: 'Please input integer value'
+                }
+            }
+        },
+        author_visible: {
+            type: DataTypes.BOOLEAN,
+            isIn: {
+                args: [['0', '1', 0, 1, true, false]],
+                msg: 'Please input valid value of author_visible'
+            }
         }
     }, {
         tableName: 'arr_post',
         createdAt: 'created_at',
         updatedAt: 'modified_at'
+        //classMethods : {
+        //    associate: function () {
+        //        return {
+        //            "user" : {
+        //                type : "belongsTo",
+        //                option : {
+        //                    foreignKey: 'created_by'
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
     });
-
-    Posts.sync();
     return Posts;
 };

@@ -8,5 +8,6 @@ module.exports = {
         models.user.belongsTo(models.role, {foreignKey: 'role_id'});
         models.role.hasMany(models.user, {foreignKey: 'role_id'});
 
+        models.post.belongsTo(models.user,{foreignKey : "created_by"})
     }
 };

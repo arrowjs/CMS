@@ -6,8 +6,9 @@ let fs = require('fs'),
     formidable = require('formidable'),
     path = require('path');
 
-let rootPath = '/upload';
-let standardPath = __base ;
+let rootPath = '/fileman/uploads';
+let standardPath = __base + 'upload';
+var spawn = require('child_process').spawn;
 
 function checkFileExist(fileName, index, extension) {
     return new Promise(function (fulfill, reject) {
@@ -29,8 +30,8 @@ module.exports = function (controller,component,application) {
         res.jsonp(results);
     };
     controller.createdir = function (req, res) {
-        let dir = req.param('d');
-        let name = req.param('n');
+        let dir = req.body.d;
+        let name = req.body.n;
 
         fs.mkdir(standardPath + dir + '/' + name, '7777', function (err) {
             if (err) {
@@ -41,7 +42,7 @@ module.exports = function (controller,component,application) {
         });
     };
     controller.deletedir = function (req, res) {
-        let dir = req.param('d');
+        let dir = req.body.d;
 
         fs.rmdir(standardPath + dir, function (err) {
             if (err) {
@@ -59,8 +60,8 @@ module.exports = function (controller,component,application) {
         res.jsonp({"res": "error", "msg": __('m_upload_backend_controllers_index_delete_error_integrated')});
     };
     controller.renamedir = function (req, res) {
-        let d = req.param('d');
-        let n = req.param('n');
+        let d = req.body.d;
+        let n = req.body.n;
         let path = d.substring(0, d.lastIndexOf('/'));
 
         fs.renameSync(standardPath + d, standardPath + path + '/' + n);
@@ -68,8 +69,8 @@ module.exports = function (controller,component,application) {
     };
     
     controller.fileslist = function (req, res) {
-        let folder = req.param('d');
-        let type = req.param('type');
+        let folder = req.body.d;
+        let type = req.body.type;
         let rPath = standardPath + folder;
 
         fs.readdir(rPath, function (err, files) {
@@ -143,7 +144,7 @@ module.exports = function (controller,component,application) {
     };
     
     controller.deletefile = function (req, res) {
-        let file = req.param('f');
+        let file = req.body.f;
         if (fs.existsSync(standardPath + file)) {
             fs.unlink(standardPath + file, function (err) {
                 if (err) {
@@ -170,8 +171,8 @@ module.exports = function (controller,component,application) {
     };
     
     controller.renamefile = function (req, res) {
-        let f = req.param('f');
-        let n = req.param('n');
+        let f = req.body.f;
+        let n = req.body.n;
         let path = f.substring(0, f.lastIndexOf('/'));
 
         fs.renameSync(standardPath + f, standardPath + path + '/' + n);
@@ -185,12 +186,11 @@ module.exports = function (controller,component,application) {
         res.jsonp({"res": "ok", "msg": ""});
     };
     controller.thumb = function (req, res) {
-        let filePath = req.param('f');
-        let width = req.param('width');
-        let height = req.param('height');
+        let filePath = req.query.f;
+        let width = req.body.width;
+        let height = req.body.height;
         let tmpFolder = standardPath + '/fileman/tmp';
         let filename = getFileName(filePath);
-
         // Check file exit
         if (fs.existsSync(tmpFolder + '/' + filename)) {
             let img = fs.readFileSync(tmpFolder + '/' + filename);
@@ -198,21 +198,30 @@ module.exports = function (controller,component,application) {
             res.end(img, 'binary');
         } else {
             // Create thumbnail
-            im.resize({
-                srcPath: standardPath + filePath,
-                dstPath: tmpFolder + '/' + filename,
-                width: width,
-                height: height
-            }, function (err, stdout, stderr) {
-                if (err) throw err;
-                let img = fs.readFileSync(tmpFolder + '/' + filename);
-                res.writeHead(200, {'Content-Type': 'image/' + getExtension(filename)});
-                res.end(img, 'binary');
+            let child = spawn(im.convert.path);
+            child.on('error', function (k) {
+                if(fs.existsSync(standardPath + filePath)) {
+                    let img = fs.readFileSync(standardPath + filePath);
+                    res.writeHead(200, {'Content-Type': 'image/' + getExtension(filename)});
+                    res.end(img, 'binary');
+                }
+                res.end(null, 'binary');
+            });
+            child.on('exit', function (k) {
+                im.resize({
+                    srcPath: standardPath + filePath,
+                    dstPath: tmpFolder + '/' + filename,
+                    width: width,
+                    height: height
+                }, function (err, stdout, stderr) {
+                    if (err) res.send(err);
+                    let img = fs.readFileSync(tmpFolder + '/' + filename);
+                    res.writeHead(200, {'Content-Type': 'image/' + getExtension(filename)});
+                    res.end(img, 'binary');
+                });
             });
         }
     };
-    
-    
 };
 
 
@@ -237,7 +246,7 @@ function getDirectories(srcpath, results) {
     let totalSubFolders = 0;
     let totalSubFiles = 0;
     let dirs = files_and_dirs.filter(function (file) {
-        if (fs.statSync(path.join('public/' + srcpath, file)).isDirectory()) {
+        if (fs.statSync(path.join('upload' + srcpath, file)).isDirectory()) {
             totalSubFolders++;
             return true;
         } else {

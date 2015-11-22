@@ -28,17 +28,17 @@ module.exports = {
         icon: "fa fa-bars",
         menus: [
             {
-                rule: 'index',
+                permission: 'index',
                 title: __('m_menus_backend_module_backend_menu_index'),
                 link: '/'
             },
             {
-                rule: 'create',
+                permission: 'create',
                 title: __('m_menus_backend_module_backend_menu_create'),
                 link: '/create'
             },
             {
-                rule: 'update',
+                permission: 'update',
                 title: __('m_menus_backend_module_backend_menu_update'),
                 link: '/sort-admin-menu'
             }

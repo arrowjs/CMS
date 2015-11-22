@@ -14,8 +14,9 @@ module.exports = {
      * @param sidebarName - Name of sidebar
      * @param callback - Content of sidebar
      */
-    handler: function (current_url, permissions, callback) {
+    handler: function (current_url,currPermission, callback) {
         let app = this;
+        let permissions =  currPermission || app.permissions;
         let feature_data = app.featureManager.getAttribute();
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus")).then(function (data) {
             let menus;
@@ -32,7 +33,7 @@ module.exports = {
 
                 // System group
                 menus.systems = {
-                    title: 'Systems',
+                    title: 'MAIN NAVIGATION',
                     sort: 2,
                     modules: {}
                 };
@@ -64,6 +65,7 @@ module.exports = {
 
                 if (!group.title) continue;
 
+                if (JSON.stringify(group.modules) === '{}') continue;
                 html += `<li class="header">${group.title}</li>`;
 
                 let sortModules = menus.sorting[sortGroups[i].menu];
@@ -76,32 +78,39 @@ module.exports = {
 
                     let menu_class = active_menu(current_url, moduleName.replace('-', '_'));
 
-                    html += `<li class="treeview ${menu_class}"><a href="{{link}}"><i class="${icon}"></i> <span> ${subMenu.title} </span>`;
+                    //only display this menu if user exits greater than one permission
+                    if (permissions.feature.hasOwnProperty(moduleName)){
+                        html += `<li class="treeview ${menu_class}"><a href="{{link}}"><i class="${icon}"></i> <span> ${subMenu.title} </span>`;
+                        if (subMenu.menus.length > 1) {
+                            html = html.replace('{{link}}', '#');
+                            html += '<i class="fa fa-angle-left pull-right"></i></a>';
+                            html += '<ul class="treeview-menu">';
 
-                    if (subMenu.menus.length > 1) {
-                        html = html.replace('{{link}}', '#');
-                        html += '<i class="fa fa-angle-right pull-right"></i></a>';
-                        html += '<ul class="treeview-menu">';
+                            for (let z in subMenu.menus) {
+                                let mn = subMenu.menus[z];
 
-                        for (let z in subMenu.menus) {
-                            let mn = subMenu.menus[z];
-                            //if (permissions.feature[moduleName].indexOf(mn.rule) > -1) {
-                            //TODO :need check role here
-                            menu_class = active_menu(current_url, mn.link.replace('/', ''), "active", 3);
-                            html += `<li class="treeview ${menu_class}">
-                            <a href="${'/admin/' + (moduleName + mn.link)}">
-                            <i class="fa fa-circle-o"></i> <span> ${mn.title}</span>
-                            </a>`;
-                            //}
-                        }
-                        html += '</ul></li>';
-                    } else {
-                        if (group.title == 'Systems') {
-                            html = html.replace('{{link}}', '/admin/' + moduleName);
+                                let flag = false;
+                                for(let t in permissions.feature[moduleName]){
+                                    if(permissions.feature[moduleName][t].name === mn.permission)
+                                        flag = true;
+                                }
+                                if (flag || !app.arrowSettings.role) {
+                                    menu_class = active_menu(current_url, mn.link.replace('/', ''), "active", 3);
+                                    html += `<li class="treeview ${menu_class}">
+                                <a href="${'/'+app.getConfig("admin_prefix")+'/' + (moduleName + mn.link)}">
+                                <i class="fa fa-circle-o"></i> <span> ${mn.title}</span>
+                                </a>`;
+                                }
+                            }
+                            html += '</ul></li>';
                         } else {
-                            html = html.replace('{{link}}', '/admin' + subMenu.menus[0].link);
+                            if (typeof subMenu.menus.length == 'number') {
+                                html = html.replace('{{link}}', '/'+app.getConfig("admin_prefix")+'/'+ subMenu.menus[0].link);
+                            } else {
+                                html = html.replace('{{link}}', '/'+app.getConfig("admin_prefix")+'/'+ moduleName);
+                            }
+                            html += '</a></li>';
                         }
-                        html += '</a></li>';
                     }
                 }
             }

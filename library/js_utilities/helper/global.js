@@ -223,88 +223,88 @@ exports.parseValue = function (value, col) {
     }
 };
 
-/**
- * Create filter column for standard table
- * @param {object} req - Request
- * @param {object} res - Response
- * @param {route} route - Module name
- * @param {string} reset_link - Link to create button reset filter
- * @param {string} current_column - Current column used to sorting
- * @param {string} order - Current "order by" used to sorting
- * @param {string} columns - List of columns which display in table
- * @param {string} customCondition - Custom conditions
- * @returns {object}
- */
-exports.createFilter = function (req, res, route, reset_link, current_column, order, columns, customCondition) {
-    if (route != '') {
-        res.locals.searchButton = acl.customButton(route);
-        res.locals.resetFilterButton = acl.customButton(reset_link);
-    }
-
-    let conditions = [];
-    let values = [];
-    let attributes = [];
-    values.push('command');
-
-    let getColumn = function (name) {
-        for (let i in columns) {
-
-            if (columns[i].column == name) {
-                return columns[i];
-            }
-        }
-        return {filter: {}};
-    };
-
-    for (let i in req.query) {
-        if (req.query[i] != '') {
-            let col = getColumn(i);
-            if (!col) continue;
-            if (col.query) {
-                conditions.push(col.query);
-            } else {
-                conditions.push(__.parseCondition(i, req.query[i], col));
-            }
-
-            let filterType = col.filter.data_type;
-            let isDateRange = req.query[i].match(/^[0-9]{4}-[0-9]{2}-[0-9]{2} - [0-9]{4}-[0-9]{2}-[0-9]{2}$/);
-            let value = null;
-            if (filterType != 'datetime' || (filterType == 'datetime' && isDateRange != null)) {
-                value = __.parseValue(req.query[i], col);
-            } else {
-                value = __.parseValue('1970-01-01 - 1970-01-01', col);
-            }
-
-            if (Array.isArray(value)) {
-                for (let y in value) {
-                    values.push(value[y].trim());
-                }
-            } else {
-                values.push(value);
-            }
-        }
-    }
-
-    for (let i in columns) {
-        if (columns[i].column != '') attributes.push(columns[i].column);
-    }
-
-    let tmp = conditions.length > 0 ? "(" + conditions.join(" AND ") + ")" : " 1=1 ";
-    values[0] = tmp + (customCondition ? customCondition : '');
-
-    res.locals.table_columns = columns;
-    res.locals.currentColumn = current_column;
-    res.locals.currentOrder = order;
-    res.locals.filters = req.query;
-
-    if (current_column.indexOf('.') > -1) current_column = current_column.replace(/(.*)\.(.*)/, '"$1"."$2"');
-
-    return {
-        values: values,
-        attributes: attributes,
-        sort: current_column + " " + order
-    };
-};
+///**
+// * Create filter column for standard table
+// * @param {object} req - Request
+// * @param {object} res - Response
+// * @param {route} route - Module name
+// * @param {string} reset_link - Link to create button reset filter
+// * @param {string} current_column - Current column used to sorting
+// * @param {string} order - Current "order by" used to sorting
+// * @param {string} columns - List of columns which display in table
+// * @param {string} customCondition - Custom conditions
+// * @returns {object}
+// */
+//exports.createFilter = function (req, res, route, reset_link, current_column, order, columns, customCondition) {
+//    if (route != '') {
+//        res.locals.searchButton = acl.customButton(route);
+//        res.locals.resetFilterButton = acl.customButton(reset_link);
+//    }
+//
+//    let conditions = [];
+//    let values = [];
+//    let attributes = [];
+//    values.push('command');
+//
+//    let getColumn = function (name) {
+//        for (let i in columns) {
+//
+//            if (columns[i].column == name) {
+//                return columns[i];
+//            }
+//        }
+//        return {filter: {}};
+//    };
+//
+//    for (let i in req.query) {
+//        if (req.query[i] != '') {
+//            let col = getColumn(i);
+//            if (!col) continue;
+//            if (col.query) {
+//                conditions.push(col.query);
+//            } else {
+//                conditions.push(__.parseCondition(i, req.query[i], col));
+//            }
+//
+//            let filterType = col.filter.data_type;
+//            let isDateRange = req.query[i].match(/^[0-9]{4}-[0-9]{2}-[0-9]{2} - [0-9]{4}-[0-9]{2}-[0-9]{2}$/);
+//            let value = null;
+//            if (filterType != 'datetime' || (filterType == 'datetime' && isDateRange != null)) {
+//                value = __.parseValue(req.query[i], col);
+//            } else {
+//                value = __.parseValue('1970-01-01 - 1970-01-01', col);
+//            }
+//
+//            if (Array.isArray(value)) {
+//                for (let y in value) {
+//                    values.push(value[y].trim());
+//                }
+//            } else {
+//                values.push(value);
+//            }
+//        }
+//    }
+//
+//    for (let i in columns) {
+//        if (columns[i].column != '') attributes.push(columns[i].column);
+//    }
+//
+//    let tmp = conditions.length > 0 ? "(" + conditions.join(" AND ") + ")" : " 1=1 ";
+//    values[0] = tmp + (customCondition ? customCondition : '');
+//
+//    res.locals.table_columns = columns;
+//    res.locals.currentColumn = current_column;
+//    res.locals.currentOrder = order;
+//    res.locals.filters = req.query;
+//
+//    if (current_column.indexOf('.') > -1) current_column = current_column.replace(/(.*)\.(.*)/, '"$1"."$2"');
+//
+//    return {
+//        values: values,
+//        attributes: attributes,
+//        sort: current_column + " " + order
+//    };
+//};
 
 /**
  * Convert filter values to String (use in raw query)

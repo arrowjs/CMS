@@ -64,7 +64,7 @@ module.exports = function (component,application) {
             }
         },
 
-        "page/:page([0-9]+)" : {
+        "/users/:page([0-9]+)" : {
             get : {
                 handler : comp.list,
                 name : "users-page",
@@ -72,7 +72,7 @@ module.exports = function (component,application) {
                 permissions : "index"
             }
         },
-        "page/:page([0-9]+)/sort/:sort/(:order)?" : {
+        "/users/:page([0-9]+)/:sort/(:order)?" : {
             get : {
                 handler : comp.list,
                 name : "users-page-sort",

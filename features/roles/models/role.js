@@ -70,6 +70,5 @@ module.exports = function (sequelize, DataTypes) {
         updatedAt: 'modified_at',
         deletedAt: false
     });
-    Role.sync();
     return Role;
 };

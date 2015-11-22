@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-md-12">
             <form id="edit-form" method="post">
-                {% include "toolbar.twig" %}
+                {{ toolbar | safe }}
                 <div class="box box-solid box-primary">
                     <div class="box-body">
                         <div class="row">

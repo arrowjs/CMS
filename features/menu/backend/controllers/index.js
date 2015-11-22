@@ -2,15 +2,14 @@
 
 let _ = require('lodash');
 let promise = require('bluebird');
-let createFilter = require(__base + '/library/js_utilities/createFilter');
 
 module.exports = function (controller, component, application) {
+    let isAllow = ArrowHelper.isAllow;
     controller.index = function (req, res) {
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
-        //todo: check permission
-        toolbar.addCreateButton(true, '/admin/menu/create');
-        toolbar.addDeleteButton(true);
+        toolbar.addCreateButton(isAllow(req,'index'), '/admin/menu/create');
+        toolbar.addDeleteButton(isAllow(req,'delete'));
         toolbar = toolbar.render();
 
         // Config ordering
@@ -33,7 +32,7 @@ module.exports = function (controller, component, application) {
         ];
 
         // Config columns
-        let filter = createFilter(req, res, table, {
+        let filter = ArrowHelper.createFilter(req, res, table, {
             rootLink: '/admin/menu/sort'
         });
 
@@ -48,10 +47,10 @@ module.exports = function (controller, component, application) {
                 toolbar: toolbar
             });
         }).catch(function (error) {
+            console.log('ALL MENU : ',error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-
             // Render view if has error
-            res.render(req, res, 'index', {
+            res.render('index', {
                 title: __('m_menus_backend_controller_index_render_title'),
                 menus: null
             });
@@ -184,9 +183,9 @@ module.exports = function (controller, component, application) {
     };
 
     controller.sortAdminMenu = function (req, res) {
-        res.addButton({
-            saveButton : true
-        });
+        //res.addButton({
+        //    saveButton : true
+        //});
         application.redisClient.getAsync(application.getConfig("redis_prefix") + application.getConfig("redis_key.backend_menus"))
             .then(function (data) {
                 let menus = JSON.parse(data);

@@ -1,11 +1,13 @@
 "use strict";
 let _ = require('lodash');
+let lang = require('arrowjs').language.languageKey;
+let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, application) {
     controller.index = function (req, res) {
         res.render('sites/index', {
-            config: application._config,
-            lang: application._lang,
+            config: application.getConfig(),
+            lang: lang(),
             title: __('m_configurations_backend_index_render_title')
         });
     };
@@ -17,8 +19,7 @@ module.exports = function (controller, component, application) {
         config.app = {};
         config.app.title = data.title;
         config.app.description = data.description;
-        config.app.language = data.language;
-        config.language = data.language;
+        config.language = data.language || application.getConfig('language');
         config.pagination = {};
         config.pagination.numberItem = data.number_item || 5;
 
@@ -26,7 +27,7 @@ module.exports = function (controller, component, application) {
             req.flash.success(__('m_configurations_backend_index_flash_update_setting_success'));
             next();
         }).catch(function (err) {
-            console.log(err)
+            logger.error(err)
         });
     };
 };
