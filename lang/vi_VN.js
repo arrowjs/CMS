@@ -35,7 +35,7 @@ module.exports = {
     "not_authenticated": "Không có quyền",
 
     /** Module category */
-    "m_category_backend_module_title": "Category",
+    "m_category_backend_module_title": "Tất cả Category",
     "m_category_backend_module_desc": "Quản lý Category",
     "m_category_backend_module_category_index": "Xem tất cả danh mục",
     "m_category_backend_module_category_create": "Tạo mới danh mục",
