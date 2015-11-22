@@ -9,7 +9,7 @@ module.exports = {
     },
     viewExtension : 'twig',
     pagination: {
-        numberItem: 20
+        numberItem: 10
     },
     date_format : 'DD-MM-YYYY',
     backendTheme: 'adminLTE',
@@ -17,6 +17,7 @@ module.exports = {
     functionFolder : '/library/view_utilities/functions',
     filterFolder : '/library/view_utilities/filters',
     variableFile : '/library/view_utilities/variables/global.js',
+    defaultImage : '/img/noImage.png',
     nunjuckSettings : {
         autoescape: true,
         throwOnUndefined: false,
