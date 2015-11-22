@@ -1,6 +1,7 @@
 {% extends 'layout.twig' %}
 
 {% block cssExtends %}
+    <link href="/backend/adminLTE/assets/plugins/select2/select2.css" rel="stylesheet">
     <style type="text/css">
         .dd {
             position: relative;
@@ -237,15 +238,15 @@
                         <div class="form-group btn-add-menu-wrapper">
                             <button type="button" class="btn btn-primary btn-add-menu"
                                     onclick="return addCustomLink();">
-                                {{ __('m_menus_backend_views_new_btn_add_menu') }}
+                                {{ __('m_menus_backend_views_new_btn_add_menu') }}&nbsp;
                                 <i class="fa fa-arrow-circle-right"></i>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {% for module in setting_menu_module %}
-                    {% if module.alias %}
+                {% for module in setting_menu_feature %}
+                    {% if module.route %}
                         <div class="box box-primary arr-module-box collapsed-box">
                             <div class="box-header with-border">
                                 <h3 class="box-title">{{ module.title }}</h3>
@@ -253,7 +254,7 @@
                                 <div class="box-tools" style="width: 100%;">
                                     <button type="button" class="btn btn-box-tool"
                                             style="width: 100%; text-align: right;"
-                                            onclick="collapseBox(this); loadModuleDetail(this, '{{ module.alias }}', 1, '', {{ module.search }});">
+                                            onclick="collapseBox(this); loadModuleDetail(this, '{{ module.route }}', 1, '', {{ module.search }});">
                                         <i class="fa fa-plus arr-collapse-icon"></i>
                                     </button>
                                 </div>
@@ -269,12 +270,26 @@
                 <div class="box box-primary">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="name"
-                                   style="margin-bottom: 10px; font-size: 20px;">{{ __('m_menus_backend_views_new_form_menu_name') }}</label>
+
 
                             <div class="col-md-12">
-                                <input type="text" class="form-control" name="name" id="name" value="{{ menu.name }}"
-                                       autocomplete="off" required="required"/>
+                                <div class="col-md-6">
+                                    <label for="name"
+                                           style="margin-bottom: 10px; font-size: 20px;">{{ __('m_menus_backend_views_new_form_menu_name') }}</label>
+                                    <input type="text" class="form-control" name="name" id="name" value="{{ menu.name }}"
+                                           autocomplete="off" required="required"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name"
+                                           style="margin-bottom: 10px; font-size: 20px;">Location</label>
+                                    <select multiple="multiple" class="form-control" name="location" id="menu-location">
+                                            {% if menu_locations %}
+                                                {% for menu_location in menu_locations %}
+                                                    <option value="{{ menu_location.name }}">{{ menu_location.title }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                </div>
                             </div>
                         </div>
 
@@ -299,11 +314,32 @@
 {% endblock %}
 
 {% block jsExtends %}
-    <script src="/theme_resources/backend/default/plugins/nestable/jquery.nestable.js"></script>
+    <script src="/backend/adminLTE/assets/plugins/select2/select2.min.js" type="text/javascript"></script>
+    <script src="/backend/adminLTE/assets/plugins/nestable/jquery.nestable.js"></script>
     <script>
         $(function () {
             // Init popover
             $('.information').popover();
+
+            /* BEGIN init select2 */
+            var select2 = $('#menu-location');
+            select2.select2({
+                placeholder: "Choose Location ...",
+                templateSelection: function (option) {
+                    var text = $(option.element).text().trim();
+                    text = text.replace(/^[—]+/, '');
+                    return text;
+                }
+            });
+
+            {% if menu %}
+            var mLoca = '{{ menu.location }}';
+            mLoca = mLoca.split('::').filter(function (val) {
+                return val ? val!='':val;
+            })
+            console.log(mLoca.toString());
+            $('#menu-location').val(mLoca).trigger('change');
+            {% endif %}
         });
 
         function collapseBox(button) {
@@ -336,9 +372,9 @@
 
         var btnLoadModule = {};
 
-        function loadModuleDetail(button, alias, page, search, useSearch) {
+        function loadModuleDetail(button, route, page, search, useSearch) {
             $.ajax({
-                url: '/_menus/' + alias + '/page/' + page + '?s=' + search
+                url: '/admin'+ route +'?page='+ page + '&searchStr=' + search
             }).done(function (result) {
                 var items = result.items;
                 var title_column = result.title_column;
@@ -352,7 +388,7 @@
                     '<input class="form-control arr-search-menu-item" type="text" value="' + search + '" />' +
                     '<span class="input-group-btn">' +
                     '<button class="btn btn-default btn-flat" type="button" ' +
-                    'onclick="setSearchKeyword(this, \'' + alias + '\')">' +
+                    'onclick="setSearchKeyword(this, \'' + route + '\')">' +
                     '<i class="fa fa-search"></i> Search' +
                     '</button></span></div></div> ';
                 }
@@ -376,12 +412,12 @@
                 }
 
                 btnLoadModule = button;
-                module_detail_view += getPagination(total_pages, page, alias, search, useSearch);
+                module_detail_view += getPagination(total_pages, page, route, search, useSearch);
 
                 module_detail_view += '</div><div class="form-group btn-add-menu-wrapper">' +
                 '<button type="button" class="btn btn-primary btn-add-menu" ' +
                 'onclick="return addNewMenu(this);">' +
-                'Add to Menu<i class="fa fa-arrow-circle-right"></i></button></div>';
+                '{{ __('m_menus_backend_views_new_btn_add_menu') }}&nbsp;<i class="fa fa-arrow-circle-right"></i></button></div>';
 
                 $(button).parent().parent('.box-header').next('.box-body').html(module_detail_view);
 
@@ -390,7 +426,7 @@
             });
         }
 
-        function getPagination(total_pages, current_page, alias, search, useSearch) {
+        function getPagination(total_pages, current_page, route, search, useSearch) {
             var pagination = '';
 
             if (total_pages > 1) {
@@ -408,7 +444,7 @@
                 pagination += '<ul class="pagination pagination-sm no-margin">';
 
                 if (current_page > 1) {
-                    pagination += '<li><a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + alias + '\', ' + 1 + ', \'' + search + '\', ' + useSearch + ')">«</a></li>';
+                    pagination += '<li><a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + 1 + ', \'' + search + '\', ' + useSearch + ')">«</a></li>';
                 }
 
                 for (var page_index = start_index; page_index <= total_pages; page_index++) {
@@ -421,11 +457,11 @@
                     } else {
                         pagination += '<li>';
                     }
-                    pagination += '<a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + alias + '\', ' + page_index + ', \'' + search + '\', ' + useSearch + ')">' + page_index + '</a></li>';
+                    pagination += '<a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + page_index + ', \'' + search + '\', ' + useSearch + ')">' + page_index + '</a></li>';
                 }
 
                 if (current_page < total_pages) {
-                    pagination += '<li><a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + alias + '\', ' + total_pages + ', \'' + search + '\', ' + useSearch + ')">»</a></li>';
+                    pagination += '<li><a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + total_pages + ', \'' + search + '\', ' + useSearch + ')">»</a></li>';
                 }
 
                 pagination += '</ul><div class="row"></div>';
@@ -434,10 +470,10 @@
             return pagination;
         }
 
-        function setSearchKeyword(button, alias) {
+        function setSearchKeyword(button, route) {
             // Get search input value to reload items
             var search = $(button).parent('span').prev('input').val();
-            loadModuleDetail(btnLoadModule, alias, 1, search, true);
+            loadModuleDetail(btnLoadModule, route, 1, search, true);
         }
 
 //        $('.box-body').on('keypress', '.arr-search-menu-item', function (e) {

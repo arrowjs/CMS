@@ -9,10 +9,8 @@ let route = 'blog';
 module.exports = function (controller, component, app) {
 
     let isAllow = ArrowHelper.isAllow;
-
+    let itemOfPage = app.getConfig('pagination').numberItem || 10;
     controller.pageList = function (req, res) {
-
-        res.locals.user = req.user;
 
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
@@ -108,7 +106,7 @@ module.exports = function (controller, component, app) {
             }
         ];
 
-        let itemOfPage = app.getConfig('pagination').numberItem || 10;
+
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: '/admin/blog/pages',
@@ -155,8 +153,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.pageDelete = function (req, res) {
-
-        res.locals.user = req.user;
         app.models.post.destroy({
             where: {
                 id: {
@@ -170,8 +166,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.pageCreate = function (req, res) {
-
-        res.locals.user = req.user;
         // Add button
         let back_link = '/blog/pages/page/1';
         let search_params = req.session.search;
@@ -201,8 +195,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.pageSave = function (req, res) {
-
-        res.locals.user = req.user;
         // Add button
         let back_link = '/admin/blog/pages/page/1';
         let search_params = req.session.search;
@@ -215,7 +207,6 @@ module.exports = function (controller, component, app) {
         toolbar.addBackButton(back_link);
         toolbar.addSaveButton(isAllow(req,'page_create'));
         toolbar.addDeleteButton(isAllow(req,'page_delete'));
-        toolbar = toolbar.render();
 
 
         let data = req.body;
@@ -228,6 +219,7 @@ module.exports = function (controller, component, app) {
 
         app.models.post.create(data).then(function (page) {
             req.flash.success(__('m_blog_backend_page_flash_create_success'));
+            res.locals.toolbar = toolbar.render();
             res.redirect('/admin/blog/pages/' + page.id);
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
@@ -236,8 +228,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.pageView = function (req, res) {
-
-        res.locals.user = req.user;
         // Add button
         let back_link = '/admin/blog/pages/page/1';
         let search_params = req.session.search;
@@ -279,8 +269,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.redirectToView = function (req, res) {
-
-        res.locals.user = req.user;
 
         app.models.post.find({
             where: {
@@ -335,4 +323,36 @@ module.exports = function (controller, component, app) {
             res.redirect(back_link);
         });
     };
+
+    controller.link_menu_page = function (req,res) {
+        let page = req.query.page;
+        let searchText = req.query.searchStr;
+
+        let conditions = "type='page' AND published = 1";
+        if (searchText != '') conditions += " AND title ilike '%" + searchText + "%'";
+
+        // Find all page with page and search keyword
+        app.models.post.findAndCount({
+            attributes: ['id', 'alias', 'title'],
+            where: [conditions],
+            limit: itemOfPage,
+            offset: (page - 1) * itemOfPage,
+            raw: true
+        }).then(function (results) {
+            let totalRows = results.count;
+            let items = results.rows;
+            let totalPage = Math.ceil(results.count / itemOfPage);
+
+            // Send json response
+            res.jsonp({
+                totalRows: totalRows,
+                totalPage: totalPage,
+                items: items,
+                title_column: 'title',
+                link_template: '/admin/{alias}'
+            });
+        });
+    };
+
+
 };

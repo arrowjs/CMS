@@ -2,8 +2,11 @@
 
 let _ = require('lodash');
 let promise = require('bluebird');
+let fs = require("fs");
+let readFileAsync = promise.promisify(fs.readFile);
+let log = require('arrowjs').logger;
 
-module.exports = function (controller, component, application) {
+module.exports = function (controller, component, app) {
     let isAllow = ArrowHelper.isAllow;
     controller.index = function (req, res) {
         // Add button
@@ -58,27 +61,40 @@ module.exports = function (controller, component, application) {
     };
 
     controller.create = function (req, res) {
-        //let back_link = '/admin/menus';
-        //let search_params = req.session.search;
-        //if (search_params && search_params[route + '_index_index']) {
-        //    back_link = '/admin' + search_params[route + '_index_index'];
-        //}
-
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
-        //todo: check permission
-        toolbar.addBackButton('/admin/menus');
-        toolbar.addSaveButton(true);
-        toolbar = toolbar.render();
+        toolbar.addBackButton('/admin/menu');
+        toolbar.addSaveButton(isAllow(req,'create'));
 
-        // Get module links
-        //res.locals.setting_menu_module = __setting_menu_module;
+        readFileAsync(__base + "themes/frontend/" + app.getConfig('frontendTheme') + "/theme.json", "utf8")
+            .then(function (data) {
+                let menus = JSON.parse(data).menus;
+                let features = [];
+                if(app.feature)
+                    for(let k in app.feature){
+                        if (app.feature[k].hasOwnProperty('add_link_menu')){
+                            for (let key in app.feature[k]['add_link_menu']){
+                                features.push( app.feature[k]['add_link_menu'][key]);
+                            }
+                        }
+                    }
+                // Render view
+                res.render('new', {
+                    title: __('m_menus_backend_controller_create_render_title'),
+                    setting_menu_feature : features,
+                    toolbar: toolbar.render(),
+                    menu_locations : menus
+                });
+            }).catch(function (err) {
+                log(err);
+                res.render('new', {
+                    title: __('m_menus_backend_controller_create_render_title'),
+                    setting_menu_feature : null,
+                    toolbar: toolbar.render()
+                });
+            })
 
-        // Render view
-        res.render('new', {
-            title: __('m_menus_backend_controller_create_render_title'),
-            toolbar: toolbar
-        });
+
     };
 
     controller.menuById = function (req, res, next, id) {
@@ -116,16 +132,28 @@ module.exports = function (controller, component, application) {
     };
 
     controller.update = function (req, res) {
+        let location = req.body.location;
+        let locationStr = '';
+        if(typeof location == 'object'){
+            location.map(function (value) {
+                locationStr+=value+'::';
+            })
+        }else if(typeof location == 'string'){
+            locationStr=location
+        }
+
+
         // Find menu to update
         component.models.menus.find({
             where: {
-                id: req.params.cid
+                id: req.params.mid
             }
         }).then(function (menu) {
             // Update menu
             return menu.updateAttributes({
                 name: req.body.name,
-                menu_order: req.body.output
+                menu_order: req.body.output,
+                location : locationStr
             });
         }).then(function (menu) {
             // Delete old menu detail
@@ -142,7 +170,7 @@ module.exports = function (controller, component, application) {
                 promises.push(
                     component.models.menu_detail.create({
                         id: req.body.mn_id[i],
-                        menu_id: req.params.cid,
+                        menu_id: req.params.mid,
                         name: req.body.title[i],
                         link: req.body.url[i],
                         attribute: req.body.attribute[i]
@@ -153,7 +181,7 @@ module.exports = function (controller, component, application) {
             return promise.all(promises);
         }).then(function () {
             req.flash.success(__('m_menus_backend_controller_update_flash_success'));
-            res.redirect('/admin/menu/update/' + req.params.cid);
+            res.redirect('/admin/menu/update/' + req.params.mid);
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.render('new');
@@ -164,7 +192,7 @@ module.exports = function (controller, component, application) {
         let systems = req.body.s || [];
         let defaults = req.body.d || [];
 
-        application.redisClient.getAsync(application.getConfig("redis_prefix") + application.getConfig("redis_key.backend_menus"))
+        app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"))
             .then(function (data) {
                 let menus = JSON.parse(data);
                 if (systems.length > 0) {
@@ -174,7 +202,7 @@ module.exports = function (controller, component, application) {
                     menus.sorting.default = defaults;
                 }
 
-                application.redisClient.setAsync(application.getConfig("redis_prefix") + application.getConfig("redis_key.backend_menus"), JSON.stringify(menus))
+                app.redisClient.setAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"), JSON.stringify(menus))
                     .then(function () {
                         res.sendStatus(200);
                     });
@@ -183,10 +211,7 @@ module.exports = function (controller, component, application) {
     };
 
     controller.sortAdminMenu = function (req, res) {
-        //res.addButton({
-        //    saveButton : true
-        //});
-        application.redisClient.getAsync(application.getConfig("redis_prefix") + application.getConfig("redis_key.backend_menus"))
+        app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"))
             .then(function (data) {
                 let menus = JSON.parse(data);
                 res.render('admin_sort', {
@@ -198,10 +223,21 @@ module.exports = function (controller, component, application) {
 
     controller.save = function (req, res) {
         let menu_id = 0;
-        // Create menu
+
+        let location = req.body.location;
+        let locationStr = '';
+        if(typeof location == 'object'){
+            location.map(function (value) {
+                locationStr+=value+'::';
+            })
+        }else if(typeof location == 'string'){
+            locationStr=location
+        }
+
         component.models.menus.create({
             name: req.body.name,
-            menu_order: req.body.output
+            menu_order: req.body.output,
+            location : locationStr
         }).then(function (menu) {
             menu_id = menu.id;
 
@@ -239,24 +275,36 @@ module.exports = function (controller, component, application) {
     };
 
     controller.read = function (req, res) {
-        // Add button
-        let back_link = '/admin/menu';
-        //let search_params = req.session.search;
-        //if (search_params && search_params[route + '_index_index']) {
-        //    back_link = '/admin' + search_params[route + '_index_index'];
-        //}
-
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
-        toolbar = toolbar.render();
+        toolbar.addBackButton('/admin/menu');
+        toolbar.addSaveButton(isAllow(req,'create'));
 
-        // Get module links
-        //res.locals.setting_menu_module = __setting_menu_module;
-
-        // Render view
-        res.render('new', {
-            title: __('m_menus_backend_controller_read_render_title'),
-            toolbar: toolbar
-        });
+        readFileAsync(__base + "themes/frontend/" + app.getConfig('frontendTheme') + "/theme.json", "utf8")
+            .then(function (data) {
+                let menus = JSON.parse(data).menus;
+                let features = [];
+                if(app.feature)
+                    for(let k in app.feature){
+                        if (app.feature[k].hasOwnProperty('add_link_menu')){
+                            for (let key in app.feature[k]['add_link_menu']){
+                                features.push( app.feature[k]['add_link_menu'][key]);
+                            }
+                        }
+                    }
+                // Render view
+                res.render('new', {
+                    title: __('m_menus_backend_controller_create_render_title'),
+                    setting_menu_feature : features,
+                    toolbar: toolbar.render(),
+                    menu_locations : menus
+                });
+            }).catch(function (err) {
+                log(err);
+                res.render('new', {
+                    title: __('m_menus_backend_controller_create_render_title'),
+                    setting_menu_feature : null,
+                    toolbar: toolbar.render()
+                });
+            })
     };
 };

@@ -1,54 +1,55 @@
 'use strict';
 
 module.exports = function (component,application) {
+    let comp = component.controllers.backend;
     return {
         "/menu" : {
             get : {
-                handler : component.controllers.backend.index,
+                handler : comp.index,
                 permissions: "index"
             },
             delete : {
-                handler : component.controllers.backend.delete,
+                handler : comp.delete,
                 permissions : "delete"
             },
             param : {
-                key : "menu_id",
-                handler : component.controllers.backend.menuById
+                key : "mid",
+                handler : comp.menuById
             }
         },
         "/menu/create" : {
             get : {
-                handler : component.controllers.backend.create,
+                handler : comp.create,
                 permissions: "create"
             },
             post : {
-                handler : component.controllers.backend.save,
-                permissions: "save"
+                handler : comp.save,
+                permissions: "create"
             }
         },
-        "/menu/update/:menu_id":{
+        "/menu/update/:mid":{
             get : {
-                handler : component.controllers.backend.read,
+                handler : [comp.read],
                 permissions: "update"
             },
             post : {
-                handler : component.controllers.backend.update,
+                handler : comp.update,
                 permissions: "update"
             }
         },
         '/menu/sort-admin-menu' : {
             get : {
-                handler : component.controllers.backend.sortAdminMenu,
+                handler : comp.sortAdminMenu,
                 permissions: "update"
             },
             post : {
-                handler : component.controllers.backend.saveSortAdminMenu,
+                handler : comp.saveSortAdminMenu,
                 permissions: "update"
             }
         },
         '/menu/sort/:sort/:order': {
             get : {
-                handler : component.controllers.backend.index,
+                handler : comp.index,
                 permissions: "index"
             }
         }
