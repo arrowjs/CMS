@@ -35,7 +35,7 @@ module.exports = {
     "not_authenticated": "Not Authenticated",
 
     /** Module category */
-    "m_category_backend_module_title": "Category",
+    "m_category_backend_module_title": "Categories",
     "m_category_backend_module_desc": "Category Manager",
     "m_category_backend_module_category_index": "View All Categories",
     "m_category_backend_module_category_create": "Create New Category",
