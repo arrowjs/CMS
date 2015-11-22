@@ -2,153 +2,153 @@
 let crypto = require('crypto');
 
 module.exports = function (sequelize, DataTypes) {
-    let User = sequelize.define("user", {
-        id : {
-            type : DataTypes.INTEGER,
-            primaryKey : true,
-            autoIncrement : true,
-            validate : {
-                isInt : {
-                    msg : 'please input integer value'
+    return sequelize.define("user", {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+            validate: {
+                isInt: {
+                    msg: 'please input integer value'
                 }
             }
         },
         user_login: {
-            type : DataTypes.STRING(60),
-            allowNull : false,
-            unique : true,
+            type: DataTypes.STRING(60),
+            allowNull: false,
+            unique: true,
             validate: {
-                len : {
-                    args : [1,60],
-                    msg : 'please input not too long'
+                len: {
+                    args: [1, 60],
+                    msg: 'please input not too long'
                 },
-                isName : function (value) {
-                    if (typeof value !== 'string' || value.match(/[+-.,!@#$%^&*();\/|<>"'\\]/g)){
+                isName: function (value) {
+                    if (typeof value !== 'string' || value.match(/[+-.,!@#$%^&*();\/|<>"'\\]/g)) {
                         throw new Error('Please input valid value user_login');
                     }
                 }
             }
         },
         user_pass: {
-            type : DataTypes.STRING(255),
-            allowNull : false,
+            type: DataTypes.STRING(255),
+            allowNull: false,
             validate: {
-                len : {
-                    args : [6,255],
-                    msg : 'Password must be greater than 6 characters'
+                len: {
+                    args: [6, 255],
+                    msg: 'Password must be greater than 6 characters'
                 }
             }
         },
         user_email: {
-            type : DataTypes.STRING(100),
-            unique : true,
-            validate : {
+            type: DataTypes.STRING(100),
+            unique: true,
+            validate: {
                 isEmail: {
-                    msg : 'Please input valid Email'
+                    msg: 'Please input valid Email'
                 }
             }
         },
         user_url: {
-            type : DataTypes.STRING(100),
+            type: DataTypes.STRING(100),
             allowNull: true
         },
         user_registered: {
-            type : DataTypes.DATE,
-            defaultValue:sequelize.fn('now')
+            type: DataTypes.DATE,
+            defaultValue: sequelize.fn('now')
         },
         user_activation_key: {
-            type : DataTypes.STRING(60),
-            validate : {
-                len : {
-                    args : [0,60],
-                    msg : 'Please don\'t input too long'
+            type: DataTypes.STRING(60),
+            validate: {
+                len: {
+                    args: [0, 60],
+                    msg: 'Please don\'t input too long'
                 }
             }
         },
         user_status: {
-            type : DataTypes.STRING(15),
-            validate : {
-                isIn : {
-                    args : [['publish', 'un-publish']],
-                    msg : 'Please only input publish or un-publish'
+            type: DataTypes.STRING(15),
+            validate: {
+                isIn: {
+                    args: [['publish', 'un-publish']],
+                    msg: 'Please only input publish or un-publish'
                 }
             }
         },
         display_name: {
-            type : DataTypes.STRING(250),
-            validate : {
-                len : {
-                    args : [0,250],
-                    msg : 'Please don\'t input too long'
+            type: DataTypes.STRING(250),
+            validate: {
+                len: {
+                    args: [0, 250],
+                    msg: 'Please don\'t input too long'
                 }
             }
         },
         phone: {
-            type : DataTypes.STRING,
-            validate : {
-                isNumber : function (val) {
-                    if (!val.match(/[0-9]{3,}/g)){
+            type: DataTypes.STRING,
+            validate: {
+                isNumber: function (val) {
+                    if (!val.match(/[0-9]{3,}/g)) {
                         throw new Error('Please input valid user\'s phone');
                     }
                 }
             }
         },
         user_image_url: {
-            type : DataTypes.TEXT,
-            defaultValue : '/img/noImage.png'
+            type: DataTypes.TEXT,
+            defaultValue: '/img/noImage.png'
         },
         salt: {
-            type : DataTypes.STRING(255),
-            validate : {
-                len : {
-                    args : [0,255],
-                    msg : 'please input salt not too long'
+            type: DataTypes.STRING(255),
+            validate: {
+                len: {
+                    args: [0, 255],
+                    msg: 'please input salt not too long'
                 }
             }
         },
         role_id: {
-            type : DataTypes.INTEGER,
-            validate : {
-                isInt : {
-                    msg : 'please input integer value role_id'
+            type: DataTypes.INTEGER,
+            validate: {
+                isInt: {
+                    msg: 'please input integer value role_id'
                 }
             },
-            set : function (val) {
+            set: function (val) {
                 let roleIds = this.getDataValue('role_ids');
                 let flag = false;
                 if (roleIds)
-                roleIds.split(',').forEach(function (v) {
-                    if (val === v)
-                        flag = true;
-                })
-                if(flag)
-                    this.setDataValue('role_id',val);
+                    roleIds.split(',').forEach(function (v) {
+                        if (val === v)
+                            flag = true;
+                    });
+                if (flag)
+                    this.setDataValue('role_id', val);
                 else
-                    this.setDataValue('role_id',0);
+                    this.setDataValue('role_id', 0);
             }
         },
         role_ids: {
-            type : DataTypes.TEXT,
-            defaultValue : '{0}',
-            set : function (val) {
+            type: DataTypes.TEXT,
+            defaultValue: '{0}',
+            set: function (val) {
                 let value = val.toString().split(',')
                 let temp = '';
                 let flag = false;
                 let role_id_value = this.getDataValue('role_id');
                 value.forEach(function (v) {
-                    if(temp.length>0) temp+=','+v;
-                    else temp+=v;
-                    if(v == role_id_value) flag=true;
+                    if (temp.length > 0) temp += ',' + v;
+                    else temp += v;
+                    if (v == role_id_value) flag = true;
                 })
-                if(!flag) this.setDataValue('role_id',Number(value[0]));
-                this.setDataValue('role_ids',temp);
+                if (!flag) this.setDataValue('role_id', Number(value[0]));
+                this.setDataValue('role_ids', temp);
             }
         },
         reset_password_expires: {
-            type : DataTypes.BIGINT
+            type: DataTypes.BIGINT
         },
         reset_password_token: {
-            type : DataTypes.STRING
+            type: DataTypes.STRING
         }
     }, {
         timestamps: false,
@@ -173,7 +173,6 @@ module.exports = function (sequelize, DataTypes) {
             }
         }
     });
-    return User;
 };
 
 let randomid = function (length) {

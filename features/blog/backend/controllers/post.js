@@ -19,7 +19,8 @@ module.exports = function (controller, component, app) {
     controller.postList = function (req, res) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
-
+        toolbar.addRefreshButton('/admin/blog/posts');
+        toolbar.addSearchButton('true');
         toolbar.addCreateButton(isAllow(req,'post_create'), '/admin/blog/posts/create');
         toolbar.addDeleteButton(isAllow(req,'post_delete'));
         toolbar = toolbar.render();
@@ -28,9 +29,6 @@ module.exports = function (controller, component, app) {
 
         //// Get current page and default sorting
         let page = req.params.page || 1;
-        //let column = req.params.sort || 'id';
-        //let order = req.params.order || 'desc';
-       // res.locals.root_link = '/admin/blog/posts/page/' + page + '/sort';
 
         // Store search data to session
         let session_search = {};
@@ -371,7 +369,6 @@ module.exports = function (controller, component, app) {
 
         let data = req.body;
         data.created_by = req.user.id;
-        console.log(req.user.id);
         if (data.alias == null || data.alias == '')
             data.alias = slug(data.title).toLowerCase();
         data.type = 'post';
@@ -381,7 +378,6 @@ module.exports = function (controller, component, app) {
         let post_id = 0;
 
         app.models.post.create(data).then(function (post) {
-            console.log(post);
             post_id = post.id;
             let tag = post.categories;
 

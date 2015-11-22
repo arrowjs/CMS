@@ -1,19 +1,29 @@
 'use strict';
 
+let _ = require('lodash');
 let log = require('arrowjs').logger;
 
 class WidgetForm {
-    constructor(widget, wrapClass, elementClass, checkboxClass, radioClass, btnSaveClass, btnDeleteClass) {
-        if(widget && widget.data){
-            this.widget = widget;
-            this.elements = [];
-            this.wrapClass = wrapClass || 'form-group';
-            this.elementClass = elementClass || 'form-control';
-            this.checkboxClass = checkboxClass || 'checkbox';
-            this.radioClass = radioClass || 'radio';
-            this.btnSaveClass = btnSaveClass || 'btn btn-success';
-            this.btnDeleteClass = btnDeleteClass || 'btn btn-danger';
-        }else{
+    constructor(widget, style) {
+        // Must have parameter widget
+        if (widget && widget.data) {
+            try {
+                widget.data = JSON.parse(widget.data);
+
+                this.widget = widget;
+                this.elements = [];
+
+                // Set form style
+                this.wrapClass = _.isObject(style) && style.wrapClass ? style.wrapClass : 'form-group';
+                this.elementClass = _.isObject(style) && style.elementClass ? style.elementClass : 'form-control';
+                this.checkboxClass = _.isObject(style) && style.checkboxClass ? style.checkboxClass : 'checkbox';
+                this.radioClass = _.isObject(style) && style.radioClass ? style.radioClass : 'radio';
+                this.btnSaveClass = _.isObject(style) && style.btnSaveClass ? style.btnSaveClass : 'btn btn-success';
+                this.btnDeleteClass = _.isObject(style) && style.btnDeleteClass ? style.btnDeleteClass : 'btn btn-danger';
+            } catch (err) {
+                log.error('Invalid widget data, cannot create widget form!');
+            }
+        } else {
             log.error('Invalid widget, cannot create widget form!');
         }
     }
@@ -21,7 +31,7 @@ class WidgetForm {
     /**
      * Add an element
      */
-    addElement(element){
+    addElement(element) {
         this.elements.push(element);
     }
 
@@ -58,6 +68,7 @@ class WidgetForm {
      * Add textarea element
      */
     addTextArea(name, label) {
+        //console.log(this.widget);
         let val = this.widget.data[name];
         let value = val ? val : '';
         let content = `<textarea name="${name}" id="${name}" class="${this.elementClass}" rows="5">${value}</textarea>`;
@@ -183,4 +194,6 @@ class WidgetForm {
 
 }
 
-module.exports = WidgetForm;
+module.exports = {
+    WidgetForm: WidgetForm
+};

@@ -3,7 +3,7 @@
 let slug = require('slug');
 
 module.exports = function (sequelize, DataTypes) {
-    let Category = sequelize.define("category", {
+    return sequelize.define("category", {
         id : {
             type : DataTypes.INTEGER,
             primaryKey : true,
@@ -48,5 +48,4 @@ module.exports = function (sequelize, DataTypes) {
             }
         }
     });
-    return Category
 };
