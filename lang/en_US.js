@@ -153,7 +153,7 @@ module.exports = {
     "m_menus_backend_views_new_box_title": "Custom Link",
     "m_menus_backend_views_new_custom_link_title": "Title",
     "m_menus_backend_views_new_custom_link_url": "URL",
-    "m_menus_backend_views_new_btn_add_menu": "Add to Menu&nbsp; ",
+    "m_menus_backend_views_new_btn_add_menu": "Add to Menu ",
     "m_menus_backend_views_new_form_menu_name": "Menu Name",
     "m_menus_backend_views_new_form_menu_structure": "Menu Structure",
     "m_menus_backend_views_new_javascript_update_output": "JSON browser support is required",

@@ -1,5 +1,7 @@
 'use strict';
 
+let _ = require('lodash');
+
 let log = require('arrowjs').logger;
 
 class Toolbar {
@@ -18,18 +20,18 @@ class Toolbar {
     /**
      * Add general button
      */
-    addGeneralButton(permission, title, link, icon, wrapperClass, buttonClass, onclickFunction, target) {
+    addGeneralButton(permission, title, link, optional) {
         permission = permission || false;
-        icon = icon || '';
         link = link || 'javascript: void(0);';
-        wrapperClass = wrapperClass || '';
-        buttonClass = buttonClass || 'btn btn-default';
-        onclickFunction = (onclickFunction) ? ` onclick="${onclickFunction}"` : ``;
-        target = (target) ? ` target="${target}"` : ``;
-
-        let button = '';
+        title = title || '';
+        let icon = _.isObject(optional) && optional.icon ? optional.icon : '';
+        let wrapperClass = _.isObject(optional) && optional.wrapperClass ? optional.wrapperClass : '';
+        let buttonClass = _.isObject(optional) && optional.buttonClass ? optional.buttonClass : 'btn btn-default';
+        let onclickFunction = _.isObject(optional) && optional.onclickFunction ? ` onclick="${optional.onclickFunction}"` : ``;
+        let target = _.isObject(optional) && optional.target ? ` target="${optional.target}"` : ``;
 
         // Display button if permission = true
+        let button = '';
         if (permission)
             button = `<a href="${link}"${target} class=${wrapperClass}>
                         <button type="button" class="${buttonClass}"${onclickFunction}>
@@ -45,14 +47,19 @@ class Toolbar {
      */
     addBackButton(link) {
         link = link || 'javascript: window.history.back();';
-        this.addGeneralButton(true, 'Back', link, '<i class="fa fa-angle-left"></i>');
+        this.addGeneralButton(true, 'Back', link, {icon: '<i class="fa fa-angle-left"></i>'});
     }
 
     /**
      * Add create button
      */
     addCreateButton(permission, link) {
-        this.addGeneralButton(permission, 'Create new', link, '<i class="fa fa-plus"></i>', '', 'btn btn-primary');
+        this.addGeneralButton(permission, 'Create new', link,
+            {
+                icon: '<i class="fa fa-plus"></i>',
+                buttonClass: 'btn btn-primary'
+            }
+        );
     }
 
     /**
@@ -106,7 +113,12 @@ class Toolbar {
      * Add reset button
      */
     addRefreshButton(link) {
-        this.addGeneralButton(true, 'Refresh', link, '<i class="fa fa-refresh"></i>', '', 'btn btn-info');
+        this.addGeneralButton(true, 'Refresh', link,
+            {
+                icon: '<i class="fa fa-refresh"></i>',
+                buttonClass: 'btn btn-info'
+            }
+        );
     }
 
     /**

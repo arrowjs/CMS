@@ -62,6 +62,19 @@ module.exports = {
                 link: '/pages/page/1'
             }
         ]
+    },
+    //is define this module has link to shows on menu
+    add_link_menu : {
+        posts : {
+            title : 'Link Posts',
+            route : '/blog/post/link/menu',
+            search : true
+        },
+        pages : {
+            title : 'Link Pages',
+            route : '/blog/page/link/menu',
+            search : true
+        }
     }
 }
 

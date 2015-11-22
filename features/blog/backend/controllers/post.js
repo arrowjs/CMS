@@ -449,4 +449,43 @@ module.exports = function (controller, component, app) {
         });
     };
 
+
+    /*
+    * function to display all post which is choosed by user when create menus
+    * return : json object contain
+     totalRows: totalRows //number of posts
+     totalPage: totalPage //number of page to display
+     items: items //posts to display
+     title_column: 'title',//title of column to display
+     link_template: '/admin/blog/{id}/{alias}' //link of post add to menu
+    * */
+    controller.link_menu_post = function (req,res) {
+        let page = req.query.page;
+        let searchText = req.query.searchStr;
+
+        let conditions = "type='post' AND published = 1";
+        if (searchText != '') conditions += " AND title ilike '%" + searchText + "%'";
+
+        // Find all posts with page and search keyword
+        app.models.post.findAndCount({
+            attributes: ['id', 'alias', 'title'],
+            where: [conditions],
+            limit: itemOfPage,
+            offset: (page - 1) * itemOfPage,
+            raw: true
+        }).then(function (results) {
+            let totalRows = results.count;
+            let items = results.rows;
+            let totalPage = Math.ceil(results.count / itemOfPage);
+
+            // Send json response
+            res.jsonp({
+                totalRows: totalRows,
+                totalPage: totalPage,
+                items: items,
+                title_column: 'title',
+                link_template: '/admin/blog/{id}/{alias}'
+            });
+        });
+    }
 };
