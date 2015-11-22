@@ -189,7 +189,13 @@ module.exports = function (controller, component, app) {
             let data = results[2];
             data.full_text = data.full_text.replace(/&lt/g, "&amp;lt");
             //add button for preview
-            toolbar.addGeneralButton(isAllow(req,'post_index'),'Preview','/admin/blog/posts/preview/' + results[2].id,'<i class="fa fa-eye"></i>','','btn btn-info','','_blank' );
+            toolbar.addGeneralButton(isAllow(req,'post_index'),'Preview','/admin/blog/posts/preview/' + results[2].id,
+                {
+                    icon: '<i class="fa fa-eye"></i>',
+                    buttonClass: 'btn btn-info',
+                    target: '_blank'
+                });
+
             res.backend.render(edit_view, {
                 title: __('m_blog_backend_post_render_update'),
                 categories: results[0],
