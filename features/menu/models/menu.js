@@ -19,6 +19,9 @@ module.exports = function (sequelize, DataTypes) {
         menu_order: {
             type: DataTypes.STRING
         },
+        location : {
+            type : DataTypes.STRING
+        },
         created_at: {
             type: DataTypes.DATE
         },

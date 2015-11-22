@@ -135,6 +135,23 @@ module.exports = function (component, application) {
                 authenticate: true,
                 permissions: "page_edit"
             }
+        },
+
+
+        /*
+        * Defines route for add link menu
+        * */
+        "/blog/post/link/menu" : {
+            get : {
+                handler : comp.link_menu_post,
+                authenticate : true
+            }
+        },
+        "/blog/page/link/menu" : {
+            get : {
+                handler : comp.link_menu_page,
+                authenticate : true
+            }
         }
 
     }
