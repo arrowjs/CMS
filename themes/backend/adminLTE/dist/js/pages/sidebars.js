@@ -22,11 +22,12 @@ $(function () {
             $.ajax({
                 url: '/admin/widgets/add/' + dropItem.attr('data-alias')
             }).done(function (result) {
+                console.log(ul);
                 if (result) {
                     // Render widget setting form after drop item
                     var new_box = $("<div class='box box-solid open'><div class='box-body'></div></div>");
                     new_box.find(".box-body").first().append(result);
-                    new_box.find("form").first().append("<input type='hidden' name='sidebar' value='" + ul.parents('.box').first().attr('id') + "'>");
+                    new_box.find("form").first().append("<input type='hidden' name='sidebar' value='" + dropItem.parents('.box').first().attr('id') + "'>");
                     new_box.find("form").first().append("<input type='hidden' name='ordering' value='" + (ul.find("li").length + 1) + "'>");
                     li.append(new_box);
                     dropItem.after(li);
@@ -65,11 +66,6 @@ $(function () {
             copyHelper = null;
             var ids = $(this).sortable('toArray');
             sorting(this, ids);
-        },
-        remove: function () {
-            if ($(this).find('.widget-item').length == 0 && $(this).find('.placeholder').length == 0) {
-                $(this).find("ul").append("<li class='placeholder'>Drop widget here</li>");
-            }
         },
         stop: function () {
             var ids = $(this).sortable('toArray');
