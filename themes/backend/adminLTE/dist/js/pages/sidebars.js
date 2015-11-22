@@ -22,7 +22,6 @@ $(function () {
             $.ajax({
                 url: '/admin/widgets/add/' + dropItem.attr('data-alias')
             }).done(function (result) {
-                console.log(ul);
                 if (result) {
                     // Render widget setting form after drop item
                     var new_box = $("<div class='box box-solid open'><div class='box-body'></div></div>");

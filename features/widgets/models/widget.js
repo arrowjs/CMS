@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function (sequelize, DataTypes) {
-    let Widget = sequelize.define("widget", {
+    return sequelize.define("widget", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -13,7 +13,7 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         sidebar: DataTypes.STRING,
-        data: DataTypes.STRING,
+        data: DataTypes.TEXT,
         widget_name: DataTypes.STRING,
         ordering: {
             type: DataTypes.INTEGER,
@@ -22,31 +22,9 @@ module.exports = function (sequelize, DataTypes) {
                     msg: 'Ordering must be an integer'
                 }
             }
-        },
-        created_at: DataTypes.DATE,
-        created_by: {
-            type: DataTypes.INTEGER,
-            validate: {
-                isInt: {
-                    msg: 'Created by must be an integer'
-                }
-            }
-        },
-        modified_at: DataTypes.DATE,
-        modified_by: {
-            type: DataTypes.INTEGER,
-            validate: {
-                isInt: {
-                    msg: 'Modified by must be an integer'
-                }
-            }
         }
     }, {
         tableName: 'arr_widget',
-        timestamps: true,
-        createdAt: "created_at",
-        updatedAt: "modified_at",
-        deletedAt: false
+        timestamps: false
     });
-    return Widget
 };

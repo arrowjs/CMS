@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function (sequelize, DataTypes) {
-    let Posts = sequelize.define("post", {
+    return sequelize.define("post", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -117,18 +117,5 @@ module.exports = function (sequelize, DataTypes) {
         tableName: 'arr_post',
         createdAt: 'created_at',
         updatedAt: 'modified_at'
-        //classMethods : {
-        //    associate: function () {
-        //        return {
-        //            "user" : {
-        //                type : "belongsTo",
-        //                option : {
-        //                    foreignKey: 'created_by'
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
     });
-    return Posts;
 };

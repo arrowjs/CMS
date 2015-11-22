@@ -49,12 +49,12 @@ module.exports = function (controller, component, application) {
                                     // Get settings of each widget
                                     resolve = resolve.then(function () {
                                         return widget.controllers.settingWidget(widgetData)
-                                    }).then(function (widget_settings) {
+                                    }).then(function (widgetSettings) {
                                         // Set widget value to sidebars
                                         widgetData.widget_title = application.widgetManager.getComponent(widgetData.widget_name).title;
                                         sidebars[index].widgets.push({
                                             data: widgetData,
-                                            setting: widget_settings
+                                            setting: widgetSettings
                                         });
 
                                         return null;
