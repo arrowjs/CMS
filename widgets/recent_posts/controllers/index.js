@@ -28,6 +28,7 @@ module.exports = function (controller, component, application) {
         }).then(function(posts){
             // Render view with layout
             return component.render(layout, {
+                widget: JSON.parse(widget.data),
                 posts: posts
             })
         });

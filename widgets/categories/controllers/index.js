@@ -27,7 +27,7 @@ module.exports = function (controller, component, application) {
         }).then(function(categories){
             // Render view with layout
             return component.render(layout, {
-                widget: widget.data,
+                widget: JSON.parse(widget.data),
                 categories: categories
             })
         });
