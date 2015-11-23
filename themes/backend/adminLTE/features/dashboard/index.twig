@@ -25,7 +25,7 @@
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="/admin/blog/pages" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div><!-- ./col -->
             <div class="col-lg-3 col-xs-6">
@@ -80,9 +80,9 @@
                                     <img src="{{ '/img/noImage.png' if not post.image else post.image }}" alt="Product Image">
                                 </div>
                                 <div class="product-info">
-                                    <a href="/admin/blog/posts/{{ post.id }}" class="product-title">{{ post.title | title(30,'...') | safe }} <span class="label label-danger pull-right"></span></a>
+                                    <a href="/admin/blog/posts/{{ post.id }}" class="product-title">{{ post.title | title(60,'...') | safe }} <span class="label label-danger pull-right"></span></a>
                             <span class="product-description">
-                              {{ post.intro_text | title(60,'...') | safe }}
+                              {{ post.intro_text | title(150,'...') | safe }}
                             </span>
                                 </div>
                             </li>

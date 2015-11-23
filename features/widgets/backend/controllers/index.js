@@ -76,7 +76,8 @@ module.exports = function (controller, component, application) {
                 Promise.all(actions).then(function () {
                     return res.render('sidebars', {
                         widgets: widgets,
-                        sidebars: sidebars
+                        sidebars: sidebars,
+                        title : 'Widgets Manager'
                     });
                 });
             }).catch(function (err) {
@@ -84,7 +85,8 @@ module.exports = function (controller, component, application) {
 
                 res.render('sidebars', {
                     widgets: widgets,
-                    sidebars: null
+                    sidebars: null,
+                    title : 'Widgets Manager'
                 });
             });
     };

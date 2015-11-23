@@ -1,5 +1,7 @@
 'use strict';
 
+let promise = require('bluebird');
+
 module.exports = function (controller, component, application) {
     controller.allPosts = function (req, res) {
         let page = req.params.page || 1;
@@ -16,6 +18,7 @@ module.exports = function (controller, component, application) {
             order: 'id DESC'
         }).then(function (posts) {
             if (posts) {
+
                 totalPage = Math.ceil(parseInt(posts.count) / number_item) || 1;
 
                 // Render view
@@ -85,7 +88,7 @@ module.exports = function (controller, component, application) {
                             res.frontend.render('archives', {
                                 posts: result[0],
                                 archives_date: year_ + ' ' + month_,
-                                month : month_,
+                                month: month_,
                                 totalPage: totalPage,
                                 currentPage: page,
                                 route: '/blog/archives/' + year_ + '/' + month_ + '/page-{page}'
@@ -105,5 +108,53 @@ module.exports = function (controller, component, application) {
     };
 
 
+    controller.listByAuthor = function (req, res) {
+
+        let page = req.params.page || 1;
+        let number_item = application.getConfig('pagination').frontNumberItem || 10;
+        let totalPage = 1;
+
+        promise.all(
+            [
+                // Find all post
+                component.models.post.findAndCountAll({
+                    include: [
+                        {
+                            model: application.models.user,
+                            attributes: ['id', 'display_name', 'user_login', 'user_email', 'user_image_url']
+                        }
+                    ],
+                    where: {
+                        type: 'post',
+                        created_by: req.params.author,
+                        published: 1
+
+                    },
+                    offset: (page - 1) * number_item,
+                    limit: number_item,
+                    order: 'id DESC'
+                })
+            ]
+        ).then(function (results) {
+
+                if (results) {
+                    totalPage = Math.ceil(parseInt(results[0].count) / number_item) || 1;
+
+                    // Render view
+                    res.frontend.render('author', {
+                        posts: results[0].rows,
+                        totalPage: totalPage,
+                        currentPage: page,
+                        route: '/posts/' + req.params.author + '/page-{page}',
+                        byAuthor: req.params.author
+                    });
+                } else {
+                    // Redirect to 404 if post not exist
+                    res.frontend.render404(req, res);
+                }
+            }).catch(function (err) {
+                console.log(err.stack)
+            });
+    };
 
 };

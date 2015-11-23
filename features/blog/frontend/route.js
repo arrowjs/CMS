@@ -23,7 +23,6 @@ module.exports = function (component) {
             }
         },
 
-
         // Archive router
         "/blog/archives/:year([0-9]{4})/:month([0-9]{2})(/)?": {
             get: {
@@ -54,8 +53,6 @@ module.exports = function (component) {
                 handler: controller.pageIndex
             }
         }
-
-
 
     }
 };

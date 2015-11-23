@@ -211,7 +211,28 @@
                 {{ toolbar | safe }}
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-4">
+
+
+                <div class="box box-success box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Location</h3>
+                        <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="form-group">
+                            {% if menu_locations %}
+                                {% for menu_location in menu_locations %}
+                                    <input type="checkbox" name="location" value="{{ menu_location.name }}"> {{ menu_location.title }}<br>
+                                {% endfor %}
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+
                 <div class="box box-primary arr-module-box">
                     <div class="box-header with-border">
                         <h3 class="box-title">{{ __('m_menus_backend_views_new_box_title') }}</h3>
@@ -266,33 +287,17 @@
                 {% endfor %}
             </div>
 
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <div class="box box-primary">
                     <div class="box-body">
                         <div class="form-group">
-
-
                             <div class="col-md-12">
-                                <div class="col-md-6">
-                                    <label for="name"
-                                           style="margin-bottom: 10px; font-size: 20px;">{{ __('m_menus_backend_views_new_form_menu_name') }}</label>
-                                    <input type="text" class="form-control" name="name" id="name" value="{{ menu.name }}"
-                                           autocomplete="off" required="required"/>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="name"
-                                           style="margin-bottom: 10px; font-size: 20px;">Location</label>
-                                    <select multiple="multiple" class="form-control" name="location" id="menu-location">
-                                            {% if menu_locations %}
-                                                {% for menu_location in menu_locations %}
-                                                    <option value="{{ menu_location.name }}">{{ menu_location.title }}</option>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </select>
-                                </div>
+                                <label for="name"
+                                       style="margin-bottom: 10px; font-size: 20px;">{{ __('m_menus_backend_views_new_form_menu_name') }}</label>
+                                <input type="text" class="form-control" name="name" id="name" value="{{ menu.name }}"
+                                       autocomplete="off" required="required"/>
                             </div>
                         </div>
-
                         <div class="row" style="margin-top: 60px;">
                             <div class="col-md-12">
                                 <label style="font-size: 20px;">{{ __('m_menus_backend_views_new_form_menu_structure') }}</label>
@@ -304,7 +309,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <input type="hidden" id="output" name="output"/>
                     </div>
                 </div>
@@ -334,11 +338,14 @@
 
             {% if menu %}
             var mLoca = '{{ menu.location }}';
-            mLoca = mLoca.split('::').filter(function (val) {
-                return val ? val!='':val;
-            })
-            console.log(mLoca.toString());
-            $('#menu-location').val(mLoca).trigger('change');
+            mLoca = mLoca.split('::');
+                mLoca.map(function (val) {
+                    $('input[name="location"]').each(function (k,v) {
+                        if(v.value==val)
+                        this.checked=true;
+                    })
+                })
+                //$('#menu-location').val(mLoca).trigger('change');
             {% endif %}
         });
 
