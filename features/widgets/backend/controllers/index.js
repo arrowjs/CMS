@@ -102,7 +102,7 @@ module.exports = function (controller, component, application) {
             // Get widget setting form
             res.send(widget.controllers.settingWidget({
                 widget_name: widgetName,
-                data: {}
+                data: '{}'
             }));
         } else {
             res.send('');

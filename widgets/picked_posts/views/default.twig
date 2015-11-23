@@ -1,0 +1,16 @@
+<div class="picked_post">
+    <h3>
+        {{ widget.title }}
+    </h3>
+
+    <ul class="list-unstyled">
+        {% for post in posts %}
+        <li>
+            <a href="/category/{{ post.alias }}/{{ post.id }}">
+                <i class="fa fa-angle-right pr-10"></i> {{ post.title }}
+            </a>
+            <p>{{ post.intro_text }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
