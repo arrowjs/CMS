@@ -22,9 +22,12 @@ module.exports = function (controller, component, application) {
 
         // Get all categories
         return application.models.post.findAll({
-            raw: true,
             order: 'published_at desc',
-            limit: JSON.parse(widget.data).number_of_recent_posts
+            limit: JSON.parse(widget.data).number_of_recent_posts,
+            where: {
+                published: 1
+            },
+            raw: true
         }).then(function(posts){
             // Render view with layout
             return component.render(layout, {

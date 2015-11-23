@@ -5,12 +5,16 @@
 
     <ul class="list-unstyled">
         {% for post in posts %}
-        <li>
-            <a href="/category/{{ post.alias }}/{{ post.id }}">
-                <i class="fa fa-angle-right pr-10"></i> {{ post.title }}
-            </a>
-            <p>{{ post.intro_text }}</p>
-        </li>
+            {% if post.published_at %}
+                <li>
+                    <a href="/blog/{{ post.id }}/{{ post.alias }}">
+                        {{ post.title }}
+                        <p>{{ post.intro_text | title(50, '...') }}</p>
+                    </a>
+
+                    <p><i>{{ post.published_at | moment().format('LL') }}</i></p>
+                </li>
+            {% endif %}
         {% endfor %}
     </ul>
 </div>

@@ -18,26 +18,33 @@ module.exports = function (controller, component, application) {
     };
 
     controller.renderWidget = function (widget) {
+        console.log(widget);
         // Get layouts
         let layout = widget.data.layout || component.getLayouts(widget.widget_name)[0];
 
         // Get all posts user choose
         let ids = JSON.parse(widget.data).id_posts.split(",");
+        let atts = ['id', 'title', 'alias', 'image', 'intro_text'];
+        if (JSON.parse(widget.data).display_date == 1) atts.push('published_at');
 
-        return application.models.post.findAll({
-            where: {
-                id :{
-                    $in : ids
-                }
-            },
-            raw: true
-        }).then(function(posts){
-            // Render view with layout
-            return component.render(layout, {
-                widget: JSON.parse(widget.data),
-                posts: posts
-            })
-        });
+        if (ids.length > 0) {
+            return application.models.post.findAll({
+                attributes: atts,
+                order: 'published_at DESC',
+                where: {
+                    id :{
+                        $in : ids
+                    }
+                },
+                raw: true
+            }).then(function(posts){
+                // Render view with layout
+                return component.render(layout, {
+                    widget: JSON.parse(widget.data),
+                    posts: posts
+                })
+            });
+        }
     };
 };
 
