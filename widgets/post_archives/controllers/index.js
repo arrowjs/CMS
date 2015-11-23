@@ -22,7 +22,7 @@ module.exports = function (controller, component, application) {
         let layout = widget.data.layout || component.getLayouts(widget.widget_name)[0];
 
         // Get all categories
-        return application.models.category.findAll({
+        return application.models.post.findAll({
             raw: true,
             limit: JSON.parse(widget.data).number_of_categories
         }).then(function(categories){
