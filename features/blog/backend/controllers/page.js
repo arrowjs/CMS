@@ -14,8 +14,8 @@ module.exports = function (controller, component, app) {
 
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addCreateButton(isAllow(req,'page_create'), '/admin/blog/pages/create');
-        toolbar.addDeleteButton(isAllow(req,'page_delete'));
+        toolbar.addCreateButton(isAllow(req, 'page_create'), '/admin/blog/pages/create');
+        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
         toolbar = toolbar.render();
 
 
@@ -107,7 +107,6 @@ module.exports = function (controller, component, app) {
         ];
 
 
-
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: '/admin/blog/pages',
             limit: itemOfPage,
@@ -176,7 +175,7 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req,'page_create'));
+        toolbar.addSaveButton(isAllow(req, 'page_create'));
         toolbar = toolbar.render();
 
 
@@ -205,8 +204,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req,'page_create'));
-        toolbar.addDeleteButton(isAllow(req,'page_delete'));
+        toolbar.addSaveButton(isAllow(req, 'page_create'));
+        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
 
 
         let data = req.body;
@@ -238,8 +237,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req,'page_create'));
-        toolbar.addDeleteButton(isAllow(req,'page_delete'));
+        toolbar.addSaveButton(isAllow(req, 'page_create'));
+        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
         toolbar = toolbar.render();
 
 
@@ -294,8 +293,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req,'page_create'));
-        toolbar.addDeleteButton(isAllow(req,'page_delete'));
+        toolbar.addSaveButton(isAllow(req, 'page_create'));
+        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
         toolbar = toolbar.render();
 
 
@@ -315,7 +314,7 @@ module.exports = function (controller, component, app) {
                 res.backend.render('page/new', {
                     title: __('m_blog_backend_page_render_update'),
                     page: page,
-                    toolbar : toolbar
+                    toolbar: toolbar
                 });
             });
         }).catch(function (error) {
@@ -324,7 +323,7 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.link_menu_page = function (req,res) {
+    controller.link_menu_page = function (req, res) {
         let page = req.query.page;
         let searchText = req.query.searchStr;
 

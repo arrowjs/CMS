@@ -21,8 +21,8 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton('/admin/blog/posts');
         toolbar.addSearchButton('true');
-        toolbar.addCreateButton(isAllow(req,'post_create'), '/admin/blog/posts/create');
-        toolbar.addDeleteButton(isAllow(req,'post_delete'));
+        toolbar.addCreateButton(isAllow(req, 'post_create'), '/admin/blog/posts/create');
+        toolbar.addDeleteButton(isAllow(req, 'post_delete'));
         toolbar = toolbar.render();
 
         res.locals.user = req.user;
@@ -169,8 +169,8 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
         //todo: check permission
-        toolbar.addSaveButton(isAllow(req,'post_create'));
-        toolbar.addDeleteButton(isAllow(req,'post_delete'));
+        toolbar.addSaveButton(isAllow(req, 'post_create'));
+        toolbar.addDeleteButton(isAllow(req, 'post_delete'));
         promise.all([
             app.models.category.findAll({
                 order: "id asc"
@@ -189,7 +189,7 @@ module.exports = function (controller, component, app) {
             let data = results[2];
             data.full_text = data.full_text.replace(/&lt/g, "&amp;lt");
             //add button for preview
-            toolbar.addGeneralButton(isAllow(req,'post_index'),'Preview','/admin/blog/posts/preview/' + results[2].id,
+            toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', '/admin/blog/posts/preview/' + results[2].id,
                 {
                     icon: '<i class="fa fa-eye"></i>',
                     buttonClass: 'btn btn-info',
@@ -346,7 +346,7 @@ module.exports = function (controller, component, app) {
         toolbar.addBackButton(back_link);
         //todo: check permission
 
-        toolbar.addSaveButton(isAllow(req,'post_create'));
+        toolbar.addSaveButton(isAllow(req, 'post_create'));
         toolbar = toolbar.render();
 
         promise.all([
@@ -400,7 +400,7 @@ module.exports = function (controller, component, app) {
                             count: count
                         })
                     });
-                }).catch(function(err){
+                }).catch(function (err) {
                     console.log(err);
                 });
             }
@@ -457,15 +457,15 @@ module.exports = function (controller, component, app) {
 
 
     /*
-    * function to display all post which is choosed by user when create menus
-    * return : json object contain
+     * function to display all post which is choosed by user when create menus
+     * return : json object contain
      totalRows: totalRows //number of posts
      totalPage: totalPage //number of page to display
      items: items //posts to display
      title_column: 'title',//title of column to display
      link_template: '/admin/blog/{id}/{alias}' //link of post add to menu
-    * */
-    controller.link_menu_post = function (req,res) {
+     * */
+    controller.link_menu_post = function (req, res) {
         let page = req.query.page;
         let searchText = req.query.searchStr;
 
