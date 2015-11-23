@@ -11,7 +11,7 @@ module.exports = function (controller, component, application) {
         // Create setting form
         let form = new ArrowHelper.WidgetForm(widget);
         form.addText('title', 'Title');
-        form.addText('number_of_categories', 'Number of Categories');
+        form.addText('number_of_recent_posts', 'Number of Recent Posts');
         form.addSelect('layout', 'Layout', layouts);
         return form.render();
     };
@@ -21,14 +21,14 @@ module.exports = function (controller, component, application) {
         let layout = widget.data.layout || component.getLayouts(widget.widget_name)[0];
 
         // Get all categories
-        return application.models.category.findAll({
+        return application.models.post.findAll({
             raw: true,
-            limit: JSON.parse(widget.data).number_of_categories
-        }).then(function(categories){
+            order: 'published_at desc',
+            limit: JSON.parse(widget.data).number_of_recent_posts
+        }).then(function(posts){
             // Render view with layout
             return component.render(layout, {
-                widget: widget.data,
-                categories: categories
+                posts: posts
             })
         });
     };

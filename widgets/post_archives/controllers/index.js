@@ -11,12 +11,13 @@ module.exports = function (controller, component, application) {
         // Create setting form
         let form = new ArrowHelper.WidgetForm(widget);
         form.addText('title', 'Title');
-        form.addText('number_of_categories', 'Number of Categories');
+        form.addText('number_of_post_archives', 'Number of Post Archives');
         form.addSelect('layout', 'Layout', layouts);
         return form.render();
     };
 
     controller.renderWidget = function (widget) {
+        console.log(widget);
         // Get layouts
         let layout = widget.data.layout || component.getLayouts(widget.widget_name)[0];
 
