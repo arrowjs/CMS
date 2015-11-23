@@ -4,20 +4,20 @@ module.exports = function (component) {
     let controller = component.controllers.frontend;
 
     return {
-        "/blog": {
+
+
+        // Categories  router
+        "category/:alias([0-9a-zA-Z-]+)/:id([0-9]+)(/)?": {
             get: {
-                handler: controller.allPosts
+                handler: controller.listPostByCategory
             }
         },
-        '/blog/page-:page([0-9]+)?(/)?': {
+        "category/:alias([0-9a-zA-Z-]+)/:id([0-9]+)/page-:page([0-9]+)?(/)?": {
             get: {
-                handler: controller.allPosts
-            }
-        },
-        "/blog/:postId([0-9]+)/:postAlias": {
-            get: {
-                handler: controller.postDetail
+                handler: controller.listPostByCategory
             }
         }
+
+
     }
 };
