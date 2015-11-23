@@ -11,25 +11,31 @@ module.exports = function (controller, component, application) {
         // Create setting form
         let form = new ArrowHelper.WidgetForm(widget);
         form.addText('title', 'Title');
-        form.addText('number_of_post_archives', 'Number of Post Archives');
+        form.addText('id_posts', 'Ip posts (Eg: 1, 5, 2)');
+        form.addCheckbox('display_date', 'Display date');
         form.addSelect('layout', 'Layout', layouts);
         return form.render();
     };
 
     controller.renderWidget = function (widget) {
-        console.log(widget);
         // Get layouts
         let layout = widget.data.layout || component.getLayouts(widget.widget_name)[0];
 
-        // Get all categories
+        // Get all posts user choose
+        let ids = JSON.parse(widget.data).id_posts.split(",");
+
         return application.models.post.findAll({
-            raw: true,
-            limit: JSON.parse(widget.data).number_of_categories
-        }).then(function(categories){
+            where: {
+                id :{
+                    $in : ids
+                }
+            },
+            raw: true
+        }).then(function(posts){
             // Render view with layout
             return component.render(layout, {
-                widget: widget.data,
-                categories: categories
+                widget: JSON.parse(widget.data),
+                posts: posts
             })
         });
     };

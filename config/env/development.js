@@ -9,7 +9,7 @@ module.exports = {
         username: 'thanhvk',
         password: '310928@',
         dialect: 'postgres',
-        logging: false
+        logging: true
     },
     redis: {
         host: 'localhost',
