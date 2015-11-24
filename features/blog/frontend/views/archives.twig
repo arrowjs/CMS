@@ -36,7 +36,7 @@
                             <div class="col-lg-2 col-sm-2">
                                 <div class="date-wrap">
                                     <span class="date">{{ month }}</span>
-                                    <span class="month">      </span>
+                                    <span class="month"> {{ month | moment("MMMM")}} </span>
                                 </div>
                             </div>
                             <div class="col-lg-10 col-sm-10">
@@ -122,7 +122,7 @@
                         <input type="text" class="form-control" placeholder="Search here">
                     </div>
 
-                    {#{{ "right-sidebar" | getSidebar | safe }}#}
+                    {{ getSidebar("right-sidebar") | async | safe }}
                 </div>
             </div>
         </div>

@@ -121,7 +121,7 @@
                         <input type="text" class="form-control" placeholder="Search here">
                     </div>
 
-                    {#{{ "right-sidebar" | getSidebar | safe }}#}
+                    {{ getSidebar("right-sidebar") | async | safe }}
                 </div>
             </div>
         </div>
