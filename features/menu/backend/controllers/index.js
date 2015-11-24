@@ -1,6 +1,6 @@
 'use strict';
 
-let _ = require('lodash');
+let _ = require('arrowjs')._;
 let promise = require('bluebird');
 let fs = require("fs");
 let readFileAsync = promise.promisify(fs.readFile);

@@ -1,5 +1,6 @@
-"use strict";
-let _ = require('lodash');
+'use strict';
+
+let _ = require('arrowjs')._;
 let lang = require('arrowjs').language.languageKey;
 let logger = require('arrowjs').logger;
 
