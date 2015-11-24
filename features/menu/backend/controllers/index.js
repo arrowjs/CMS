@@ -1,7 +1,7 @@
 'use strict';
 
 let _ = require('arrowjs')._;
-let promise = require('bluebird');
+let promise = require('arrowjs').Promise;
 let fs = require("fs");
 let readFileAsync = promise.promisify(fs.readFile);
 let log = require('arrowjs').logger;
