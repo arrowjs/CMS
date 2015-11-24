@@ -12,20 +12,12 @@
   },
   "sidebars": [
     {
-      "name": "sidebar1",
-      "title": "Sidebar 1"
-    },
-    {
       "name": "right-sidebar",
       "title": "Right sidebar"
     },
     {
       "name": "main-menu",
       "title": "Main nenu"
-    },
-    {
-      "name": "social-menu",
-      "title": "Social menu"
     }
   ]
 }

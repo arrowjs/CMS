@@ -116,7 +116,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.delete = function (req, res) {
-        console.log('delete')
         component.models.menu.destroy({
             where: {
                 id: {
@@ -132,51 +131,7 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.update = function (req, res) {
-            // Find menu to update
-            component.models.menu.find({
-                where: {
-                    id: req.params.mid
-                }
-            }).then(function (menu) {
-                // Update menu
-                return menu.updateAttributes({
-                    name: req.body.name,
-                    menu_order: req.body.output
-                });
-            }).then(function (menu) {
-                // Delete old menu detail
-                return component.models.menu_detail.destroy({
-                    where: {
-                        menu_id: menu.id
-                    }
-                });
-            }).then(function () {
-                let promisesCreate = [];
 
-                // Create menu detail
-                for (let i in req.body.title) {
-                    promisesCreate.push(
-                        component.models.menu_detail.create({
-                            id: req.body.mn_id[i],
-                            menu_id: req.params.mid,
-                            name: req.body.title[i],
-                            link: req.body.url[i],
-                            attribute: req.body.attribute[i]
-                        })
-                    );
-                }
-
-                return promise.all(promisesCreate);
-            }).then(function () {
-                req.flash.success(__('m_menus_backend_controller_update_flash_success'));
-                res.redirect('/admin/menu/update/' + req.params.mid);
-            }).catch(function (error) {
-                log(error);
-                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                res.render('new');
-            });
-    };
 
     controller.saveSortAdminMenu = function (req, res) {
         let systems = req.body.s || [];
@@ -211,33 +166,67 @@ module.exports = function (controller, component, app) {
             })
     };
 
+    controller.update = function (req, res) {
+        // Find menu to update
+        component.models.menu.find({
+            where: {
+                id: req.params.mid
+            }
+        }).then(function (menu) {
+            // Update menu
+            return menu.updateAttributes({
+                name: req.body.name,
+                menu_order: req.body.output
+            });
+        }).then(function (menu) {
+            // Delete old menu detail
+            return component.models.menu_detail.destroy({
+                where: {
+                    menu_id: menu.id
+                }
+            });
+        }).then(function (menu) {
+            let promises = [];
+            // Create menu detail
+            for (let i in req.body.title) {
+                promises.push(
+                    component.models.menu_detail.create({
+                        id: req.body.mn_id[i],
+                        menu_id: req.params.mid,
+                        name: req.body.title[i],
+                        link: req.body.url[i],
+                        attribute: req.body.attribute[i]
+                    })
+                );
+            }
+            return promise.all(promises);
+        }).then(function (result) {
+            req.flash.success(__('m_menus_backend_controller_update_flash_success'));
+            res.redirect('/admin/menu/update/' + req.params.mid);
+        }).catch(function (error) {
+            log(error);
+            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+            res.redirect('/admin/menu/create');
+        });
+    };
+
     controller.save = function (req, res) {
         let menu_id = 0;
 
-        let location = req.body.location;
-        let locationStr = '';
-        if(typeof location == 'object'){
-            locationStr=location.join('::');
-        }else if(typeof location == 'string'){
-            locationStr=location;
-        }
-
         component.models.menu.create({
             name: req.body.name,
-            menu_order: req.body.output,
-            location : locationStr
+            menu_order: req.body.output
         }).then(function (menu) {
             menu_id = menu.id;
-
             // Delete old menu detail
             return component.models.menu_detail.destroy({
                 where: {
                     menu_id: menu_id
                 }
             });
-        }).then(function () {
+        }).then(function (count) {
+            console.log(req.body.title);
             let promises = [];
-
             // Create menu detail
             for (let i in req.body.title) {
                 promises.push(
@@ -252,13 +241,14 @@ module.exports = function (controller, component, app) {
             }
 
             return promise.all(promises);
-        }).then(function () {
+        }).then(function (results) {
             req.flash.success(__('m_menus_backend_controller_create_flash_success'));
             res.redirect('/admin/menu/update/' + menu_id);
         }).catch(function (error) {
+            log(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             // Re-render view if has error
-            res.render('new');
+            res.redirect('/admin/menu/create');
         });
     };
 

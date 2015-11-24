@@ -39,6 +39,7 @@
                             </div>
                             <div class="col-lg-10 col-sm-10">
                                 <div class="blog-img">
+                                    <script>//TODO: remove host name</script>
                                     <img src="{{ post.image }}" alt=""/>
                                 </div>
 
@@ -47,49 +48,49 @@
                         <div class="row">
                             <div class="col-lg-2 col-sm-2 text-right">
                                 <div class="author">
-                                    By <a href="#">Admin</a>
+                                    By <a href="#">{{ post.author }}</a>
                                 </div>
-                                <ul class="list-unstyled">
-                                    <li>
-                                        <a href="javascript:;">
-                                            <em>travel</em>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;">
-                                            <em>tour</em>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;">
-                                            <em>recreation</em>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;">
-                                            <em>tourism</em>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <div class="st-view">
-                                    <ul class="list-unstyled">
-                                        <li>
-                                            <a href="javascript:;">
-                                                209 View
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                23 Share
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                15 comments
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                {#<ul class="list-unstyled">#}
+                                {#<li>#}
+                                {#<a href="javascript:;">#}
+                                {#<em>travel</em>#}
+                                {#</a>#}
+                                {#</li>#}
+                                {#<li>#}
+                                {#<a href="javascript:;">#}
+                                {#<em>tour</em>#}
+                                {#</a>#}
+                                {#</li>#}
+                                {#<li>#}
+                                {#<a href="javascript:;">#}
+                                {#<em>recreation</em>#}
+                                {#</a>#}
+                                {#</li>#}
+                                {#<li>#}
+                                {#<a href="javascript:;">#}
+                                {#<em>tourism</em>#}
+                                {#</a>#}
+                                {#</li>#}
+                                {#</ul>#}
+                                {#<div class="st-view">#}
+                                {#<ul class="list-unstyled">#}
+                                {#<li>#}
+                                {#<a href="javascript:;">#}
+                                {#209 View#}
+                                {#</a>#}
+                                {#</li>#}
+                                {#<li>#}
+                                {#<a href="javascript:;">#}
+                                {#23 Share#}
+                                {#</a>#}
+                                {#</li>#}
+                                {#<li>#}
+                                {#<a href="javascript:;">#}
+                                {#15 comments#}
+                                {#</a>#}
+                                {#</li>#}
+                                {#</ul>#}
+                                {#</div>#}
                             </div>
                             <div class="col-lg-10 col-sm-10">
                                 <h1>
@@ -116,15 +117,9 @@
 
             <div class="col-lg-3">
                 <div class="blog-side-item">
-                    <div class="search-row">
-                        <input type="text" class="form-control" placeholder="Search here">
-                    </div>
-
                     {{ getSidebar("right-sidebar") | async | safe }}
                 </div>
             </div>
         </div>
     </div>
-
-
 {% endblock %}
