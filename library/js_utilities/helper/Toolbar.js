@@ -1,8 +1,6 @@
 'use strict';
 
-let _ = require('lodash');
-
-let log = require('arrowjs').logger;
+let _ = require('arrowjs')._;
 
 class Toolbar {
     constructor() {

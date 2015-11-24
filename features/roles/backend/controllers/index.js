@@ -2,11 +2,10 @@
  * Created by thangnv on 11/12/15.
  */
 'use strict';
-let _ = require('lodash');
+let _ = require('arrowjs')._;
 let fs = require('fs');
 let path = require('path');
 
-let _log = require('arrowjs').logger;
 let route = 'roles';
 
 module.exports = function (controller,component,app) {

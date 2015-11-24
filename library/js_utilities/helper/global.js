@@ -3,7 +3,7 @@
  */
 'use strict';
 
-let  _ = require('lodash'),
+let _ = require('arrowjs')._,
     glob = require('glob'),
     fs = require('fs'),
     acl=require('./acl'),

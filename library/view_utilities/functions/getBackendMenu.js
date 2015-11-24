@@ -1,6 +1,6 @@
 "use strict";
 
-let _ = require('lodash');
+let _ = require('arrowjs')._;
 let log = require('arrowjs').logger;
 
 module.exports = {
