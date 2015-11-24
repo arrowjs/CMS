@@ -1,0 +1,9 @@
+.recent_post .feature_image,
+.picked_post .feature_image {
+    width: 35%;
+}
+
+.recent_post .feature_image img,
+.picked_post .feature_image img {
+    width: 100%;
+}
