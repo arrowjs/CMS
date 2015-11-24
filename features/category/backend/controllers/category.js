@@ -1,7 +1,7 @@
 'use strict';
 
 let slug = require('slug');
-let promise = require('bluebird');
+let promise = require('arrowjs').Promise;
 
 //global function
 let createFilter = require(__base+'/library/js_utilities/helper/createFilter');

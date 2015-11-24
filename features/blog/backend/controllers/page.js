@@ -1,6 +1,6 @@
 'use strict';
 let slug = require('slug');
-let promise = require('bluebird');
+let promise = require('arrowjs').Promise;
 let formidable = require('formidable');
 promise.promisifyAll(formidable);
 

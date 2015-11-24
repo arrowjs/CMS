@@ -2,7 +2,7 @@
  * Created by thangnv on 11/11/15.
  */
 'use strict';
-let promise = require('bluebird');
+let promise = require('arrowjs').Promise;
 
 module.exports = function (cont, comp, app) {
     cont.view = function (req, res) {

@@ -2,7 +2,7 @@
 
 let slug = require('slug');
 let _ = require('arrowjs')._;
-let promise = require('bluebird');
+let promise = require('arrowjs').Promise;
 
 let route = 'blog';
 let edit_view = 'post/new';

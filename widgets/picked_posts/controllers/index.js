@@ -1,7 +1,5 @@
 'use strict';
 
-let Promise = require('bluebird');
-
 module.exports = function (controller, component, application) {
 
     controller.settingWidget = function (widget) {
