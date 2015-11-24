@@ -1,0 +1,17 @@
+'use strict';
+
+module.exports = {
+    app: {
+        title: 'ArrowJS CMS',
+        description: '',
+        keywords: '',
+        logo: '',
+        icon: ''
+    },
+    langPath : "/lang",
+    language: 'en_US',
+    long_stack: true,
+    port: process.env.PORT || 8000,
+    admin_prefix: 'admin',
+    ArrowHelper : "/library/js_utilities/helper/"
+};
