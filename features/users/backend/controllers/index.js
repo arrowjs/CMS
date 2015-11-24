@@ -471,7 +471,12 @@ module.exports = function (controller, component, app) {
             console.log('ERROR : ' + err);
         })
     };
+    controller.forgotPass = function (req, res) {
 
+    };
+    controller.forgotPassView = function (req,res) {
+        res.backend.render('forgot-password');
+    };
     controller.hasAuthorization = function (req, res, next) {
         if (req._user.id !== req.user.id) {
             return false;

@@ -9,21 +9,24 @@
             <a class="navbar-brand" href="/">A<span>cme</span></a>
         </div>
         <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="/">Home</a>
-                </li>
-                <li>
-                    <a href="/blog">Blog</a>
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
-                </li>
-                <li><input class="form-control search" placeholder=" Search" type="text"></li>
-            </ul>
+            {#<ul class="nav navbar-nav">#}
+                {#<li>#}
+                    {#<a href="/">Home</a>#}
+                {#</li>#}
+                {#<li>#}
+                    {#<a href="/blog">Blog</a>#}
+                {#</li>#}
+                {#<li>#}
+                    {#<a href="#">#}
+                        {#About#}
+                    {#</a>#}
+                {#</li>#}
+                {#<li>#}
+                    {#<a href="#">Contact</a>#}
+                {#</li>#}
+                {#<li><input class="form-control search" placeholder=" Search" type="text"></li>#}
+            {#</ul>#}
+            {{ getSidebar("main-menu") | async | safe }}
         </div>
     </div>
 </header>

@@ -18,7 +18,12 @@ module.exports = function (controller, component, application) {
 
     controller.renderWidget = function (widget) {
         // Get layouts
-        let layout = widget.data.layout || component.getLayouts(widget.widget_name)[0];
+        let layout;
+        try{
+            layout=JSON.parse(widget.data).layout;
+        }catch(err){
+            layout=component.getLayouts(widget.widget_name)[0];
+        }
 
         // Get all categories
         return application.models.category.findAll({

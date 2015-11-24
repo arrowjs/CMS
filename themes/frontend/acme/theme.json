@@ -10,16 +10,6 @@
     "license_uri": "http://www.gnu.org/licenses/gpl-2.0.html",
     "tag": "red, green, blue"
   },
-  "menus": [
-    {
-      "name": "main_menu",
-      "title": "Main nenu"
-    },
-    {
-      "name": "social_menu",
-      "title": "Social menu"
-    }
-  ],
   "sidebars": [
     {
       "name": "sidebar1",
@@ -28,6 +18,14 @@
     {
       "name": "right-sidebar",
       "title": "Right sidebar"
+    },
+    {
+      "name": "main-menu",
+      "title": "Main nenu"
+    },
+    {
+      "name": "social-menu",
+      "title": "Social menu"
     }
   ]
 }

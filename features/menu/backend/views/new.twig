@@ -212,27 +212,6 @@
             </div>
 
             <div class="col-md-4">
-
-
-                <div class="box box-success box-solid">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Location</h3>
-                        <!-- /.box-tools -->
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        <div class="form-group">
-                            {% if menu_locations %}
-                                {% for menu_location in menu_locations %}
-                                    <input type="checkbox" name="location" value="{{ menu_location.name }}"> {{ menu_location.title }}<br>
-                                {% endfor %}
-                            {% endif %}
-
-                        </div>
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-
                 <div class="box box-primary arr-module-box">
                     <div class="box-header with-border">
                         <h3 class="box-title">{{ __('m_menus_backend_views_new_box_title') }}</h3>
@@ -335,18 +314,6 @@
                     return text;
                 }
             });
-
-            {% if menu %}
-            var mLoca = '{{ menu.location }}';
-            mLoca = mLoca.split('::');
-                mLoca.map(function (val) {
-                    $('input[name="location"]').each(function (k,v) {
-                        if(v.value==val)
-                        this.checked=true;
-                    })
-                })
-                //$('#menu-location').val(mLoca).trigger('change');
-            {% endif %}
         });
 
         function collapseBox(button) {
