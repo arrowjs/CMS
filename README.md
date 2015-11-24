@@ -29,7 +29,7 @@ If you have new VPS, you can auto install ArrowCMS with one command line :
 Clone project from github:
 
 ```
-    git clone https://github.com/TechMaster/ArrowCMS.git
+    git clone https://github.com/arrowjs/CMS.git
 ```
 
 Then you'll need to create the database from backup file:
@@ -46,7 +46,7 @@ Then you'll need to create the database from backup file:
 Go to project folder and start application:
 
 ```
-    cd arrowjs-cms
+    cd CMS
     node server.js
 ```
 

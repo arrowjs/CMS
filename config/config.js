@@ -1,19 +1,16 @@
 'use strict';
 
 module.exports = {
-    key: 'site_setting',
     app: {
-        language: 'en_US',
-        title: 'ArrowJS CMS',
+        title: 'ArrowJS',
         description: '',
         keywords: '',
         logo: '',
         icon: ''
     },
-    admin_prefix: 'admin',
-    bodyParser : {
-        extended: true,
-        limit: '5mb'
-    },
-    ArrowHelper : "/library/js_utilities/helper/"
+    langPath : "/lang",
+    language: 'en_US',
+    long_stack : false, //only use for development. Carefully: this will slow system.
+    port: process.env.PORT || 8000,
+    ArrowHelper : "/helpers/"
 };
