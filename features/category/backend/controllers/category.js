@@ -62,7 +62,7 @@ module.exports = function (controller,component,app) {
             rootLink: '/admin/categories/page/$page/sort',
             limit: itemOfPage
         });
-        console.log(filter.limit);
+
         app.models.category.findAndCountAll({
             where: filter.conditions,
             order: filter.sort,

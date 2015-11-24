@@ -1,11 +1,9 @@
 'use strict';
 
 let slug = require('slug');
-let _ = require('lodash');
+let _ = require('arrowjs')._;
 let promise = require('bluebird');
 
-
-let _log = require('arrowjs').logger;
 let route = 'blog';
 let edit_view = 'post/new';
 

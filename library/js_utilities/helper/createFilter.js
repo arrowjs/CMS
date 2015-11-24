@@ -1,6 +1,6 @@
 'use strict';
 
-let _ = require('lodash');
+let _ = require('arrowjs')._;
 let logger = require('arrowjs').logger;
 
 exports.createFilter = function(req, res, columns, options) {

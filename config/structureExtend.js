@@ -2,7 +2,7 @@
 
 let globalFunction = require('arrowjs').globalFunction;
 let path = require('path');
-let _ = require('lodash');
+let _ = require('arrowjs')._;
 
 module.exports = {
 

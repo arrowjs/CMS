@@ -34,7 +34,9 @@ module.exports = function (controller, component, application) {
                 where: {
                     id :{
                         $in : ids
-                    }
+                    },
+                    published: 1,
+                    type: 'post'
                 },
                 raw: true
             }).then(function(posts){

@@ -4,7 +4,6 @@ let promise = require('bluebird');
 
 module.exports = function (controller, component, app) {
 
-
     controller.listPostByCategory = function (req, res) {
 
         let page = req.params.page || 1;
@@ -40,6 +39,7 @@ module.exports = function (controller, component, app) {
                 // Render view
                 res.frontend.render('category', {
                     posts: result[0].rows,
+                    numberOfPost: result[0].rows.length,
                     category: result[2],
                     categories: result[1],
                     totalPage: totalPage,
@@ -47,7 +47,7 @@ module.exports = function (controller, component, app) {
                 });
             } else {
                 //Redirect to 404 if post not exist
-                _module.render404(req, res);
+                res.frontend.render404(req, res);
             }
         }).catch(function (err) {
             console.log(err.stack);

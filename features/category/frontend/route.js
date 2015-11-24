@@ -1,23 +1,19 @@
 'use strict';
 
-module.exports = function (component) {
-    let controller = component.controllers.frontend;
+module.exports = function (component, application) {
+    let comp = component.controllers.frontend;
 
     return {
-
-
         // Categories  router
-        "category/:alias([0-9a-zA-Z-]+)/:id([0-9]+)(/)?": {
+        "/categories/:alias([0-9a-zA-Z-]+)/:id([0-9]+)(/)?": {
             get: {
-                handler: controller.listPostByCategory
+                handler: comp.listPostByCategory
             }
         },
-        "category/:alias([0-9a-zA-Z-]+)/:id([0-9]+)/page-:page([0-9]+)?(/)?": {
+        "/categories/:alias([0-9a-zA-Z-]+)/:id([0-9]+)/page-:page([0-9]+)?(/)?": {
             get: {
-                handler: controller.listPostByCategory
+                handler: comp.listPostByCategory
             }
         }
-
-
     }
 };

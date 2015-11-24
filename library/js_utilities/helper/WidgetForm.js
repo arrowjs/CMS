@@ -1,7 +1,7 @@
 'use strict';
 
-let _ = require('lodash');
-let log = require('arrowjs').logger;
+let _ = require('arrowjs')._;
+let logger = require('arrowjs').logger;
 
 class WidgetForm {
     constructor(widget, style) {
@@ -21,10 +21,10 @@ class WidgetForm {
                 this.btnSaveClass = _.isObject(style) && style.btnSaveClass ? style.btnSaveClass : 'btn btn-success';
                 this.btnDeleteClass = _.isObject(style) && style.btnDeleteClass ? style.btnDeleteClass : 'btn btn-danger';
             } catch (err) {
-                log.error('Invalid widget data, cannot create widget form!');
+                logger.error('Invalid widget data, cannot create widget form!');
             }
         } else {
-            log.error('Invalid widget, cannot create widget form!');
+            logger.error('Invalid widget, cannot create widget form!');
         }
     }
 
@@ -40,7 +40,7 @@ class WidgetForm {
      */
     addGeneralElement(name, label, content) {
         if (!name) {
-            log.error('Element name is not defined!');
+            logger.error('Element name is not defined!');
             return '';
         }
 
@@ -80,7 +80,7 @@ class WidgetForm {
      */
     addSelect(name, label, options) {
         if (typeof options != 'object') {
-            log.error('Select options must be an Object or an Array!');
+            logger.error('Select options must be an Object or an Array!');
             return '';
         }
 
@@ -113,7 +113,7 @@ class WidgetForm {
      */
     addCheckbox(name, label) {
         if (!name) {
-            log.error('Element name is not defined!');
+            logger.error('Element name is not defined!');
             return '';
         }
 
@@ -138,7 +138,7 @@ class WidgetForm {
      */
     addRadio(name, label, items) {
         if (typeof items != 'object') {
-            log.error('Items must be an Object or an Array!');
+            logger.error('Items must be an Object or an Array!');
             return '';
         }
 
