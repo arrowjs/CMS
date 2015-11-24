@@ -25,7 +25,8 @@ module.exports = function (controller, component, application) {
             order: 'published_at desc',
             limit: JSON.parse(widget.data).number_of_recent_posts,
             where: {
-                published: 1
+                published: 1,
+                type: 'post'
             },
             raw: true
         }).then(function(posts){
