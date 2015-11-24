@@ -6,10 +6,10 @@ module.exports = {
         host: 'localhost',
         port: '5432',
         database: 'arrowjs_cms',
-        username: 'postgre',
+        username: 'postgres',
         password: '',
         dialect: 'postgres',
-        logging: true
+        logging: false
     },
     redis: {
         host: 'localhost',
