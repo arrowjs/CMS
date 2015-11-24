@@ -3,7 +3,7 @@
 module.exports = {
     key: 'site_setting',
     app: {
-        title: 'ArrowJS',
+        title: 'ArrowJS CMS',
         description: '',
         keywords: '',
         logo: '',
@@ -16,5 +16,5 @@ module.exports = {
         extended: true,
         limit: '5mb'
     },
-    ArrowHelper: "/helpers/"
+    ArrowHelper : "/library/js_utilities/helper/"
 };
