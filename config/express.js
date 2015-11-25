@@ -7,6 +7,7 @@
  * @param setting : user setting
  * @returns {*}
  */
+
 module.exports = function (app, config, setting) {
 
     /**
@@ -37,7 +38,7 @@ module.exports = function (app, config, setting) {
         app.locals.cache = 'memory';
     }
 
-    app.use(app.middleware.bodyParser.urlencoded({extended: false}));
+    app.use(app.middleware.bodyParser.urlencoded({ extended: false }));
     app.use(app.middleware.bodyParser.json());
     app.use(app.middleware.methodOverride());
 
@@ -71,5 +72,6 @@ module.exports = function (app, config, setting) {
 
         next();
     });
+
     return app;
 };

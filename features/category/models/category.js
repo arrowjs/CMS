@@ -26,14 +26,21 @@ module.exports = function (sequelize, DataTypes) {
         name: {
             type: DataTypes.STRING,
             unique: true,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                isEmp: function (value) {
+                    if (!value) {
+                        throw new Error('Please enter invalid characters!');
+                    }
+                }
+            }
         },
         alias: {
             type :   DataTypes.STRING,
             validate : {
                 isAlias : function (value) {
                     if (typeof value !== 'string' || value.match(__config.regExp.alias_reg)){
-                        throw new Error('Alias cannot includes special characters');
+                        throw new Error('Alias cannot includes special characters!');
                     }
                 }
             }
