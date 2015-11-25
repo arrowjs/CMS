@@ -354,7 +354,7 @@ module.exports = function (controller, component, app) {
                 totalPage: totalPage,
                 items: items,
                 title_column: 'title',
-                link_template: '/{alias}'
+                link_template: '/blog/{alias}'
             });
         });
     };

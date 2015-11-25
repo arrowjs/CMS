@@ -131,7 +131,7 @@ module.exports = function (controller,component,app) {
                 title: __('m_roles_backend_controllers_index_view_title'),
                 features: app.permissions.feature,
                 role: roles,
-                rules: JSON.parse(roles.rules),
+                permissions: JSON.parse(roles.permissions),
                 toolbar : toolbar
             });
         }).catch(function (error) {
@@ -140,7 +140,7 @@ module.exports = function (controller,component,app) {
                 title: __('m_roles_backend_controllers_index_view_title'),
                 features: app.permissions.feature,
                 role: null,
-                rules: null,
+                permissions: null,
                 toolbar : toolbar
             });
         });
@@ -149,7 +149,7 @@ module.exports = function (controller,component,app) {
     controller.update = function (req, res) {
         let back_link = '/admin/roles';
         let search_params = req.session.search;
-        let rules = {feature : {}};
+        let permissions = {feature : {}};
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
@@ -161,12 +161,12 @@ module.exports = function (controller,component,app) {
         }).then(function (role) {
             for (let k in req.body) {
                 if (k != 'title' && k != 'status') {
-                    rules.feature[k]=[];
+                    permissions.feature[k]=[];
                     if(typeof req.body[k] == 'string'){
                         req.body[k] = new Array(req.body[k]);
                     }
                     for(let temp of req.body[k]){
-                        rules.feature[k].push({name :temp});
+                        permissions.feature[k].push({name :temp});
                     }
                 }
             }
@@ -174,7 +174,7 @@ module.exports = function (controller,component,app) {
             return role.updateAttributes({
                 name: req.body.title,
                 status: req.body.status,
-                rules: JSON.stringify(rules)
+                permissions: JSON.stringify(permissions)
             });
         }).then(function () {
             req.flash.success(__('m_roles_backend_controllers_index_update_flash_success'));
@@ -212,23 +212,23 @@ module.exports = function (controller,component,app) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
 
-        let rules = {feature : {}};
+        let permissions = {feature : {}};
         for (let k in req.body) {
             if (req.body.hasOwnProperty(k)) {
                 if (k != 'title' && k != 'status') {
-                    rules.feature[k]=[];
+                    permissions.feature[k]=[];
                     for(let temp of req.body[k]){
-                        rules.feature[k].push({name :temp});
+                        permissions.feature[k].push({name :temp});
                     }
                 }
             }
         }
-        //req.body.rules = rules;
+        //req.body.permissions = permissions;
         // Create role
         app.models.role.create({
             name: req.body.title,
             status: req.body.status,
-            rules: JSON.stringify(rules)
+            permissions: JSON.stringify(permissions)
         }).then(function () {
             req.flash.success(__('m_roles_backend_controllers_index_create_save_flash_success'));
             res.redirect(back_link);

@@ -23,7 +23,7 @@ module.exports = function (sequelize, DataTypes) {
                 }
             }
         },
-        rules: {
+        permissions: {
             type : DataTypes.STRING(2000),
             validate: {
                 len : {

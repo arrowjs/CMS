@@ -21,19 +21,30 @@ module.exports = function (passport,config,app) {
                 ]
             }).then(function (user, err) {
                 if (err) {
+                    console.log('err');
                     return done(err);
-                }
-                if (!user) {
-                    return done(null, false, {
-                        message: 'Invalid Username ! Please login again.'
-                    });
-                }
-                if (!user.authenticate(password)) {
+                }else if (!user) {
+                    console.log('!user');
+                    ArrowHelper.createUserAdmin(app, function (result) {
+                        if(!result){
+                            return done(null, false, {
+                                message: 'Invalid Username ! Please login again.'
+                            });
+                        }else{
+                            return done(null, false, {
+                                message: 'Username default is \"admin\" <br> Password default is \"123456\" <br> Please login again !'
+                            });
+                        }
+                    })
+                }else if (!user.authenticate(password)) {
+                    console.log('authenticate');
                     return done(null, false,{
                         message: 'Invalid Password ! Please login again.'
                     });
+                }else {
+                    console.log('else');
+                    return done(null, user);
                 }
-                return done(null, user);
             });
         }
     ));

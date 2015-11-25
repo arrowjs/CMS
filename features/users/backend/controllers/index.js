@@ -220,7 +220,7 @@ module.exports = function (controller, component, app) {
                             }).then(function (user) {
                                 let user_tmp = JSON.parse(JSON.stringify(user));
                                 user_tmp.key = redisPrefix + 'current-user-' + user.id;
-                                user_tmp.acl = JSON.parse(user_tmp.role.rules);
+                                user_tmp.acl = JSON.parse(user_tmp.role.permissions);
                                 redis.setex(user_tmp.key, 300, JSON.stringify(user_tmp));
                             }).catch(function (error) {
                                 console.log(error.stack);
@@ -365,7 +365,9 @@ module.exports = function (controller, component, app) {
         toolbar=toolbar.render();
 
         if (!req.user.role_ids) role_ids.push(req.user.role_id);
-        else role_ids = req.user.role_ids.split(/\D/);
+        else role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
+            return val.match(/d/g);
+        });
         app.models.role.findAll({
             where: {
                 id: {
