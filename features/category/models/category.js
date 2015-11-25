@@ -29,8 +29,8 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             validate: {
                 isEmp: function (value) {
-                    if (!value) {
-                        throw new Error('Please enter invalid characters!');
+                    if (typeof value !== 'string' || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)){
+                        throw new Error('Alias cannot includes special characters!');
                     }
                 }
             }
@@ -39,7 +39,7 @@ module.exports = function (sequelize, DataTypes) {
             type :   DataTypes.STRING,
             validate : {
                 isAlias : function (value) {
-                    if (typeof value !== 'string' || value.match(__config.regExp.alias_reg)){
+                    if (typeof value !== 'string' || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)){
                         throw new Error('Alias cannot includes special characters!');
                     }
                 }

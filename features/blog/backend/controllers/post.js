@@ -6,7 +6,7 @@ let promise = require('arrowjs').Promise;
 
 let route = 'blog';
 let edit_view = 'post/new';
-
+let _log = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 

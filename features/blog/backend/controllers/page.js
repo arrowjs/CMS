@@ -282,7 +282,6 @@ module.exports = function (controller, component, app) {
 
     controller.pageUpdate = function (req, res) {
 
-        res.locals.user = req.user;
 
         let back_link = '/admin/blog/pages/page/1';
         let search_params = req.session.search;
@@ -299,6 +298,10 @@ module.exports = function (controller, component, app) {
 
 
         let data = req.body;
+        // check data title and alias
+        data.title = data.title.trim();
+        if (data.alias == null || data.alias == '')
+            data.alias = slug(data.title).toLowerCase();
         if (!data.published) data.published = 0;
         data.modified_date = data.modified_date_gmt = Date.now();
 
@@ -316,6 +319,9 @@ module.exports = function (controller, component, app) {
                     page: page,
                     toolbar: toolbar
                 });
+            }).catch(function (error) {
+                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+                res.redirect(back_link);
             });
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
