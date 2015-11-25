@@ -43,10 +43,13 @@ module.exports = {
     },
     error : {
         "404" : {
-            render : "public/404.html"
+            render : "404"
         },
         "500" : {
-            render : "public/500.html"
+            render : "500"
+        },
+        "403" : {
+            render : "500"
         }
     }
 };

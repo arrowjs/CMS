@@ -2,7 +2,7 @@
 
 module.exports = {
     app: {
-        title: 'ArrowJS',
+        title: 'ArrowJS CMS',
         description: '',
         keywords: '',
         logo: '',
@@ -10,7 +10,8 @@ module.exports = {
     },
     langPath : "/lang",
     language: 'en_US',
-    long_stack : false, //only use for development. Carefully: this will slow system.
+    long_stack: true,
     port: process.env.PORT || 8000,
-    ArrowHelper : "/helpers/"
+    admin_prefix: 'admin',
+    ArrowHelper : "/library/js_utilities/helper/"
 };
