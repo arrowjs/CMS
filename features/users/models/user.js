@@ -106,11 +106,13 @@ module.exports = function (sequelize, DataTypes) {
             set: function (val) {
                 let roleIds = this.getDataValue('role_ids');
                 let flag = false;
+                //set values of role_ids
                 if (roleIds)
                     roleIds.split(',').forEach(function (v) {
                         if (val === v)
                             flag = true;
                     });
+                //
                 if (flag)
                     this.setDataValue('role_id', val);
                 else

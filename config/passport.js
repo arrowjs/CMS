@@ -23,7 +23,7 @@ module.exports = function (passport, application) {
                     include: application.models.role
                 }).then(function (user) {
                     try{
-                        req.session.permissions = JSON.parse(user.role.rules);
+                        req.session.permissions = JSON.parse(user.role.permissions);
                     }catch(err){
                         req.session.permissions = null;
                     }
