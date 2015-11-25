@@ -98,22 +98,15 @@ module.exports = function (controller,component,app) {
         let data = req.body;
         data.name = data.name.trim();
 
-        console.log('sdfsd', data.name);
-
-        if (data.name) {
-            app.models.category.create(data)
-                .then(function () {
-                    req.flash.success(__('m_category_backend_category_flash_save_success'));
-                    res.redirect('/admin/categories');
-                }).catch(function (err) {
-                    _log.error(err);
-                    req.flash.error(err.name + ': ' + err.message);
-                    res.redirect('/admin/categories');
-                });
-        } else {
-            req.flash.error('Please enter category\'s name!');
-            res.redirect('/admin/categories');
-        }
+        app.models.category.create(data)
+            .then(function () {
+                req.flash.success(__('m_category_backend_category_flash_save_success'));
+                res.redirect('/admin/categories');
+            }).catch(function (err) {
+                _log.error(err);
+                req.flash.error(err.name + ': ' + err.message);
+                res.redirect('/admin/categories');
+            });
     };
 
     controller.category_update = function (req, res) {
