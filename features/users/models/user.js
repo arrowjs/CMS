@@ -23,8 +23,8 @@ module.exports = function (sequelize, DataTypes) {
                     msg: 'please input not too long'
                 },
                 isName: function (value) {
-                    if (typeof value !== 'string' || value.match(/[+-.,!@#$%^&*();\/|<>"'\\]/g)) {
-                        throw new Error('Please input valid value user_login');
+                    if (typeof value !== 'string' || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)) {
+                        throw new Error('Please input valid value Username');
                     }
                 }
             }
@@ -80,16 +80,6 @@ module.exports = function (sequelize, DataTypes) {
                 len: {
                     args: [0, 250],
                     msg: 'Please don\'t input too long'
-                }
-            }
-        },
-        phone: {
-            type: DataTypes.STRING,
-            validate: {
-                isNumber: function (val) {
-                    if (!val.match(/[0-9]{3,}/g)) {
-                        throw new Error('Please input valid user\'s phone');
-                    }
                 }
             }
         },
