@@ -71,6 +71,5 @@ module.exports = function (app, config, setting) {
 
         next();
     });
-
     return app;
 };

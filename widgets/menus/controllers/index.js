@@ -36,11 +36,10 @@ module.exports = function (controller, component, application) {
             .then(function(menu){
                 return application.models.menu_detail.findAll({
                     where : {
-                        menu_id : menu.id
+                        menu_id : JSON.parse(widget.data).menu_id
                     },
                     raw : true
                 }).then(function (menuItems) {
-                    console.log(menuItems);
                     let menu_order = JSON.parse(menu.menu_order);
                     // Render view with layout
                     return component.render(layout, {
@@ -49,6 +48,8 @@ module.exports = function (controller, component, application) {
                         menuItems : menuItems
                     })
                 })
+            }).catch(function (err) {
+                return '';
             });
     };
 };

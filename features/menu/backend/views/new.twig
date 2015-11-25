@@ -596,9 +596,9 @@
                     '<div class="col-md-7">' +
                     '<div class="form-group">' +
                     '<label><i>{{ __("m_menus_backend_views_new_javascript_render_label_title") }}</i></label>' +
-                    '<input type="text" class="form-control" id="title" name="title[]" onchange="changeTitle(this)" ' +
+                    '<input type="text" class="form-control" id="title" name="title" onchange="changeTitle(this)" ' +
                     'value="' + title + '" maxlength="40" />' +
-                    '<input type="hidden" id="mn_id" name="mn_id[]" value="' + id + '" />' +
+                    '<input type="hidden" id="mn_id" name="mn_id" value="' + id + '" />' +
                     '</div>' +
                     '</div>' +
                     '<div class="col-md-5">' +
@@ -608,7 +608,7 @@
                     'data-placement="top" data-content="Title Attribute is the title of Menu Item which displays when user hover over The Menu Item. ' +
                     'This attribute can be not supported in almost templates.">' +
                     '<i class="fa fa-info-circle"></i></a></label>' +
-                    '<input type="text" class="form-control" id="attribute" name="attribute[]" ' +
+                    '<input type="text" class="form-control" id="attribute" name="attribute" ' +
                     'value="' + attribute + '" maxlength="40" />' +
                     '</div>' +
                     '</div>' +
@@ -617,7 +617,7 @@
                     '<div class="col-md-7">' +
                     '<div class="form-group">' +
                     '<label><i>URL</i></label>' +
-                    '<input type="text" class="form-control" id="url" name="url[]" value="' + url + '" onchange="changePreview(this)" />' +
+                    '<input type="text" class="form-control" id="url" name="url" value="' + url + '" onchange="changePreview(this)" />' +
                     '</div>' +
                     '</div>' +
                     '<div class="col-md-5">' +

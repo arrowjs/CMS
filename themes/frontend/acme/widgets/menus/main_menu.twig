@@ -18,14 +18,13 @@
             </a>
         </li>
     {% endif %}
-    {% if widget %}
-    <li><input class="form-control search" placeholder=" Search" type="text"></li>
-    {% endif %}
 {% endmacro %}
-
 <ul class="nav navbar-nav">
     {% for mn in menuOrder %}
         {% set menu_data = mn.id|get_menu_data(menuItems) %}
         {{ render_child(mn, menu_data,false) }}
     {% endfor %}
+    {% if widget.search == 1 %}
+        <li><input class="form-control search" placeholder=" Search" type="text"></li>
+    {% endif %}
 </ul>
