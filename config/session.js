@@ -5,8 +5,8 @@ module.exports = {
     key: 'sid',
     resave: true,
     saveUninitialized: true,
-    cookie : {
+    cookie: {
         httpOnly: true
     },
-    redis_prefix : 'sess : '
+    redis_prefix: 'sess : '
 };

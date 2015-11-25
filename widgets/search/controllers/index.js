@@ -1,5 +1,7 @@
 'use strict';
 
+let Promise = require('bluebird');
+
 module.exports = function (controller, component, application) {
 
     controller.settingWidget = function (widget) {
@@ -8,8 +10,7 @@ module.exports = function (controller, component, application) {
 
         // Create setting form
         let form = new ArrowHelper.WidgetForm(widget);
-        form.addText('title', 'Title');
-        form.addTextArea('content', 'Content');
+        form.addText('placeholder', 'Placeholder');
         form.addSelect('layout', 'Layout', layouts);
         return form.render();
     };
@@ -22,11 +23,15 @@ module.exports = function (controller, component, application) {
         }catch(err){
             layout=component.getLayouts(widget.widget_name)[0];
         }
-
-        // Render view with layout
-        return component.render(layout, {
-            widget: widget.data
-        })
+        // Get all categories
+        return application.models.category.findAll({
+            raw: true
+        }).then(function(categories){
+            // Render view with layout
+            return component.render(layout, {
+                widget: JSON.parse(widget.data)
+            })
+        });
     };
 };
 

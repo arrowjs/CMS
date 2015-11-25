@@ -1,0 +1,92 @@
+{#<div class="category">#}
+    {##}
+    {#<ul class="list-unstyled">#}
+        {#{% for category in categories %}#}
+        {#<li>#}
+            {#<a href="/category/{{ category.alias }}/{{ category.id }}">#}
+                {#<i class="fa fa-angle-right pr-10"></i> {{ category.name }}#}
+            {#</a>#}
+        {#</li>#}
+        {#{% endfor %}#}
+    {#</ul>#}
+{#</div>#}
+
+{#<ul class="nav navbar-nav">#}
+    {#<li class="dropdown">#}
+        {#<a class="dropdown-toggle" data-close-others="false" data-delay="0" data-hover="dropdown" data-toggle="dropdown" href="index.html">Home <i class="fa fa-angle-down"></i>#}
+        {#</a>#}
+
+        {#<ul class="dropdown-menu">#}
+            {#<li>#}
+                {#<a href="index.html">Home Parallax</a>#}
+            {#</li>#}
+
+            {#<li>#}
+                {#<a href="index1.html">Home Seq-slider1</a>#}
+            {#</li>#}
+
+            {#<li>#}
+                {#<a href="index2.html">Home Seq-slider2</a>#}
+            {#</li>#}
+
+        {#</ul>#}
+    {#</li>#}
+
+    {#<li class="dropdown">#}
+        {#<a class="dropdown-toggle" data-close-others="false" data-delay="0" data-hover="dropdown" data-toggle="dropdown" href="#">Feature <i class="fa fa-angle-down"></i>#}
+        {#</a>#}
+
+        {#<ul class="dropdown-menu">#}
+            {#<li>#}
+                {#<a href="typography.html">Typography</a>#}
+            {#</li>#}
+
+            {#<li>#}
+                {#<a href="button.html">Buttons</a>#}
+            {#</li>#}
+
+            {#<li>#}
+                {#<a href="form.html">Form</a>#}
+            {#</li>#}
+
+            {#<li>#}
+                {#<a href="table.html">Table</a>#}
+            {#</li>#}
+
+            {#<li class="dropdown-submenu">#}
+                {#<a href="#" tabindex="-1">More options</a>#}
+
+                {#<ul class="dropdown-menu">#}
+                    {#<li>#}
+                        {#<a href="#" tabindex="-1">Second level</a>#}
+                    {#</li>#}
+
+                    {#<li class="dropdown-submenu">#}
+                        {#<a href="#">Even More..</a>#}
+
+                        {#<ul class="dropdown-menu">#}
+                            {#<li>#}
+                                {#<a href="#">3rd level</a>#}
+                            {#</li>#}
+
+                            {#<li>#}
+                                {#<a href="#">3rd level</a>#}
+                            {#</li>#}
+                        {#</ul>#}
+                    {#</li>#}
+
+                    {#<li>#}
+                        {#<a href="#">Second level</a>#}
+                    {#</li>#}
+
+                    {#<li>#}
+                        {#<a href="#">Second level</a>#}
+                    {#</li>#}
+                {#</ul>#}
+            {#</li>#}
+        {#</ul>#}
+    {#</li>#}
+    {#<li>#}
+        {#<input class="form-control search" placeholder=" Search" type="text">#}
+    {#</li>#}
+{#</ul>#}

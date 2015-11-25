@@ -48,7 +48,7 @@ module.exports = function (component) {
         },
 
         // Page router
-        "/blog/:alias([a-zA-Z0-9-]+)(/)?": {
+        "/:alias([a-zA-Z0-9-]+)(/)?": {
             get: {
                 handler: controller.pageIndex
             }

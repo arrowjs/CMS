@@ -1,6 +1,6 @@
 'use strict';
 
-let promise = require('bluebird');
+let promise = require('arrowjs').Promise;
 
 module.exports = function (controller, component, app) {
 

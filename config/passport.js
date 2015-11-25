@@ -1,8 +1,7 @@
 'use strict';
-/**
- * Module init function.
- */
-let _log = require('arrowjs').logger;
+
+let logger = require('arrowjs').logger;
+
 module.exports = function (passport, application) {
     return {
         serializeUser: function (user, done) {
@@ -23,12 +22,16 @@ module.exports = function (passport, application) {
                     },
                     include: application.models.role
                 }).then(function (user) {
-                    req.session.permissions = JSON.parse(user.role.rules);
-                    res.locals.permissions = req.session.permissions;
+                    try{
+                        req.session.permissions = JSON.parse(user.role.rules);
+                    }catch(err){
+                        req.session.permissions = null;
+                    }
+                    //res.locals.permissions = req.session.permissions;
                     res.locals.user = user;
                     return next();
                 }).catch(function (err) {
-                    _log.error('Error at : checkAuthenticate :', err);
+                    logger.error('Error at : checkAuthenticate :', err);
                     res.redirect('/admin/login');
                 });
             } else {

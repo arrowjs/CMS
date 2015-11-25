@@ -37,14 +37,14 @@
 
             if (ids.length > 0) {
                 $.ajax({
-                    url: '/admin/menus',
+                    url: '/admin/menu',
                     type: 'DELETE',
                     data: {
                         ids: ids.join()
                     },
                     success: function (result) {
                         // Do something with the result
-                        window.location.href = "/admin/menus/";
+                        window.location.href = "/admin/menu/";
                     }
                 });
             }

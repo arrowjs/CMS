@@ -54,14 +54,13 @@
                             </div>
 
                         </div>
+                        {% if item.image %}
                         <div class="col-lg-10 col-sm-10">
-
-
-                            <div class="blog-img gs">
-                                <img src="{{ item.image }}" alt=""/>
-                            </div>
-
+                                <div class="blog-img gs">
+                                    <img src="{{ item.image }}" alt=""/>
+                                </div>
                         </div>
+                        {% endif %}
                     </div>
                     <div class="row">
                         <div class="col-lg-2 col-sm-2 text-right">

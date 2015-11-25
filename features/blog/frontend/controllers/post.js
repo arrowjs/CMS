@@ -1,6 +1,6 @@
 'use strict';
 
-let promise = require('bluebird');
+let promise = require('arrowjs').Promise;
 
 module.exports = function (controller, component, application) {
     controller.allPosts = function (req, res) {
@@ -9,6 +9,7 @@ module.exports = function (controller, component, application) {
         let totalPage = 1;
 
         component.models.post.findAndCountAll({
+            include : component.models.user,
             where: {
                 type: 'post',
                 published: 1
@@ -17,10 +18,9 @@ module.exports = function (controller, component, application) {
             limit: number_item,
             order: 'id DESC'
         }).then(function (posts) {
+            console.log(JSON.stringify(posts,null,2));
             if (posts) {
-
                 totalPage = Math.ceil(parseInt(posts.count) / number_item) || 1;
-
                 // Render view
                 res.frontend.render('all_post', {
                     posts: posts.rows,

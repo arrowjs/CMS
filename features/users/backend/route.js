@@ -94,6 +94,15 @@ module.exports = function (component,application) {
                 permissions : "create"
             }
         },
+        '/forgot-password' : {
+            get : {
+                handler : comp.forgotPassView,
+                name : "forgot-password"
+            },
+            post : {
+                handler : comp.forgotPass
+            }
+        },
         "avatar" : {
             post : {
                 handler : comp.getAvatarGallery,

@@ -2,7 +2,7 @@
 
 let slug = require('slug');
 let _ = require('arrowjs')._;
-let promise = require('bluebird');
+let promise = require('arrowjs').Promise;
 
 let route = 'blog';
 let edit_view = 'post/new';
@@ -488,7 +488,7 @@ module.exports = function (controller, component, app) {
                 totalPage: totalPage,
                 items: items,
                 title_column: 'title',
-                link_template: '/admin/blog/{id}/{alias}'
+                link_template: '/blog/{id}/{alias}'
             });
         });
     }

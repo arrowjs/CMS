@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (sequelize, DataTypes) {
-    let Menu = sequelize.define("menus", {
+    let Menu = sequelize.define("menu", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -18,9 +18,6 @@ module.exports = function (sequelize, DataTypes) {
         },
         menu_order: {
             type: DataTypes.STRING
-        },
-        location : {
-            type : DataTypes.STRING
         },
         created_at: {
             type: DataTypes.DATE

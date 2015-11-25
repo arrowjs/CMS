@@ -212,27 +212,6 @@
             </div>
 
             <div class="col-md-4">
-
-
-                <div class="box box-success box-solid">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Location</h3>
-                        <!-- /.box-tools -->
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        <div class="form-group">
-                            {% if menu_locations %}
-                                {% for menu_location in menu_locations %}
-                                    <input type="checkbox" name="location" value="{{ menu_location.name }}"> {{ menu_location.title }}<br>
-                                {% endfor %}
-                            {% endif %}
-
-                        </div>
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-
                 <div class="box box-primary arr-module-box">
                     <div class="box-header with-border">
                         <h3 class="box-title">{{ __('m_menus_backend_views_new_box_title') }}</h3>
@@ -335,18 +314,6 @@
                     return text;
                 }
             });
-
-            {% if menu %}
-            var mLoca = '{{ menu.location }}';
-            mLoca = mLoca.split('::');
-                mLoca.map(function (val) {
-                    $('input[name="location"]').each(function (k,v) {
-                        if(v.value==val)
-                        this.checked=true;
-                    })
-                })
-                //$('#menu-location').val(mLoca).trigger('change');
-            {% endif %}
         });
 
         function collapseBox(button) {
@@ -629,9 +596,9 @@
                     '<div class="col-md-7">' +
                     '<div class="form-group">' +
                     '<label><i>{{ __("m_menus_backend_views_new_javascript_render_label_title") }}</i></label>' +
-                    '<input type="text" class="form-control" id="title" name="title[]" onchange="changeTitle(this)" ' +
+                    '<input type="text" class="form-control" id="title" name="title" onchange="changeTitle(this)" ' +
                     'value="' + title + '" maxlength="40" />' +
-                    '<input type="hidden" id="mn_id" name="mn_id[]" value="' + id + '" />' +
+                    '<input type="hidden" id="mn_id" name="mn_id" value="' + id + '" />' +
                     '</div>' +
                     '</div>' +
                     '<div class="col-md-5">' +
@@ -641,7 +608,7 @@
                     'data-placement="top" data-content="Title Attribute is the title of Menu Item which displays when user hover over The Menu Item. ' +
                     'This attribute can be not supported in almost templates.">' +
                     '<i class="fa fa-info-circle"></i></a></label>' +
-                    '<input type="text" class="form-control" id="attribute" name="attribute[]" ' +
+                    '<input type="text" class="form-control" id="attribute" name="attribute" ' +
                     'value="' + attribute + '" maxlength="40" />' +
                     '</div>' +
                     '</div>' +
@@ -650,7 +617,7 @@
                     '<div class="col-md-7">' +
                     '<div class="form-group">' +
                     '<label><i>URL</i></label>' +
-                    '<input type="text" class="form-control" id="url" name="url[]" value="' + url + '" onchange="changePreview(this)" />' +
+                    '<input type="text" class="form-control" id="url" name="url" value="' + url + '" onchange="changePreview(this)" />' +
                     '</div>' +
                     '</div>' +
                     '<div class="col-md-5">' +

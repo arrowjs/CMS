@@ -1,11 +1,11 @@
 'use strict';
 
 let _ = require('arrowjs')._;
+let promise = require('arrowjs').Promise;
 let fs = require('fs');
 
 let path = require('path');
 let slug = require('slug');
-let promise = require('bluebird');
 let writeFileAsync = promise.promisify(require('fs').writeFile);
 let readdirAsync = promise.promisify(require('fs').readdir);
 let formidable = require('formidable');
@@ -471,7 +471,12 @@ module.exports = function (controller, component, app) {
             console.log('ERROR : ' + err);
         })
     };
+    controller.forgotPass = function (req, res) {
 
+    };
+    controller.forgotPassView = function (req,res) {
+        res.backend.render('forgot-password');
+    };
     controller.hasAuthorization = function (req, res, next) {
         if (req._user.id !== req.user.id) {
             return false;

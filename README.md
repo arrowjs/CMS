@@ -6,22 +6,25 @@ Welcome to ArrowJS CMS! ArrowJS CMS is CMS base on ArrowJS framework, it helps y
 Please write us if you have any feedback.
 
 Thanks.
+
 ## Documents
 
 Vietnamese documents:
 [http://arrowjs.io](http://arrowjs.io)
 
+English documents will be coming soon.
+
 ## Requirements
 
 To run this CMS you need at least:
-- Nodejs 4.0.0
+- Nodejs 4.0.0 or higher
 - PostgreSQL 9.4 or higher ([http://www.postgresql.org/](http://www.postgresql.org/))
 - Redis server. ([http://redis.io/](http://redis.io/))
 
-If you have new VPS, you can auto install ArrowCMS with one command line :
+If you have new VPS, you can auto install ArrowJS CMS with one command line :
 
 ```
-    $ curl http://arrowjs.io/install.sh | sh
+    $ bash <(curl -s http://arrowjs.io/install.sh)
 ```
 
 ## Installation
@@ -32,25 +35,29 @@ Clone project from github:
     git clone https://github.com/arrowjs/CMS.git
 ```
 
-Then you'll need to create the database from backup file:
+Go to project folder and install npm packages
 
 ```
-    cd arrowjs-cms
-    pg_restore -U [username] -d [dbname] "sql/arrowjs.backup"
-    # [username]: user for database postgres
-    # [dbname]: database name to restore (default is arrowjs)
+    cd CMS
+    sudo npm install
 ```
 
 ## Run CMS
 
-Go to project folder and start application:
+Start application:
 
 ```
-    cd CMS
     node server.js
 ```
 
-Now application start on port 3333 (default port, you can change it in file config).
+or
+
+
+```
+    npm start
+```
+
+Now application start on port 8000 (default port, you can change it in file config/config.js or configure in server.js).
 
 Admin account for backend (with URL /admin/login):
 
