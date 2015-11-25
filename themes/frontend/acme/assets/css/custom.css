@@ -1,3 +1,19 @@
+.jumbotron {
+    color: #fff;
+}
+
+.jumbotron p {
+    font-size: 20px;
+}
+
+.logo .icon_logo {
+    color: #c30;
+}
+
+.logo .text_logo {
+    color: #607D8B;
+}
+
 .big_header {
     background: url("/frontend/acme/assets/img/home_main_bg.jpg") center center;
     background-size: cover;
@@ -46,13 +62,8 @@
 .parallax_content .content {
     width: 70%;
 }
-
-.jumbotron {
-    color: #fff;
-}
-
-.jumbotron p {
-    font-size: 20px;
+.parallax_content p {
+    margin-bottom: 25px;
 }
 
 .parallax_content h2,
@@ -85,7 +96,7 @@
     text-align: center;
 }
 
-.home-services .icon_service {
+.home-services .icon_service a {
     color: #fff;
     text-align: center;
     padding-top: 25px;
@@ -97,7 +108,7 @@
     border-radius: 50%;
 }
 
-.home-services .icon_service:hover {
+.home-services .icon_service a:hover {
     background: #48cfad;
 }
 
