@@ -209,7 +209,7 @@ module.exports = function (controller, component, app) {
 
 
         let data = req.body;
-        //console.log("========", slug(data.title).toLowerCase());
+        data.title = data.title.trim();
         if (data.alias == null || data.alias == '')
             data.alias = slug(data.title).toLowerCase();
         data.created_by = req.user.id;

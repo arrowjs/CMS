@@ -372,6 +372,7 @@ module.exports = function (controller, component, app) {
     controller.postSave = function (req, res) {
 
         let data = req.body;
+        data.title = data.title.trim();
         data.created_by = req.user.id;
         if (data.alias == null || data.alias == '')
             data.alias = slug(data.title).toLowerCase();

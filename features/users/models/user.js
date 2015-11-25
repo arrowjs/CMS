@@ -23,7 +23,7 @@ module.exports = function (sequelize, DataTypes) {
                     msg: 'please input not too long'
                 },
                 isName: function (value) {
-                    if (typeof value !== 'string' || value.match(/[+-.,!@#$%^&*();\/|<>"'\\]/g)) {
+                    if (typeof value !== 'string' || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)) {
                         throw new Error('Please input valid value user_login');
                     }
                 }
