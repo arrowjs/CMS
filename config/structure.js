@@ -8,8 +8,8 @@ module.exports = {
             folder: '/features',
             file: 'feature.js'
         },
-        extend :{
-            system :true,
+        extend: {
+            system: true,
             active: true
         },
         controller: [

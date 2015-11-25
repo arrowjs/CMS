@@ -1,8 +1,7 @@
 'use strict';
-/**
- * Module init function.
- */
-let _log = require('arrowjs').logger;
+
+let logger = require('arrowjs').logger;
+
 module.exports = function (passport, application) {
     return {
         serializeUser: function (user, done) {
@@ -28,7 +27,7 @@ module.exports = function (passport, application) {
                     res.locals.user = user;
                     return next();
                 }).catch(function (err) {
-                    _log.error('Error at : checkAuthenticate :', err);
+                    logger.error('Error at : checkAuthenticate :', err);
                     res.redirect('/admin/login');
                 });
             } else {

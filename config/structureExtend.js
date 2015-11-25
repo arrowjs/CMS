@@ -28,6 +28,6 @@ module.exports = {
             return path.basename(link, '.' + viewExtension);
         });
 
-        return _.union(baseFiles,themeFiles);
+        return _.union(baseFiles, themeFiles);
     }
 };
