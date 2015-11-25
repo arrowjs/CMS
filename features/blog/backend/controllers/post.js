@@ -111,12 +111,12 @@ module.exports = function (controller, component, app) {
 
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/blog/posts',
+            rootLink: '/admin/blog/posts/page/' + page + '/sort',
             limit: itemOfPage,
             customCondition: "AND type='post'"
         });
 
-
+        console.log("------",req.params.order);
         // Find all posts
         app.models.post.findAndCountAll({
             where: filter.conditions,

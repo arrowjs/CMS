@@ -108,7 +108,7 @@ module.exports = function (controller, component, app) {
 
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/blog/pages',
+            rootLink: '/admin/blog/pages/page/' + page + '/sort',
             limit: itemOfPage,
             customCondition: " AND type='page' "
         });
