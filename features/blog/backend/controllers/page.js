@@ -12,7 +12,7 @@ module.exports = function (controller, component, app) {
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     controller.pageList = function (req, res) {
 
-        // Add buttons
+        // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addCreateButton(isAllow(req, 'page_create'), '/admin/blog/pages/create');
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
