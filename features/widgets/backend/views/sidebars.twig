@@ -75,7 +75,7 @@
                         <div class="col-md-6">
                             <ul class="widget-list list-unstyled">
                                 {% for widget in widgets %}
-                                    {% if loop.index <= sidebars.length/2 %}
+                                    {% if loop.index <= widgets.length/2 %}
                                         {{ widget_list(widget) }}
                                     {% endif %}
                                 {% endfor %}
@@ -85,7 +85,7 @@
                         <div class="col-md-6">
                             <ul class="widget-list list-unstyled">
                                 {% for widget in widgets %}
-                                    {% if loop.index > sidebars.length/2 %}
+                                    {% if loop.index > widgets.length/2 %}
                                         {{ widget_list(widget) }}
                                     {% endif %}
                                 {% endfor %}

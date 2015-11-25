@@ -19,6 +19,11 @@ module.exports = function (sequelize, DataTypes) {
                 len: {
                     args: [1, 255],
                     msg: 'Title cannot empty or too long'
+                },
+                isTitle : function(value){
+                    if(value.length == 0 || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)){
+                        throw new Error('Please input valid value title');
+                    }
                 }
             }
         },

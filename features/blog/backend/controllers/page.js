@@ -12,7 +12,7 @@ module.exports = function (controller, component, app) {
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     controller.pageList = function (req, res) {
 
-        // Add buttons
+        // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addCreateButton(isAllow(req, 'page_create'), '/admin/blog/pages/create');
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
@@ -108,7 +108,7 @@ module.exports = function (controller, component, app) {
 
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/blog/pages',
+            rootLink: '/admin/blog/pages/page/' + page + '/sort',
             limit: itemOfPage,
             customCondition: " AND type='page' "
         });
@@ -209,7 +209,7 @@ module.exports = function (controller, component, app) {
 
 
         let data = req.body;
-        //console.log("========", slug(data.title).toLowerCase());
+        data.title = data.title.trim();
         if (data.alias == null || data.alias == '')
             data.alias = slug(data.title).toLowerCase();
         data.created_by = req.user.id;
@@ -282,7 +282,6 @@ module.exports = function (controller, component, app) {
 
     controller.pageUpdate = function (req, res) {
 
-        res.locals.user = req.user;
 
         let back_link = '/admin/blog/pages/page/1';
         let search_params = req.session.search;
@@ -299,6 +298,10 @@ module.exports = function (controller, component, app) {
 
 
         let data = req.body;
+        // check data title and alias
+        data.title = data.title.trim();
+        if (data.alias == null || data.alias == '')
+            data.alias = slug(data.title).toLowerCase();
         if (!data.published) data.published = 0;
         data.modified_date = data.modified_date_gmt = Date.now();
 
@@ -316,6 +319,9 @@ module.exports = function (controller, component, app) {
                     page: page,
                     toolbar: toolbar
                 });
+            }).catch(function (error) {
+                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+                res.redirect(back_link);
             });
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);

@@ -12,17 +12,19 @@ module.exports = function (controller, component, application) {
         form.addText('id_posts', 'Ip posts (Eg: 1, 5, 2)');
         form.addCheckbox('display_date', 'Display date');
         form.addSelect('layout', 'Layout', layouts);
-        return form.render();
+
+        return new Promise(function (fullfill, reject) {
+            fullfill(form.render());
+        })
     };
 
     controller.renderWidget = function (widget) {
-
         // Get layouts
         let layout;
-        try{
-            layout=JSON.parse(widget.data).layout;
-        }catch(err){
-            layout=component.getLayouts(widget.widget_name)[0];
+        try {
+            layout = JSON.parse(widget.data).layout;
+        } catch (err) {
+            layout = component.getLayouts(widget.widget_name)[0];
         }
 
         // Get all posts user choose
@@ -35,14 +37,14 @@ module.exports = function (controller, component, application) {
                 attributes: atts,
                 order: 'published_at DESC',
                 where: {
-                    id :{
-                        $in : ids
+                    id: {
+                        $in: ids
                     },
                     published: 1,
                     type: 'post'
                 },
                 raw: true
-            }).then(function(posts){
+            }).then(function (posts) {
                 // Render view with layout
                 return component.render(layout, {
                     widget: JSON.parse(widget.data),

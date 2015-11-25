@@ -6,7 +6,7 @@ let promise = require('arrowjs').Promise;
 
 let route = 'blog';
 let edit_view = 'post/new';
-
+let _log = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
@@ -15,7 +15,7 @@ module.exports = function (controller, component, app) {
     let isAllow = ArrowHelper.isAllow;
 
     controller.postList = function (req, res) {
-        // Add buttons
+        // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton('/admin/blog/posts');
         toolbar.addSearchButton('true');
@@ -111,12 +111,12 @@ module.exports = function (controller, component, app) {
 
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/blog/posts',
+            rootLink: '/admin/blog/posts/page/' + page + '/sort',
             limit: itemOfPage,
             customCondition: "AND type='post'"
         });
 
-
+        console.log("------",req.params.order);
         // Find all posts
         app.models.post.findAndCountAll({
             where: filter.conditions,
@@ -158,6 +158,7 @@ module.exports = function (controller, component, app) {
 
 
     controller.postView = function (req, res) {
+        // set back link default
         let back_link = '/admin/blog/posts/page/1';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_post_list']) {
@@ -256,9 +257,21 @@ module.exports = function (controller, component, app) {
 
     controller.postUpdate = function (req, res, next) {
 
-        res.locals.user = req.user;
+        // set back link default
+        let back_link = '/admin/blog/posts/page/1';
+        let search_params = req.session.search;
+        if (search_params && search_params[route + '_post_list']) {
+            back_link = '/admin' + search_params[route + '_post_list'];
+        }
+        // Add button
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton(back_link);
 
+        // Get data in req.body and update
         let data = req.body;
+        data.title = data.title.trim();
+        if (data.alias == null || data.alias == '')
+            data.alias = slug(data.title).toLowerCase();
         data.categories = data.categories || "";
         data.author_visible = (data.author_visible != null);
         if (!data.published) data.published = 0;
@@ -300,6 +313,7 @@ module.exports = function (controller, component, app) {
 
             if (data.published != post.published && data.published == 1) data.published_at = Date.now();
 
+            // update data
             return post.updateAttributes(data).then(function () {
                 return promise.all([
                     promise.map(onlyInA, function (id) {
@@ -363,7 +377,6 @@ module.exports = function (controller, component, app) {
                 toolbar: toolbar
             });
         }).catch(function (error) {
-            console.log(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.redirect(back_link);
         });
@@ -372,6 +385,7 @@ module.exports = function (controller, component, app) {
     controller.postSave = function (req, res) {
 
         let data = req.body;
+        data.title = data.title.trim();
         data.created_by = req.user.id;
         if (data.alias == null || data.alias == '')
             data.alias = slug(data.title).toLowerCase();

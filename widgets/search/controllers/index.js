@@ -10,21 +10,25 @@ module.exports = function (controller, component, application) {
         let form = new ArrowHelper.WidgetForm(widget);
         form.addText('placeholder', 'Placeholder');
         form.addSelect('layout', 'Layout', layouts);
-        return form.render();
+
+        return new Promise(function (fullfill, reject) {
+            fullfill(form.render());
+        })
     };
 
     controller.renderWidget = function (widget) {
         // Get layouts
         let layout;
-        try{
-            layout=JSON.parse(widget.data).layout;
-        }catch(err){
-            layout=component.getLayouts(widget.widget_name)[0];
+        try {
+            layout = JSON.parse(widget.data).layout;
+        } catch (err) {
+            layout = component.getLayouts(widget.widget_name)[0];
         }
+
         // Get all categories
         return application.models.category.findAll({
             raw: true
-        }).then(function(categories){
+        }).then(function (categories) {
             // Render view with layout
             return component.render(layout, {
                 widget: JSON.parse(widget.data)

@@ -77,7 +77,7 @@ module.exports = function (controller, component, application) {
                     return res.render('sidebars', {
                         widgets: widgets,
                         sidebars: sidebars,
-                        title : 'Widgets Manager'
+                        title: 'Widgets Manager'
                     });
                 });
             }).catch(function (err) {
@@ -86,7 +86,7 @@ module.exports = function (controller, component, application) {
                 res.render('sidebars', {
                     widgets: widgets,
                     sidebars: null,
-                    title : 'Widgets Manager'
+                    title: 'Widgets Manager'
                 });
             });
     };
@@ -100,10 +100,12 @@ module.exports = function (controller, component, application) {
 
         if (widget) {
             // Get widget setting form
-            res.send(widget.controllers.settingWidget({
+            widget.controllers.settingWidget({
                 widget_name: widgetName,
                 data: '{}'
-            }));
+            }).then(function (html) {
+                res.send(html);
+            });
         } else {
             res.send('');
         }
@@ -174,7 +176,7 @@ module.exports = function (controller, component, application) {
 
         Promise.all(promises).then(function (result) {
             res.sendStatus(200);
-        }).catch(function(err){
+        }).catch(function (err) {
             res.sendStatus(500);
         });
     };
