@@ -21,11 +21,14 @@ module.exports = function (controller, component, app) {
             if (results) {
                 // Render view
                 res.frontend.render('page', {
+                    pageTitle: results.dataValues.title,
                     item: results.dataValues
                 });
             } else {
                 // Redirect to 404 if page not exist
-                res.frontend.render('_404');
+                res.frontend.render('_404', {
+                    pageTitle: '404 not found'
+                });
             }
         });
     }

@@ -8,11 +8,6 @@ module.exports = function (component) {
             get: {
                 handler: controller.index
             }
-        },
-        "/change-theme/:theme([0-9a-zA-Z-]+)": {
-            get: {
-                handler: controller.changeTheme
-            }
         }
     }
 };

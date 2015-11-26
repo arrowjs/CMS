@@ -1,4 +1,5 @@
 'use strict';
+
 let slug = require('slug');
 let promise = require('arrowjs').Promise;
 let formidable = require('formidable');
@@ -10,14 +11,13 @@ module.exports = function (controller, component, app) {
 
     let isAllow = ArrowHelper.isAllow;
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
-    controller.pageList = function (req, res) {
 
+    controller.pageList = function (req, res) {
         // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addCreateButton(isAllow(req, 'page_create'), '/admin/blog/pages/create');
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
         toolbar = toolbar.render();
-
 
         // Get current page and default sorting
         let page = req.params.page || 1;
@@ -32,7 +32,6 @@ module.exports = function (controller, component, app) {
         }
         session_search[route + '_page_list'] = req.url;
         req.session.search = session_search;
-
 
         let tableStructure = [
             {
@@ -106,13 +105,11 @@ module.exports = function (controller, component, app) {
             }
         ];
 
-
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: '/admin/blog/pages/page/' + page + '/sort',
             limit: itemOfPage,
             customCondition: " AND type='page' "
         });
-
 
         // List pages
         app.models.post.findAndCountAll({
@@ -148,7 +145,6 @@ module.exports = function (controller, component, app) {
                 toolbar: toolbar
             });
         });
-
     };
 
     controller.pageDelete = function (req, res) {
@@ -178,7 +174,6 @@ module.exports = function (controller, component, app) {
         toolbar.addSaveButton(isAllow(req, 'page_create'));
         toolbar = toolbar.render();
 
-
         app.models.user.findAll({
             order: "id asc"
         }).then(function (results) {
@@ -206,7 +201,6 @@ module.exports = function (controller, component, app) {
         toolbar.addBackButton(back_link);
         toolbar.addSaveButton(isAllow(req, 'page_create'));
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
-
 
         let data = req.body;
         data.title = data.title.trim();
@@ -241,7 +235,6 @@ module.exports = function (controller, component, app) {
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
         toolbar = toolbar.render();
 
-
         promise.all([
             app.models.user.findAll({
                 order: "id asc"
@@ -268,7 +261,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.redirectToView = function (req, res) {
-
         app.models.post.find({
             where: {
                 alias: req.params.name
@@ -281,8 +273,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.pageUpdate = function (req, res) {
-
-
         let back_link = '/admin/blog/pages/page/1';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_page_list']) {
@@ -295,7 +285,6 @@ module.exports = function (controller, component, app) {
         toolbar.addSaveButton(isAllow(req, 'page_create'));
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
         toolbar = toolbar.render();
-
 
         let data = req.body;
         // check data title and alias
@@ -358,6 +347,5 @@ module.exports = function (controller, component, app) {
             });
         });
     };
-
 
 };
