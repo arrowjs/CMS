@@ -1,9 +1,5 @@
-.jumbotron {
-    color: #fff;
-}
-
-.jumbotron p {
-    font-size: 20px;
+body {
+    font-size: 16px;
 }
 
 .logo .icon_logo {
@@ -15,14 +11,10 @@
 }
 
 .big_header {
-    background: url("/frontend/acme/assets/img/home_main_bg.jpg") center center;
+    height: 500px;
+    padding-top: 70px;
+    background: url("/frontend/acme/assets/img/techmaster2.jpg") center center;
     background-size: cover;
-    height: 600px;
-    padding-top: 100px;
-}
-
-.big_header .content {
-    width: 65%;
 }
 
 .big_header h1 {
@@ -34,8 +26,7 @@
 }
 
 .feature-box {
-    padding-top: 20px;
-    padding-bottom: 35px;
+    margin-top: 0;
 }
 
 .feature-box .content p {
@@ -45,6 +36,10 @@
 .feature-box .content img {
     width: 100%;
 }
+
+/*.feature-box-heading {*/
+    /*margin-bottom: 25px;*/
+/*}*/
 
 .parallax_content {
     height: 470px;
@@ -84,7 +79,10 @@
 
 .home-services {
     padding-top: 60px;
-    padding-bottom: 100px;
+}
+
+.home-services .service {
+    margin-bottom: 70px;
 }
 
 .home-services h2 {
@@ -112,7 +110,6 @@
     background: #48cfad;
 }
 
-.feature-box h4,
 .home-services h4 {
     margin-top: 25px;
     margin-bottom: 25px;
@@ -127,3 +124,55 @@
 .manager_system img {
     width: 100%;
 }
+
+.social-link-footer li {
+    float: left;
+}
+
+ul.page-footer-list li {
+    border-bottom: none;
+}
+
+.copyright p {
+    margin-bottom: 17px;
+}
+
+.carousel .item {
+    -webkit-background-size: cover;
+    background-size: cover;
+    background-position: center center;
+    height: 500px;
+}
+
+.carousel .slider_1 {
+    background-image: url("/frontend/acme/assets/img/techmaster2.jpg");
+}
+
+.carousel .slider_2 {
+    background-image: url("/frontend/acme/assets/img/techmaster3.jpg");
+}
+
+.carousel .slider_3 {
+    background-image: url("/frontend/acme/assets/img/techmaster1.jpg");
+}
+
+.carousel-control {
+    background: transparent !important;
+}
+
+.carousel-indicators .active {
+    margin-right: 5px;
+}
+
+.head-section .navbar-nav > li > a {
+    font-size: 16px;
+}
+
+ul.page-footer-list {
+    padding: 0;
+}
+
+ul.page-footer-list a:hover {
+    color: #48cfad;
+}
+

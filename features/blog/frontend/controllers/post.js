@@ -46,9 +46,29 @@ module.exports = function (controller, component, app) {
             raw: true
         }).then(function (post) {
             if (post) {
-                // Render view
-                res.frontend.render('post_detail', {
-                    post: post
+                // Get id of category contain post
+                let ids = post.categories.split(':');
+                let category_ids = [];
+                if (ids.length > 0) {
+                    for (var i = 0; i < ids.length; i++) {
+                        if (Number(ids[i])) {
+                            category_ids.push(Number(ids[i]));
+                        }
+                    }
+                }
+                // Query category contain post and render
+                application.models.category.findAll({
+                    where: {
+                        id:{
+                            $in: category_ids
+                        }
+                    }
+                }).then(function (categories) {
+                    // Render view
+                    res.frontend.render('post_detail', {
+                        post: post,
+                        categories: categories
+                    });
                 });
             } else {
                 // Redirect to 404 if post not exist
@@ -67,7 +87,7 @@ module.exports = function (controller, component, app) {
         let number_item = app.getConfig('pagination').frontNumberItem || 10;
 
         let sql = 'select posts.*,users.user_login,users.user_pass,users.user_email,users.user_url,users.user_registered,users.display_name,' +
-            'users.user_activation_key,users.user_image_url,users.salt,users.user_status,users.phone ' +
+            'users.user_activation_key,users.user_image_url,users.salt,users.user_status' +
             'from arr_post as posts left outer join arr_user as users on posts.created_by = users.id WHERE' +
             ' "posts"."type" = \'post\' AND "posts"."published" = 1 AND EXTRACT(MONTH FROM posts.created_at ) = ' + month_ + ' AND EXTRACT(YEAR FROM posts.created_at) = ' + year_ +
             ' ORDER BY posts.id ASC OFFSET ' + (page - 1) * number_item + ' LIMIT ' + number_item;

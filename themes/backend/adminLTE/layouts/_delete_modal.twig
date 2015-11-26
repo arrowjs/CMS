@@ -1,0 +1,31 @@
+<!-- Delete modal -->
+<div class="modal fade" id="confirm-delete-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">{{ __('t_backend_default_delete_modal_confirm') }}</h4>
+            </div>
+            <div class="modal-body">
+                {{ __('t_backend_default_delete_modal_confirm_message') }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">{{ __('cancel') }}</button>
+                <button type="button" class="btn btn-danger" onclick="deleteRecords()">{{ __('delete') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openDeleteConfirmModal() {
+        var ids = [];
+        $("input:checkbox[name='ids[]']:checked").each(function () {
+            ids.push($(this).val());
+        });
+
+        if (ids.length > 0 || $('#edit-form').length > 0) {
+            $('#confirm-delete-modal').modal('show');
+        }
+    }
+</script>

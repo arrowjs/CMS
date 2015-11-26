@@ -1,0 +1,48 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-solid box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"> {{ __('m_configurations_backend_themes_detail_title',current_theme.name) }}</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th width="5%">{{ __('all_table_column_alias') }}</th>
+                            <td>{{ current_theme.theme_name }}</td>
+                        </tr>
+                        <tr>
+                            <th width="5%">{{ __('all_table_column_author') }}</th>
+                            <td>{{ current_theme.author }}</td>
+                        </tr>
+                        <tr>
+                            <th width="5%">{{ __('link') }}</th>
+                            <td><a href="{{ current_theme.link }}">{{ current_theme.link }}</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="box box-solid box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">{{ __('m_configurations_backend_themes_detail_events',current_theme.name) }}</h3>
+                </div>
+
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        {% for event in current_theme.events %}
+                            <tr>
+                                <th width="5%">{{ event.name }}</th>
+                                <td>{{ event.description }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

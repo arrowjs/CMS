@@ -1,0 +1,61 @@
+{% set filterNumber = 0 %}
+
+{% for col in table_columns %}
+    {% if col.filter %}
+        {% set filterNumber = filterNumber + 1 %}
+    {% endif %}
+{% endfor %}
+
+{% if filterNumber > 0 %}
+    <tr class="heading">
+        <form method="GET" id="search-form">
+            {% for col in table_columns %}
+                <th width="{{ col.width }}">
+                    {% if col.type == 'checkbox' %}
+                        {{ '' }}
+                        {% elif col.filter %}
+                        {% set filter = col.filter %}
+
+                        {% if filter.type == 'select' %}
+                            <select name="{{ filter.filter_key }}" class="form-control">
+                                <option value="">{{ __('all') }}</option>
+                                {% for s in filter.data_source | get_data_source(filter) %}
+                                    {% if filters[filter.filter_key] != "" and filters[filter.filter_key] == s[filter.value_key] %}
+                                        <option value="{{ s[filter.value_key] }}" selected>{{ s[filter.display_key] }}</option>
+                                    {% else %}
+                                        <option value="{{ s[filter.value_key] }}">{{ s[filter.display_key] }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            {% elif filter.data_type == 'datetime' %}
+                            <input type="text" class="form-control date-range"
+                                   id="{{ col.column }}"
+                                   name="{{ col.column }}"
+                                   value="{{ filters[col.column] }}"/>
+                        {% else %}
+                            {% set toolTip = '' %}
+                            {% if filter.data_type != 'string' %}
+                                {% set toolTip = 'Use operator ">" "<" ">=" "<=" "><" "<>" ";". </br>Ex: >15, 15><25' %}
+                            {% endif %}
+                            <div class="input-group">
+                                <input type="text" name="{{ col.column }}"
+                                       class="form-control"
+                                       value="{{ filters[col.column] }}"/>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default popover-btn"
+                                                data-container="body"
+                                                data-placement="bottom"
+                                                data-toggle="popover"
+                                                data-html="true"
+                                                data-content='{{ toolTip }}'>
+                                            <i class="fa fa-question"></i>
+                                        </button>
+                                    </span>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </th>
+            {% endfor %}
+        </form>
+    </tr>
+{% endif %}

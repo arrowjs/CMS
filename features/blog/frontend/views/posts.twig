@@ -33,8 +33,12 @@
                         <div class="row">
                             <div class="col-lg-2 col-sm-2">
                                 <div class="date-wrap">
-                                    <span class="date">11</span>
-                                    <span class="month">January</span>
+                                    <span class="date">
+                                        {{ post.published_at | moment("DD") }}
+                                    </span>
+                                    <span class="month">
+                                        {{ post.published_at | moment("MMMM") }}
+                                    </span>
                                 </div>
                                 <div class="author  text-right">
                                     By <a href="#">{{ post.user.display_name }}</a>
@@ -53,6 +57,7 @@
                                         {{ post.title }}
                                     </a>
                                 </h1>
+
                                 <p>
                                     {{ post.intro_text | safe }}
                                 </p>

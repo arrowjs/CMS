@@ -1,0 +1,163 @@
+{% extends '_layout.twig' %}
+
+{% block cssExtends %}
+    <style>
+        .sort-box-title {
+            margin-left: 15px;
+            padding-bottom: 4px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .ui-sortable {
+            background-color: #fff;
+            -webkit-box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+            box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+            list-style-type: none;
+            padding: 15px 0;
+        }
+
+        .ui-sortable li.ui-state-default {
+            color: rgb(79, 79, 79);
+            list-style: none;
+            min-height: 40px;
+            line-height: 40px;
+            font-size: 1.4em;
+            outline: 0;
+            padding-left: 30px;
+            text-indent: 15px;
+            border: 1px solid rgba(0, 0, 0, .3);
+            border-radius: 5px;
+            position: relative;
+            cursor: move;
+            margin: 10px 15px;
+        }
+
+        .ui-sortable-placeholder {
+            border: 3px dashed #aaa;
+            min-height: 40px;
+            background: #c3ffaa;
+            margin: 15px 0;
+        }
+
+        .ui-sortable li.ui-state-default:after {
+            content: "\f0c9";
+            display: inline-block;
+            font-family: "FontAwesome";
+            position: absolute;
+            left: 0;
+            top: 4px;
+            text-align: center;
+            line-height: 35px;
+            color: rgba(0, 0, 0, .7);
+            text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+            cursor: move;
+        }
+
+        #sortable, #sortable2 {
+            overflow: auto;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert-tag"></div>
+            <div class="portlet">
+                <div class="portlet-title">
+                    <div class="caption">
+                        {{ toolbar | safe }}
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                            {% if menus %}
+                                {% if menus.sorting.default.length > 0 %}
+                                    <ul id="sortable">
+                                        <span class="sort-box-title">
+                                            {{ __('m_menus_backend_views_admin_sort_main_default') }}
+                                        </span>
+                                        {% for d in menus.sorting.default %}
+                                            <li id="d-{{ d }}" class="ui-state-default">
+                                                <span>{{ menus.default.modules[d]['title'] }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+
+                                <ul id="sortable2">
+                                    <span class="sort-box-title">
+                                        {{ __('m_menus_backend_views_admin_sort_main_systems') }}
+                                    </span>
+
+                                    {% for s in menus.sorting.systems %}
+                                        <li id="s-{{ s }}" class="ui-state-default">
+                                            <span>{{ menus.systems.modules[s]['title'] }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    <script src="/backend/adminLTE/assets/plugins/jQueryUI/jquery-ui.min.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function () {
+            var sort = $("#sortable");
+            var data = '';
+            sort.sortable({
+                placeholder: "ui-sortable-placeholder",
+                cancel: ".sort-box-title",
+                stop: function (event, ui) {
+                    data = sort.sortable('serialize', {expression: /(.+)[-](.+)/});
+                }
+            });
+            sort.disableSelection();
+
+            var sort2 = $("#sortable2");
+            var data2 = '';
+            sort2.sortable({
+                placeholder: "ui-sortable-placeholder",
+                cancel: ".sort-box-title",
+                stop: function (event, ui) {
+                    data2 = sort2.sortable('serialize', {expression: /(.+)[-](.+)/});
+                }
+            });
+            sort2.disableSelection();
+
+            $(document).on('click', '#saveForm', function () {
+                clearTimeout();
+                if (data != '' || data2 != '')
+                    $.ajax({
+                        url: '/admin/menu/sort-admin-menu',
+                        type: 'POST',
+                        data: data + '&' + data2,
+                        success: function () {
+                            $('.alert-tag').html('<div class="alert alert-success alert-dismissable">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' +
+                            '</button><i class="fa-lg fa fa-check"></i>' +
+                            '{{ __("m_menus_backend_views_admin_sort_btn_update_success") }}' +
+                            '</div>');
+                            setTimeout(function () {
+                                window.location = '/admin/menu/sort-admin-menu'
+                            }, 1000);
+                        },
+                        error: function () {
+                            $('.alert-tag').html('<div class="alert alert-danger alert-dismissable">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>' +
+                            '<i class="icon fa fa-warning"></i> ' +
+                            '{{ __("m_menus_backend_views_admin_sort_btn_update_failure") }}</div>');
+                        }
+                    });
+            });
+        });
+    </script>
+{% endblock %}
