@@ -1,0 +1,41 @@
+body {
+    font-size: 16px;
+}
+.feature-box-heading img {
+    width: 100%;
+}
+
+#main-slider .carousel .item:first-child {
+    height: 500px;
+}
+
+.feature-box {
+    margin-bottom: 70px;
+}
+
+.feature-box-heading h4 {
+    margin-top: 25px;
+}
+
+.footer-address i {
+    width: 25px;
+}
+
+#bottom {
+    font-size: 16px;
+}
+
+#bottom .social-link-footer li {
+    float: left;
+    margin-right: 15px;
+}
+
+#bottom .social-link-footer li a {
+    width: 50px;
+    height: 50px;
+    display: block;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    padding-top: 12px;
+    text-align: center;
+}
