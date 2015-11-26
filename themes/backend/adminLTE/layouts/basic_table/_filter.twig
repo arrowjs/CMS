@@ -7,7 +7,7 @@
 {% endfor %}
 
 {% if filterNumber > 0 %}
-    <tr role="row" class="heading">
+    <tr class="heading">
         <form method="GET" id="search-form">
             {% for col in table_columns %}
                 <th width="{{ col.width }}">

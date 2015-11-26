@@ -1,0 +1,16 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+    <div class="error-page">
+        <h2 class="headline text-red">No Permission</h2>
+
+        <div class="error-content">
+            <h3><i class="fa fa-warning text-red"></i> Oops! You are not permissions.</h3>
+
+            <p>
+                Please contact to Administrator to ask more permissions
+                Meanwhile, you may <a href="/admin">return to dashboard</a> or try another features.
+            </p>
+        </div>
+    </div>
+{% endblock %}

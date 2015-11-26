@@ -5,17 +5,24 @@ let lang = require('arrowjs').language.languageKey;
 let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, application) {
+
     controller.index = function (req, res) {
+        // Add toolbar
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addSaveButton(true);
+
         res.render('sites/index', {
             config: application.getConfig(),
             lang: lang(),
-            title: __('m_configurations_backend_index_render_title')
+            title: __('m_configurations_backend_index_render_title'),
+            toolbar: toolbar.render()
         });
     };
+
     controller.update_config = function (req, res, next) {
         let data = req.body;
         let config = {};
-        //
+
         // Site info
         config.app = {};
         config.app.title = data.title;

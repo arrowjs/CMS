@@ -1,4 +1,4 @@
-{% extends 'layout.twig' %}
+{% extends '_layout.twig' %}
 
 {% block content %}
     <div class="row">
@@ -90,7 +90,8 @@
 {% endblock %}
 
 {% block jsExtends %}
-    {% include 'editorScript.twig' %}
+    {% include '_editorScript.twig' %}
+
     <script>
         function deleteRecords() {
             var ids = [];

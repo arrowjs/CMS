@@ -9,6 +9,7 @@ module.exports = function (controller, component, application) {
         // Create setting form
         let form = new ArrowHelper.WidgetForm(widget);
         form.addText('title', 'Title');
+        form.addText('css_class', 'CSS Class');
         form.addTextArea('content', 'Content');
         form.addSelect('layout', 'Layout', layouts);
 

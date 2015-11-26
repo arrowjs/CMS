@@ -4,7 +4,7 @@
     {% set order = "asc" %}
 {% endif %}
 
-<tr role="row" class="heading">
+<tr class="heading">
     {% for col in table_columns %}
         <th width="{{ col.width }}">
             {% if col.type == "checkbox" %}

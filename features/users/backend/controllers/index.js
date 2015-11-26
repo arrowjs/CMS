@@ -12,9 +12,6 @@ let formidable = require('formidable');
 promise.promisifyAll(formidable);
 
 let _log = require('arrowjs').logger;
-//get function to check permissions of modules
-
-
 let edit_template = 'new';
 let folder_upload = '/img/users/';
 let route = 'users';
