@@ -87,7 +87,9 @@ module.exports = function (controller, component, application) {
                     }
                 });
 
+                // Remove __MACOSX folder if exists
                 fs.removeSync(__base + 'themes/frontend/__MACOSX');
+
                 req.flash.success('Import theme successfully');
 
             } catch (error) {

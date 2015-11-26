@@ -10,7 +10,6 @@ let _log = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
-
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let isAllow = ArrowHelper.isAllow;
 
@@ -35,7 +34,6 @@ module.exports = function (controller, component, app) {
         }
         session_search[route + '_post_list'] = req.url;
         req.session.search = session_search;
-
 
         // Config columns
         let tableStructure = [
@@ -109,14 +107,12 @@ module.exports = function (controller, component, app) {
             }
         ];
 
-
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: '/admin/blog/posts/page/' + page + '/sort',
             limit: itemOfPage,
             customCondition: "AND type='post'"
         });
 
-        console.log("------",req.params.order);
         // Find all posts
         app.models.post.findAndCountAll({
             where: filter.conditions,
@@ -130,7 +126,6 @@ module.exports = function (controller, component, app) {
             limit: filter.limit,
             offset: (page - 1) * itemOfPage
         }).then(function (results) {
-            //console.log("++++++++",JSON.stringify(results.rows,null,2));
             let totalPage = Math.ceil(results.count / itemOfPage);
 
             // Render view
@@ -156,7 +151,6 @@ module.exports = function (controller, component, app) {
 
     };
 
-
     controller.postView = function (req, res) {
         // set back link default
         let back_link = '/admin/blog/posts/page/1';
@@ -164,12 +158,13 @@ module.exports = function (controller, component, app) {
         if (search_params && search_params[route + '_post_list']) {
             back_link = '/admin' + search_params[route + '_post_list'];
         }
+
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        //todo: check permission
         toolbar.addSaveButton(isAllow(req, 'post_create'));
         toolbar.addDeleteButton(isAllow(req, 'post_delete'));
+
         promise.all([
             app.models.category.findAll({
                 order: "id asc"
@@ -187,7 +182,8 @@ module.exports = function (controller, component, app) {
         ]).then(function (results) {
             let data = results[2];
             data.full_text = data.full_text.replace(/&lt/g, "&amp;lt");
-            //add button for preview
+
+            // Add preview button
             toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', '/admin/blog/posts/preview/' + results[2].id,
                 {
                     icon: '<i class="fa fa-eye"></i>',
@@ -208,9 +204,7 @@ module.exports = function (controller, component, app) {
         });
     };
 
-
     controller.postDelete = function (req, res) {
-
         res.locals.user = req.user;
         app.models.post.findAll({
             where: {
@@ -254,15 +248,14 @@ module.exports = function (controller, component, app) {
         });
     };
 
-
     controller.postUpdate = function (req, res, next) {
-
         // set back link default
         let back_link = '/admin/blog/posts/page/1';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_post_list']) {
             back_link = '/admin' + search_params[route + '_post_list'];
         }
+
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
@@ -291,9 +284,7 @@ module.exports = function (controller, component, app) {
                 newtag.pop(newtag.length - 1);
             } else newtag = [];
 
-            /**
-             * Update count for category
-             */
+            // Update count for category
             let onlyInA = [],
                 onlyInB = [];
 
@@ -341,12 +332,9 @@ module.exports = function (controller, component, app) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.redirect(back_link);
         });
-
     };
 
-
     controller.postCreate = function (req, res) {
-
         // Add button
         let back_link = '/admin/blog/posts/page/1';
         let search_params = req.session.search;
@@ -356,8 +344,6 @@ module.exports = function (controller, component, app) {
 
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        //todo: check permission
-
         toolbar.addSaveButton(isAllow(req, 'post_create'));
         toolbar = toolbar.render();
 
@@ -383,7 +369,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.postSave = function (req, res) {
-
         let data = req.body;
         data.title = data.title.trim();
         data.created_by = req.user.id;
@@ -430,7 +415,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.postRead = function (req, res, next, id) {
-
         res.locals.user = req.user;
         app.models.post.findById(id).then(function (post) {
             req.post = post;
@@ -443,9 +427,7 @@ module.exports = function (controller, component, app) {
         return next((req.post.created_by !== req.user.id));
     };
 
-
     controller.postPreView = function (req, res) {
-
         let postId = req.params.postId;
 
         component.models.post.find({
@@ -466,7 +448,6 @@ module.exports = function (controller, component, app) {
             }
         });
     };
-
 
     /*
      * function to display all post which is choosed by user when create menus
