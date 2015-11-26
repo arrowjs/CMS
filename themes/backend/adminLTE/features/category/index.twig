@@ -1,0 +1,102 @@
+{% extends '_layout.twig' %}
+
+{% block cssExtends %}
+    <link rel="stylesheet"
+          href="/backend/adminLTE/assets/plugins/bootstrap-editable/bootstrap-editable/css/bootstrap-editable.css"/>
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row toolbar">
+                <div class="col-md-12">
+                    {{ toolbar | safe }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12" style="margin-bottom: 10px">
+                    <form method="post" action="/admin/categories/create">
+                        <div class="col-md-6 col-sm-6">
+                            <div class="row">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-plus"></i></span>
+                                    <input type="text" class="form-control" name="name" required="required">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary btn-flat"
+                                                type="submit">{{ __('m_category_backend_views_category_create') }}</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="box box-solid box-primary">
+                <div class="box-body table-responsive">
+                    {% include 'basic_table/_table.twig' %}
+
+                    {{ paginateLinks(totalPage, currentPage, '/admin/categories/page/{page}/sort/'+currentColumn+'/'+currentOrder) | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    <script src="/backend/adminLTE/assets/plugins/bootstrap-editable/bootstrap-editable/js/bootstrap-editable.js"></script>
+
+    <script>
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+
+            if (ids.length > 0) {
+                $.ajax({
+                    url: '/admin/categories',
+                    type: 'DELETE',
+                    data: {
+                        ids: ids.join()
+                    }
+                }).done(function () {
+                    window.location.href = "/admin/categories";
+                });
+            }
+        }
+
+        $('.inline-edit').editable({
+            type: 'text',
+            success: function (response, newValue) {
+                if (response != null) {
+                    var type, icon, title;
+                    var wrap = $('.content-wrapper');
+
+                    if (response.type == 'success') {
+                        type = 'success';
+                        icon_class = 'fa-check'
+                    } else {
+                        type = 'danger';
+                        icon_class = 'fa-warning'
+                    }
+
+                    var child = wrap.find('.flashBox');
+                    if (child.length > 0) {
+                        child.remove();
+                    }
+
+                    title = (type == "danger") ? "error" : type;
+                    wrap.prepend('<div class="col-md-12 col-sm-12 col-xs-12 flashBox" style="padding: 15px"><div class="alert alert-' + type + ' alert-dismissable">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="margin-top: 15px">' +
+                    '<i class="fa-lg fa fa-close"></i></button> ' +
+                    '<h4><i class="fa-lg fa ' + icon_class + '"></i> ' + title.toUpperCase() + '</h4>' +
+                    '<p>' + response.message + '</p></div></div>');
+                }
+            }
+        });
+    </script>
+{% endblock %}

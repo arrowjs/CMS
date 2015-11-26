@@ -1,0 +1,129 @@
+{% extends '_layout.twig' %}
+
+{% block cssExtends %}
+    <style>
+        .rule-item {
+            min-height: 170px;
+        }
+
+        .label-rule {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post" role="form">
+
+                {{ toolbar | safe }}
+
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="title">{{ __('m_roles_backend_new_title') }}
+                                <span class="required">*</span></label>
+                            <input type="text" class="form-control" name="title"
+                                   value="{{ role.name }}" required="required"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="status">{{ __('m_roles_backend_new_status') }}
+                                <span class="required">*</span></label>
+                            <select class="table-group-action-input form-control"
+                                    name="status" required="required">
+                                <option {% if role.status == 'publish' %}selected="selected" {% endif %}
+                                        value="publish">{{ __('published') }}
+                                </option>
+                                <option {% if role.status == 'un-publish' %}selected="selected" {% endif %}
+                                        value="un-publish">{{ __('unpublished') }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="nav-tabs-custom" style="cursor: move;">
+                        <!-- Tabs within a box -->
+                        <ul class="nav nav-tabs ui-sortable-handle">
+                            <li class=""><a href="#backend" data-toggle="tab" aria-expanded="false">
+                                    {{ __('backend') }}</a></li>
+                        </ul>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="backend">
+                                        {% for name,values in features %}
+                                            {% if values.length > 0 %}
+                                                <div class="col-md-3 col-sm-3">
+                                                    <div class="rule-item">
+                                                        <div class="form-group">
+                                                            <label class="label-rule">
+                                                                <input type="checkbox" class="check-rule-parent"/>
+                                                                {{ name }}
+                                                            </label>
+
+                                                            {% for v in values %}
+                                                                <div class="checkbox">
+                                                                    <label>
+                                                                        <input type="checkbox" name="{{ name }}"
+                                                                               class="check-rule-children"
+                                                                               value="{{ v.name }}" {{ permissions|check_state(name, v) }}/>
+                                                                        {{ v.title }}
+                                                                    </label>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    <script>
+        $(function () {
+            var checkParent = $('input.check-rule-parent');
+
+            // Check parent if all children is checked
+            checkParent.each(function () {
+                var isCheckAll = true;
+                var cbChild = $(this).parent('label').parent('div')
+                        .children('div').children('label').children('input[type="checkbox"]');
+
+                cbChild.each(function () {
+                    if (!$(this).is(':checked')) {
+                        isCheckAll = false;
+                    }
+                });
+
+                if (isCheckAll) {
+                    $(this).prop('checked', true);
+                }
+            });
+
+            // Check rule event
+            checkParent.change(function () {
+                var cbChild = $(this).parent('label').parent('div')
+                        .children('div').children('label').children('input[type="checkbox"]');
+                if ($(this).is(':checked')) {
+                    cbChild.prop('checked', true);
+                } else {
+                    cbChild.prop('checked', false);
+                }
+            });
+        })
+    </script>
+{% endblock %}
