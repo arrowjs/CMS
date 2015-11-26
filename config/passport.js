@@ -54,12 +54,6 @@ module.exports = function (passport, application) {
                 failureFlash: true
 
             }
-        },
-        'facebook': {
-            option: {
-                successRedirect: '/',
-                failureRedirect: '/users/login'
-            }
         }
     }
 };
