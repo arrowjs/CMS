@@ -25,7 +25,7 @@ module.exports = function (controller, component, app) {
                     posts: posts.rows,
                     totalPage: totalPage,
                     currentPage: page,
-                    baseURL: '/blog/page-{page}'
+                    baseURL: '/blog/posts/page-{page}'
                 });
             } else {
                 // Redirect to 404 if posts not exist
@@ -165,7 +165,7 @@ module.exports = function (controller, component, app) {
                         posts: results[0].rows,
                         totalPage: totalPage,
                         currentPage: page,
-                        route: '/posts/' + req.params.author + '/page-{page}',
+                        route: '/blog/posts/' + req.params.author + '/page-{page}',
                         byAuthor: req.params.author
                     });
                 } else {
@@ -214,7 +214,7 @@ module.exports = function (controller, component, app) {
                     numberOfPost: result[0].rows.length,
                     totalPage: totalPage,
                     currentPage: page,
-                    baseURL: '/blog/post/categories/'+alias+'/'+id+'/page-:page([0-9]+)?(/)?',
+                    baseURL: '/blog/posts/categories/'+alias+'/'+id+'/page-:page([0-9]+)?(/)?',
                 });
             } else {
                 //Redirect to 404 if post not exist
