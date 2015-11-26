@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-lg-4 col-sm-4">
                     <h1>
-                        Blog
+                        {{ title }}
                     </h1>
                 </div>
                 <div class="col-lg-8 col-sm-8">
@@ -40,19 +40,18 @@
                                         {{ post.published_at | moment("MMMM") }}
                                     </span>
                                 </div>
+                                <div class="author  text-right">
+                                    By <a href="#">{{ post.user.display_name }}</a>
+                                </div>
                             </div>
                             <div class="col-lg-10 col-sm-10">
+                                {% if post.image %}
                                 <div class="blog-img">
                                     <script>//TODO: remove host name</script>
                                     <img src="{{ post.image }}" alt=""/>
                                 </div>
+                                {% endif %}
 
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-2 col-sm-2 text-right">
-                            </div>
-                            <div class="col-lg-10 col-sm-10">
                                 <h1>
                                     <a href="/blog/{{ post.id }}/{{ post.alias }}">
                                         {{ post.title }}
@@ -71,7 +70,7 @@
                 {% endfor %}
 
                 <div class="text-center">
-                    {{ paginateLinks(totalPage, currentPage, '/blog/page-{page}') | safe }}
+                    {{ paginateLinks(totalPage, currentPage,routepage) | safe }}
                 </div>
             </div>
 
