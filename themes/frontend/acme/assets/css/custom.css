@@ -127,3 +127,9 @@
 .manager_system img {
     width: 100%;
 }
+
+@media (max-width: 1024px) {
+    .big_header .content {
+        width: 100%;
+    }
+}
