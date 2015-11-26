@@ -1,6 +1,11 @@
 body {
     font-size: 16px;
 }
+
+.container {
+    padding-bottom: 0;
+}
+
 .feature-box-heading img {
     width: 100%;
 }
@@ -38,4 +43,28 @@ body {
     border: 1px solid #ccc;
     padding-top: 12px;
     text-align: center;
+}
+
+.recent_post img,
+.picked_post img {
+    width: 100px;
+}
+
+#footer h3 {
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+#footer ul > li {
+    display: block;
+    margin-left: 0;
+    margin-bottom: 15px;
+}
+
+#footer .social-link-footer li {
+    float: left;
+    margin-right: 20px;
 }
