@@ -9,6 +9,8 @@
 .big_header {
     height: 500px;
     padding-top: 70px;
+    background: url("/frontend/acme/assets/img/techmaster2.jpg") center center;
+    background-size: cover;
 }
 
 .big_header h1 {
@@ -127,3 +129,37 @@ ul.page-footer-list li {
     border-bottom: none;
 }
 
+.copyright p {
+    margin-bottom: 17px;
+}
+
+/*.carousel {*/
+    /*height: 500px;*/
+/*}*/
+
+.carousel .item {
+    -webkit-background-size: cover;
+    background-size: cover;
+    background-position: center center;
+    height: 500px;
+}
+
+.carousel .slider_1 {
+    background-image: url("/frontend/acme/assets/img/techmaster2.jpg");
+}
+
+.carousel .slider_2 {
+    background-image: url("/frontend/acme/assets/img/techmaster3.jpg");
+}
+
+.carousel .slider_3 {
+    background-image: url("/frontend/acme/assets/img/techmaster1.jpg");
+}
+
+.carousel-control {
+    background: transparent !important;
+}
+
+.carousel-indicators .active {
+    margin-right: 5px;
+}
