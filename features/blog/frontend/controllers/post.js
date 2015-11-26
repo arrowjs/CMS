@@ -121,7 +121,7 @@ module.exports = function (controller, component, app) {
                 }
             }).catch(function (err) {
                 res.send("error");
-                console.log(err.stack);
+                logger.error(err.stack);
             });
 
 
@@ -173,7 +173,7 @@ module.exports = function (controller, component, app) {
                     res.frontend.render('_404');
                 }
             }).catch(function (err) {
-                console.log(err.stack)
+                logger.error(err.stack)
             });
     };
     controller.listPostByCategory = function (req, res) {
@@ -221,7 +221,7 @@ module.exports = function (controller, component, app) {
                 res.frontend.render('_404');
             }
         }).catch(function (err) {
-            console.log(err.stack);
+            logger.error(err.stack);
             res.frontend.render('_404');
         });
     }
@@ -231,7 +231,6 @@ module.exports = function (controller, component, app) {
         let number_item = app.getConfig('pagination').frontNumberItem || 10;
         let totalPage = 1;
         let key = req.body.searchStr || req.params.searchStr || req.query.searchStr || '';
-        console.log(key,'--',page);
         app.models.post.findAndCountAll({
             include :  app.models.user,
             where: {
@@ -260,7 +259,7 @@ module.exports = function (controller, component, app) {
             });
             // Render view
         }).catch(function (err) {
-            console.log('search error : ',err);
+            logger.error('search error : ',err);
             res.frontend.render('_404');
         });
     }

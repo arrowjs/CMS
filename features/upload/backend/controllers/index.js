@@ -112,19 +112,19 @@ module.exports = function (controller, component, application) {
                     if (number) {
                         checkFileExist(noExt.replace(/\(\d\)$/, ''), 1, ext).then(function (result) {
                             fs.rename(files["files[]"].path, result, function (err) {
-                                if (err) console.log(err);
+                                if (err) logger.error(err);
                             });
                         });
                     } else {
                         checkFileExist(noExt, 1, ext).then(function (result) {
                             fs.rename(files["files[]"].path, result, function (err) {
-                                if (err) console.log(err);
+                                if (err) logger.error(err);
                             });
                         });
                     }
                 } else {
                     fs.rename(files["files[]"].path, destination, function (err) {
-                        if (err) console.log(err);
+                        if (err) logger.error(err);
                     });
                 }
             });

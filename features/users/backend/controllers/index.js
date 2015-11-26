@@ -220,7 +220,7 @@ module.exports = function (controller, component, app) {
                                 user_tmp.acl = JSON.parse(user_tmp.role.permissions);
                                 redis.setex(user_tmp.key, 300, JSON.stringify(user_tmp));
                             }).catch(function (error) {
-                                console.log(error.stack);
+                                logger.error(error.stack);
                             });
                     });
                     return res.redirect('/' + adminPrefix + '/users/profile/' + req.params.uid);
@@ -465,7 +465,7 @@ module.exports = function (controller, component, app) {
             req._user = user;
             next();
         }).catch(function (err) {
-            console.log('ERROR : ' + err);
+            logger.error('ERROR : ' + err);
         })
     };
 

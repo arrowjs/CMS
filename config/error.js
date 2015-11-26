@@ -44,13 +44,10 @@ module.exports = {
     },
     error: {
         "404": {
-            render: "_404"
+            render: "/themes/frontend/:frontendTheme/layouts/_404.twig"
         },
         "500": {
-            render: "500"
-        },
-        "403": {
-            render: "500"
+            render: "/themes/frontend/:frontendTheme/layouts/_500.twig"
         }
     }
 };
