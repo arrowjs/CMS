@@ -7,29 +7,29 @@ module.exports = function (component) {
 
         // Post router
 
-        "/blog": {
+        "/blog/posts": {
             get: {
                 handler: controller.allPosts
             }
         },
-        '/blog/page-:page([0-9]+)?(/)?': {
+        '/blog/posts/page-:page([0-9]+)?(/)?': {
             get: {
                 handler: controller.allPosts
             }
         },
-        "/blog/:postId([0-9]+)/:postAlias": {
+        "/blog/posts/:postId([0-9]+)/:postAlias": {
             get: {
                 handler: controller.postDetail
             }
         },
 
         // Archive router
-        "/blog/archives/:year([0-9]{4})/:month([0-9]{2})(/)?": {
+        "/blog/posts/archives/:year([0-9]{4})/:month([0-9]{2})(/)?": {
             get: {
                 handler: controller.listArchive
             }
         },
-        "/blog/archives/:year([0-9]{4})/:month([0-9]{2})/page-:page([0-9])(/)?": {
+        "/blog/posts/archives/:year([0-9]{4})/:month([0-9]{2})/page-:page([0-9])(/)?": {
             get: {
                 handler: controller.listArchive
             }
@@ -46,17 +46,28 @@ module.exports = function (component) {
                 handler: controller.listByAuthor
             }
         },
-
+        "/blog/posts/search(/page/:page([0-9]+)/(:searchStr)?)?" : {
+            get : {
+                handler : controller.search
+            }
+        },
+        // Categories  router
+        "/blog/posts/categories/:alias([0-9a-zA-Z-]+)/:id([0-9]+)(/)?": {
+            get: {
+                handler: controller.listPostByCategory
+            }
+        },
+        "/blog/posts/categories/:alias([0-9a-zA-Z-]+)/:id([0-9]+)/page-:page([0-9]+)?(/)?": {
+            get: {
+                handler: controller.listPostByCategory
+            }
+        },
         // Page router
         "/blog/:alias([a-zA-Z0-9-]+)(/)?": {
             get: {
                 handler: controller.pageIndex
             }
-        },
-        "/blog/posts/search(/page/:page([0-9]+)/(:searchStr)?)?" : {
-            get : {
-                handler : controller.search
-            }
         }
+
     }
 };

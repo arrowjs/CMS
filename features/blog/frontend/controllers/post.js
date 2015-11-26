@@ -25,7 +25,7 @@ module.exports = function (controller, component, app) {
                     posts: posts.rows,
                     totalPage: totalPage,
                     currentPage: page,
-                    baseURL: '/blog/page-'
+                    baseURL: '/blog/page-{page}'
                 });
             } else {
                 // Redirect to 404 if posts not exist
@@ -57,7 +57,7 @@ module.exports = function (controller, component, app) {
                     }
                 }
                 // Query category contain post and render
-                application.models.category.findAll({
+                app.models.category.findAll({
                     where: {
                         id:{
                             $in: category_ids
@@ -111,7 +111,7 @@ module.exports = function (controller, component, app) {
                                 month: month_,
                                 totalPage: totalPage,
                                 currentPage: page,
-                                route: '/blog/archives/' + year_ + '/' + month_ + '/page-{page}'
+                                baseURL: '/blog/posts/archives/' + year_ + '/' + month_ + '/page-{page}'
                             });
                         })
 
@@ -176,6 +176,56 @@ module.exports = function (controller, component, app) {
                 console.log(err.stack)
             });
     };
+    controller.listPostByCategory = function (req, res) {
+
+        let page = req.params.page || 1;
+        let number_item = app.getConfig('pagination').frontNumberItem || 10;
+        let alias = req.params.alias || '';
+        let id = req.params.id || '';
+
+        promise.all([
+            app.models.post.findAndCountAll({
+                include: [
+                    {
+                        model: app.models.user,
+                        attributes: ['id', 'display_name', 'user_login', 'user_email', 'user_image_url']
+                    }
+                ],
+                where: {
+                    categories: {$like: '%:' + req.params.id + ':%'},
+                    type: 'post',
+                    published: 1
+                },
+                order: 'id ASC',
+                offset: (page - 1) * number_item,
+                limit: number_item
+            }),
+            app.models.category.findAll({
+                order: 'id ASC'
+            })
+        ]).then(function (result) {
+
+            let totalPage = Math.ceil(result[0].count / number_item);
+
+            if (result) {
+                // Render view
+                res.frontend.render('posts', {
+                    posts: result[0].rows,
+                    numberOfPost: result[0].rows.length,
+                    totalPage: totalPage,
+                    currentPage: page,
+                    baseURL: '/blog/post/categories/'+alias+'/'+id+'/page-:page([0-9]+)?(/)?',
+                });
+            } else {
+                //Redirect to 404 if post not exist
+                res.frontend.render('_404');
+            }
+        }).catch(function (err) {
+            console.log(err.stack);
+            res.frontend.render('_404');
+        });
+    }
+
     controller.search = function (req, res) {
         let page = req.params.page || 1;
         let number_item = app.getConfig('pagination').frontNumberItem || 10;
@@ -206,7 +256,7 @@ module.exports = function (controller, component, app) {
                 posts: posts.rows,
                 totalPage : totalPage,
                 currentPage : page,
-                routepage : '/blog/posts/search/page/{page}/'+key
+                baseURL : '/blog/posts/search/page/{page}/'+key
             });
             // Render view
         }).catch(function (err) {
