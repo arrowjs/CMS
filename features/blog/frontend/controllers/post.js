@@ -261,7 +261,7 @@ module.exports = function (controller, component, app) {
             // Render view
         }).catch(function (err) {
             console.log('search error : ',err);
-            res.render('_404');
+            res.frontend.render('_404');
         });
     }
 };

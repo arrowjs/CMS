@@ -14,6 +14,6 @@ module.exports = function (cont, comp, app) {
     };
 
     cont.notPermission = function (req, res) {
-        res.backend.render('403');
+        res.backend.render('_403');
     }
 };
