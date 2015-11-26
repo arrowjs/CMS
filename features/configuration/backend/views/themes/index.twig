@@ -1,0 +1,88 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+    <div class="toolbar">
+        <button class="btn btn-success" onclick="$('#zip_file').click();">
+            <i class="fa fa-plus"></i>
+            <span class="hidden-480">Import Theme</span>
+        </button>
+
+        <form method="post" action="/admin/configuration/import-theme" enctype="multipart/form-data">
+            <input type="file" id="zip_file" name="zip_file" onchange="this.form.submit();" style="display: none;">
+        </form>
+    </div>
+
+
+    <div class="row">
+        {% for theme in themes %}
+            <div class="col-md-3">
+                <div class="box box-solid box-primary">
+                    <div class="box-body">
+                        <a href="/admin/configuration/themes/{{ theme.information.theme_name|lower }}">
+                            <img style="width: 100%;"
+                                 src="/frontend/{{ theme.folder }}/screenshot.png"
+                                 alt="{{ theme.information.theme_name }}">
+                        </a>
+
+                        <div class="caption" style="text-align: center">
+                            <h3>{{ theme.information.theme_name }}</h3>
+                            {% if theme.folder == current_theme.folder %}
+                                <i class="fa fa-check-circle-o text-success" style="font-size: 34px;"></i>
+                            {% else %}
+                                <button class="btn btn-primary"
+                                        onclick="return changeTheme('{{ theme.folder }}', '{{ theme.information.theme_name }}')">
+                                    {{ __('select') }}
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal fade" id="confirm" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">{{ __('m_configurations_backend_themes_index_title_change') }}</h4>
+                </div>
+
+                <div class="modal-body" id="modal-title">
+                    {{ __('m_configurations_backend_themes_index_change_confirm') }}
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn default" data-dismiss="modal">
+                        {{ __('cancel') }}</button>
+                    <button type="button" class="btn btn-danger" onclick="return confirmTheme();">
+                        {{ __('change') }}</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    <script>
+        var current_theme = '';
+
+        function changeTheme(themeName, theme) {
+            current_theme = themeName;
+            $("#modal-title").val("{{ __('m_configurations_backend_themes_index_select_confirm') }} " + theme + ' ?');
+            $('#confirm').modal('show');
+        }
+
+        function confirmTheme() {
+            $.ajax({
+                url: '/admin/configuration/themes/' + current_theme,
+                type: 'POST'
+            }).done(function (re) {
+                window.location.href = "/admin/configuration/themes/";
+            });
+        }
+    </script>
+{% endblock %}

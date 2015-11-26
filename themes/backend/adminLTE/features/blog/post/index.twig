@@ -1,0 +1,38 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ toolbar | safe }}
+
+            <div class="box box-solid box-primary">
+                <div class="box-body table-responsive">
+                    {% include 'basic_table/_table.twig' %}
+                    {{ paginateLinks(totalPage, currentPage,'/admin/blog/posts/page/{page}/sort/'+currentColumn+'/'+currentOrder)|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    <script>
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+            $.ajax({
+                url: '/admin/blog/posts',
+                type: 'DELETE',
+                data: {
+                    ids: ids.join()
+                },
+                success: function (result) {
+                    // Do something with the result
+                    window.location.href = "/admin/blog/posts/page/1";
+                }
+            });
+        }
+    </script>
+{% endblock %}
