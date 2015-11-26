@@ -5,11 +5,11 @@
 
     <ul class="list-unstyled">
         {% for category in categories %}
-        <li>
-            <a href="/categories/{{ category.alias }}/{{ category.id }}">
-                <i class="fa fa-angle-right pr-10"></i> {{ category.name }}
-            </a>
-        </li>
+            <li>
+                <a href="/categories/{{ category.alias }}/{{ category.id }}">
+                    <i class="fa fa-angle-right pr-10"></i> {{ category.name }}
+                </a>
+            </li>
         {% endfor %}
     </ul>
 </div>
