@@ -3,7 +3,9 @@
 module.exports = function (controller, component, application) {
 
     controller.index = function (req, res) {
-        res.frontend.render('index')
+        res.frontend.render('index', {
+            pageTitle: 'ACME | Home page'
+        })
     };
 
     controller.changeTheme = function (req, res) {
