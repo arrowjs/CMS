@@ -5,9 +5,9 @@ module.exports = {
     db: {
         host: 'localhost',
         port: '5432',
-        database: 'arrowjs_cms',
+        database: 'arrowjs',
         username: 'postgres',
-        password: '',
+        password: 'vanthanh123-',
         dialect: 'postgres',
         logging: false
     },
