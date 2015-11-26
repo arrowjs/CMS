@@ -46,9 +46,29 @@ module.exports = function (controller, component, application) {
             raw: true
         }).then(function (post) {
             if (post) {
-                // Render view
-                res.frontend.render('post_detail', {
-                    post: post
+                // Get id of category contain post
+                let ids = post.categories.split(':');
+                let category_ids = [];
+                if (ids.length > 0) {
+                    for (var i = 0; i < ids.length; i++) {
+                        if (Number(ids[i])) {
+                            category_ids.push(Number(ids[i]));
+                        }
+                    }
+                }
+                // Query category contain post and render
+                application.models.category.findAll({
+                    where: {
+                        id:{
+                            $in: category_ids
+                        }
+                    }
+                }).then(function (categories) {
+                    // Render view
+                    res.frontend.render('post_detail', {
+                        post: post,
+                        categories: categories
+                    });
                 });
             } else {
                 // Redirect to 404 if post not exist
