@@ -1,11 +1,11 @@
-{% extends "layout.twig" %}
+{% extends '_layout.twig' %}
 
 {% block content %}
     <div class="row">
         <div class="col-md-12">
             <div class="box box-solid box-primary">
                 <div class="box-header">
-                    <h3 class="box-title"> {{ __('m_configurations_backend_themes_detail_title',current_theme.name)  }}</h3>
+                    <h3 class="box-title"> {{ __('m_configurations_backend_themes_detail_title',current_theme.name) }}</h3>
                 </div>
                 <div class="box-body">
                     <table class="table table-bordered">

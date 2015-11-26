@@ -9,7 +9,7 @@ module.exports = function (controller, component, application) {
     controller.index = function (req, res) {
         // Add toolbar
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addSaveButton(true);
+        toolbar.addSaveButton(ArrowHelper.isAllow(req,'update_info'));
 
         res.render('sites/index', {
             config: application.getConfig(),
@@ -19,7 +19,7 @@ module.exports = function (controller, component, application) {
         });
     };
 
-    controller.update_config = function (req, res, next) {
+    controller.updateConfig = function (req, res, next) {
         let data = req.body;
         let config = {};
 

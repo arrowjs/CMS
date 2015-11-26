@@ -11,15 +11,15 @@ module.exports = {
             title: __('m_configurations_backend_module_rules_update_info')
         },
         {
-            name: 'change_themes',
+            name: 'change_theme',
             title: __('m_configurations_backend_module_rules_change_themes')
         },
         {
-            name: 'import_themes',
+            name: 'import_theme',
             title: __('m_configurations_backend_module_rules_import_themes')
         },
         {
-            name: 'delete_themes',
+            name: 'delete_theme',
             title: __('m_configurations_backend_module_rules_delete_themes')
         }
     ],
@@ -33,7 +33,7 @@ module.exports = {
                 link: '/site-info'
             },
             {
-                permission: 'change_themes',
+                permission: 'change_theme',
                 title: __('m_configurations_backend_module_backend_menu_change_themes'),
                 link: '/themes'
             }

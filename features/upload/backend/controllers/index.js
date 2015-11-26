@@ -23,7 +23,7 @@ function checkFileExist(fileName, index, extension) {
 }
 
 
-module.exports = function (controller,component,application) {
+module.exports = function (controller, component, application) {
     controller.dirtree = function (req, res) {
         let results = [];
         getDirectories(rootPath, results);
@@ -67,7 +67,7 @@ module.exports = function (controller,component,application) {
         fs.renameSync(standardPath + d, standardPath + path + '/' + n);
         res.jsonp({"res": "ok", "msg": ""});
     };
-    
+
     controller.fileslist = function (req, res) {
         let folder = req.body.d;
         let type = req.body.type;
@@ -97,7 +97,7 @@ module.exports = function (controller,component,application) {
             }
         });
     };
-    
+
     controller.upload = function (req, res) {
         let form = new formidable.IncomingForm();
         form.parse(req, function (err, fields, files) {
@@ -112,19 +112,19 @@ module.exports = function (controller,component,application) {
                     if (number) {
                         checkFileExist(noExt.replace(/\(\d\)$/, ''), 1, ext).then(function (result) {
                             fs.rename(files["files[]"].path, result, function (err) {
-                                if (err) console.log(err);
+                                if (err) logger.error(err);
                             });
                         });
                     } else {
                         checkFileExist(noExt, 1, ext).then(function (result) {
                             fs.rename(files["files[]"].path, result, function (err) {
-                                if (err) console.log(err);
+                                if (err) logger.error(err);
                             });
                         });
                     }
                 } else {
                     fs.rename(files["files[]"].path, destination, function (err) {
-                        if (err) console.log(err);
+                        if (err) logger.error(err);
                     });
                 }
             });
@@ -134,15 +134,15 @@ module.exports = function (controller,component,application) {
             res.jsonp({"res": "ok", "msg": ""});
         });
     };
-    
+
     controller.download = function (req, res) {
         res.jsonp({"res": "error", "msg": __('m_upload_backend_controllers_index_delete_error_integrated')});
     };
-    
+
     controller.downloaddir = function (req, res) {
         res.jsonp({"res": "error", "msg": __('m_upload_backend_controllers_index_delete_error_integrated')});
     };
-    
+
     controller.deletefile = function (req, res) {
         let file = req.body.f;
         if (fs.existsSync(standardPath + file)) {
@@ -165,11 +165,11 @@ module.exports = function (controller,component,application) {
     controller.copyfile = function (req, res) {
         res.jsonp({"res": "error", "msg": __('m_upload_backend_controllers_index_delete_error_integrated')});
     };
-    
+
     controller.movefile = function (req, res) {
         res.jsonp({"res": "error", "msg": __('m_upload_backend_controllers_index_delete_error_integrated')});
     };
-    
+
     controller.renamefile = function (req, res) {
         let f = req.body.f;
         let n = req.body.n;
@@ -200,7 +200,7 @@ module.exports = function (controller,component,application) {
             // Create thumbnail
             let child = spawn(im.convert.path);
             child.on('error', function (k) {
-                if(fs.existsSync(standardPath + filePath)) {
+                if (fs.existsSync(standardPath + filePath)) {
                     let img = fs.readFileSync(standardPath + filePath);
                     res.writeHead(200, {'Content-Type': 'image/' + getExtension(filename)});
                     res.end(img, 'binary');
