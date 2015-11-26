@@ -19,7 +19,7 @@ module.exports = function (controller, component, application) {
         });
     };
 
-    controller.update_config = function (req, res, next) {
+    controller.updateConfig = function (req, res, next) {
         let data = req.body;
         let config = {};
 

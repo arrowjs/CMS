@@ -1,6 +1,15 @@
 {% extends '_layout.twig' %}
 
 {% block content %}
+    <button class="btn btn-success" style="margin-bottom: 10px;" onclick="$('#zip_file').click();">
+        <i class="fa fa-plus"></i>
+        <span class="hidden-480">Import Theme</span>
+    </button>
+
+    <form method="post" action="/admin/configuration/import-theme" enctype="multipart/form-data">
+        <input type="file" id="zip_file" name="zip_file" onchange="this.form.submit();" style="display: none;">
+    </form>
+
     <div class="row">
         <div class="col-md-12">
             {% for theme in themes %}
