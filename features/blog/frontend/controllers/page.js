@@ -5,7 +5,6 @@ let promise = require('arrowjs').Promise;
 module.exports = function (controller, component, app) {
 
     controller.pageIndex = function (req, res) {
-        console.log('page detail');
         app.models.post.find({
             include: [
                 {

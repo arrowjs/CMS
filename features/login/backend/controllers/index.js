@@ -1,18 +1,19 @@
 /**
  * Created by thangnv on 11/11/15.
  */
-'use strict'
+'use strict';
 
-module.exports = function (cont,comp,app) {
+module.exports = function (cont, comp, app) {
     cont.view = function (req, res) {
-        console.log('login');
         res.backend.render('login');
     };
-    cont.logout = function (req,res) {
+
+    cont.logout = function (req, res) {
         req.logout();
         res.redirect('/admin/login');
     };
-    cont.notPermission = function (req,res) {
+
+    cont.notPermission = function (req, res) {
         res.backend.render('403');
     }
-}
+};
