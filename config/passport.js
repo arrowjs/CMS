@@ -22,12 +22,11 @@ module.exports = function (passport, application) {
                     },
                     include: application.models.role
                 }).then(function (user) {
-                    try{
-                        req.session.permissions = JSON.parse(user.role.rules);
-                    }catch(err){
+                    try {
+                        req.session.permissions = JSON.parse(user.role.permissions);
+                    } catch (err) {
                         req.session.permissions = null;
                     }
-                    //res.locals.permissions = req.session.permissions;
                     res.locals.user = user;
                     return next();
                 }).catch(function (err) {
@@ -63,5 +62,4 @@ module.exports = function (passport, application) {
             }
         }
     }
-
 };

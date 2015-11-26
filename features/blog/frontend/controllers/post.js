@@ -18,7 +18,6 @@ module.exports = function (controller, component, application) {
             limit: number_item,
             order: 'id DESC'
         }).then(function (posts) {
-            console.log(JSON.stringify(posts,null,2));
             if (posts) {
                 totalPage = Math.ceil(parseInt(posts.count) / number_item) || 1;
                 // Render view

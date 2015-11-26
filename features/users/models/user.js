@@ -24,7 +24,7 @@ module.exports = function (sequelize, DataTypes) {
                 },
                 isName: function (value) {
                     if (typeof value !== 'string' || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)) {
-                        throw new Error('Please input valid value user_login');
+                        throw new Error('Please input valid value Username');
                     }
                 }
             }
@@ -83,16 +83,6 @@ module.exports = function (sequelize, DataTypes) {
                 }
             }
         },
-        phone: {
-            type: DataTypes.STRING,
-            validate: {
-                isNumber: function (val) {
-                    if (!val.match(/[0-9]{3,}/g)) {
-                        throw new Error('Please input valid user\'s phone');
-                    }
-                }
-            }
-        },
         user_image_url: {
             type: DataTypes.TEXT,
             defaultValue: '/img/noImage.png'
@@ -116,6 +106,7 @@ module.exports = function (sequelize, DataTypes) {
             set: function (val) {
                 let roleIds = this.getDataValue('role_ids');
                 let flag = false;
+                //set values of role_ids
                 if (roleIds)
                     roleIds.split(',').forEach(function (v) {
                         if (val === v)

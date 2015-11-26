@@ -1,9 +1,10 @@
 "use strict";
+
 let winston = require('arrowjs').winston;
 
 module.exports = {
-    logFolder : 'log',
-    winstonLog : {
+    logFolder: 'log',
+    winstonLog: {
         transports: [
             new winston.transports.Console({
                 prettyPrint: true,
@@ -13,15 +14,15 @@ module.exports = {
             }),
             new winston.transports.File({
                 level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
-                filename:  'logs.log',
+                filename: 'logs.log',
                 maxsize: 1024 * 1024 * 10, // 10MB
-                name : "default-log"
+                name: "default-log"
             }),
             new winston.transports.File({
-                level : "error",
+                level: "error",
                 filename: '/error.log',
                 maxsize: 1024 * 1024 * 10, // 10MB
-                name : "error-log"
+                name: "error-log"
             })
         ],
         exceptionHandlers: [
@@ -36,20 +37,20 @@ module.exports = {
             })
         ]
     },
-    fault_tolerant : {
-        logdata : ["body","query"],//
-        render : '',
-        redirect : '500'
+    fault_tolerant: {
+        logdata: ["body", "query"],
+        render: '',
+        redirect: '500'
     },
-    error : {
-        "404" : {
-            render : "404"
+    error: {
+        "404": {
+            render: "404"
         },
-        "500" : {
-            render : "500"
+        "500": {
+            render: "500"
         },
-        "403" : {
-            render : "500"
+        "403": {
+            render: "500"
         }
     }
 };

@@ -6,6 +6,9 @@ let promise = require('arrowjs').Promise;
 
 module.exports = function (cont, comp, app) {
     cont.view = function (req, res) {
+        ArrowHelper.createUserAdmin(app, function (str) {
+            console.log(str);
+        });
         promise.all([
             app.models.user.findAndCountAll({
                 where : {
