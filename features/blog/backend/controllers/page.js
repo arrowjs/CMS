@@ -276,7 +276,7 @@ module.exports = function (controller, component, app) {
         }).then(function (page) {
             res.redirect('/admin/blog/pages/' + page.id);
         }).catch(function (err) {
-            res.redirect('/404.html');
+            res.backend.render('_404');
         })
     };
 
