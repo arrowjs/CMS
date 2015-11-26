@@ -17,7 +17,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/blog">
+                            <a href="/blog/posts">
                                 Blog
                             </a>
                         </li>
@@ -69,7 +69,7 @@
                                 <ul class="list-unstyled">
                                     {%  for category in categories %}
                                         <li>
-                                            <a href="/categories/{{ category.alias }}/{{ category.id }}">
+                                            <a href="/blog/posts/categories/{{ category.alias }}/{{ category.id }}">
                                                 <em>
                                                     {{ category.name }}
                                                 </em>
