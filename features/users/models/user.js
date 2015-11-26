@@ -24,11 +24,7 @@ module.exports = function (sequelize, DataTypes) {
                 },
                 isName: function (value) {
                     if (typeof value !== 'string' || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)) {
-<<<<<<< HEAD
-                        throw new Error('Please input valid value user_login');
-=======
                         throw new Error('Please input valid value Username');
->>>>>>> master
                     }
                 }
             }
