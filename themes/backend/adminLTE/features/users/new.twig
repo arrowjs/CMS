@@ -1,4 +1,4 @@
-{% extends 'layout.twig' %}
+{% extends '_layout.twig' %}
 
 {% block cssExtends %}
     <link href="/backend/adminLTE/assets/plugins/cropit/jquery.avatar.css" rel="stylesheet"/>
@@ -10,6 +10,7 @@
         <div class="col-md-12">
             <form id="edit-form" method="post">
                 {{ toolbar | safe }}
+
                 <div class="box box-solid box-primary">
                     <div class="box-body">
                         <div class="row">
@@ -20,30 +21,36 @@
                                     <input type="text" class="form-control" name="user_login"
                                            value="{{ item.user_login }}" required="required"/>
                                 </div>
+
                                 <div class="form-group">
                                     <label>{{ __('all_table_column_fullname') }}<span
                                                 class="required"> *</span></label>
                                     <input type="text" class="form-control" name="display_name"
                                            value="{{ item.display_name }}" required="required"/>
                                 </div>
+
                                 <div class="form-group">
                                     <label>{{ __('all_table_column_email') }}<span class="required"> *</span></label>
                                     <input type="email" class="form-control" name="user_email"
                                            value="{{ item.user_email }}" required="required"/>
                                 </div>
+
                                 <div class="form-group">
                                     <label>{{ __('all_table_column_phone') }}<span class="required"> *</span></label>
                                     <input type="text" class="form-control" name="phone"
                                            value="{{ item.phone }}" required="required"/>
                                 </div>
+
                                 <div class="form-group">
                                     <label>{{ __('all_table_column_url') }}</label>
                                     <input type="text" class="form-control" name="user_url"
                                            value="{{ item.user_url }}"/>
                                 </div>
+
                                 {% if role_ids %}
                                     <div class="form-group">
-                                        <label>{{ __('all_table_column_current_role') }} <span class="required"> * </span></label>
+                                        <label>{{ __('all_table_column_current_role') }} <span
+                                                    class="required"> * </span></label>
                                         <select class="table-group-action-input form-control input-medium"
                                                 name="role_id" required="required">
                                             {% for roleid in role_ids %}
@@ -56,6 +63,7 @@
                                         </select>
                                     </div>
                                 {% endif %}
+
                                 {% if roles %}
                                     <div class="form-group">
                                         <label for="role_ids">{{ __('all_table_column_role') }}
@@ -96,7 +104,8 @@
                             <div class="col-md-6">
                                 {% if not item or create %}
                                     <div class="form-group">
-                                        <label>{{ __('all_table_column_password') }} <span class="required"> *</span></label>
+                                        <label>{{ __('all_table_column_password') }} <span
+                                                    class="required"> *</span></label>
                                         <input type="password" class="form-control" id="user_pass" name="user_pass"
                                                required="required"/>
                                     </div>
@@ -111,7 +120,7 @@
 
                                 <div class="form-group">
                                     <label>{{ __('m_users_backend_views_new_avatar') }} <span class="help-block"
-                                                                                                  style="display: inline;">(128x128px) </span></label>
+                                                                                              style="display: inline;">(128x128px) </span></label>
                                     <a href="#" id="avt" class="btn btn-primary btn-block"><i class="fa fa-upload"></i>
                                         {{ __('m_users_backend_views_new_choose_image') }}</a>
 
@@ -127,7 +136,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="confirm" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal fade" id="confirm" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -143,9 +152,7 @@
                             onclick="return deleteUser();">{{ __('delete') }}</button>
                 </div>
             </div>
-            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
     </div>
 {% endblock %}
 

@@ -1,0 +1,52 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+    {{ toolbar | safe }}
+
+    <form id="edit-form" method="post" role="form">
+        <div class="nav-tabs-custom">
+            <div class="tab-content">
+                <div class="tab-pane active" id="site-setting">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>{{ __('m_configurations_backend_index_label_title') }}</label>
+                            <input type="text" name="title" class="form-control"
+                                   value="{{ config.app.title }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label>{{ __('m_configurations_backend_index_label_desc') }}</label>
+                            <input type="text" name="description" class="form-control"
+                                   value="{{ config.app.description }}">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>{{ __('m_configurations_backend_index_label_language_code') }}</label>
+                            <select name="language" id="language" class="form-control">
+                                {% for key in lang %}
+                                    {% if key == config.language %}
+                                        <option value="{{ key }}" selected>{{ key }}</option>
+                                    {% else %}
+                                        <option value="{{ key }}">{{ key }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>{{ __('m_configurations_backend_index_label_item_per_page') }}</label>
+                                <input type="text" name="number_item" class="form-control"
+                                       value="{{ config.pagination.numberItem }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'layout.twig' %}
+{% extends '_layout.twig' %}
 
 {% block cssExtends %}
     <link href="/backend/adminLTE/assets/plugins/select2/select2.css" rel="stylesheet">
@@ -348,7 +348,7 @@
 
         function loadModuleDetail(button, route, page, search, useSearch) {
             $.ajax({
-                url: '/admin'+ route +'?page='+ page + '&searchStr=' + search
+                url: '/admin' + route + '?page=' + page + '&searchStr=' + search
             }).done(function (result) {
                 var items = result.items;
                 var title_column = result.title_column;
@@ -450,9 +450,9 @@
             loadModuleDetail(btnLoadModule, route, 1, search, true);
         }
 
-//        $('.box-body').on('keypress', '.arr-search-menu-item', function (e) {
-//            return (e.keyCode == 13);
-//        });
+        //        $('.box-body').on('keypress', '.arr-search-menu-item', function (e) {
+        //            return (e.keyCode == 13);
+        //        });
 
         var number_menu_item = 1;
         var updateOutput = function (e) {
