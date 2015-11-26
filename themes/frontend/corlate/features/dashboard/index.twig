@@ -1,0 +1,122 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+
+{% block content %}
+    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+            <div class="item active slider_1">
+
+            </div>
+            <div class="item slider_2">
+
+            </div>
+            <div class="item slider_3">
+
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+
+    {#<div class="big_header jumbotron">#}
+        {#<div class="container">#}
+            {#<div class="content text-center">#}
+                {#<h1><img src="/frontend/acme/assets/img/arrowjs_logo.png" alt="" style="width: 200px; height: 200px"/></h1>#}
+                {#<p class="text-center">An opensource CMS written in Javascript</p>#}
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
+
+    <div class="feature-box">
+        <div class="container">
+            <div class="row mar-b-50">
+                <div class="col-md-12">
+                    <div class="text-center feature-head wow fadeInDown">
+                        <h1 class="">
+                            Our Company
+                        </h1>
+
+                    </div>
+
+                    <div class="row content">
+                        <div class="col-md-4 col-sm-4 text-center wow fadeInUp">
+                            <div class="feature-box-heading">
+                                <a href="http://techmaster.vn/trungtam/Trung-tam" target="_blank">
+                                    <img src="/frontend/acme/assets/img/TechmasterSlider6.png" alt="">
+
+                                </a>
+                                <h4>
+                                    <b>
+                                        <a href="http://techmaster.vn/trungtam/Trung-tam" target="_blank">
+                                            Techmaster
+                                        </a>
+                                    </b>
+                                </h4>
+                            </div>
+                            <p class="text-center">
+                                TechMaster là trung tâm đào tạo công nghệ thông tin được thành lập bởi nhóm chuyên gia CNTT, lập trình viên có nhiều năm kinh nghiệm làm việc tại tập đoàn Microsoft.
+                            </p>
+                        </div>
+                        <div class="col-md-4 col-sm-4 text-center wow fadeInUp">
+                            <div class="feature-box-heading">
+                                <a href="http://techmaster.vn/khoa-hoc" target="_blank">
+                                    <img src="/frontend/acme/assets/img/TechmasterSlider4.png" alt="">
+                                </a>
+                                <h4>
+                                    <b>
+                                        <a href="http://techmaster.vn/khoa-hoc" target="_blank">
+                                            Đào tạo
+                                        </a>
+                                    </b>
+                                </h4>
+                            </div>
+                            <p class="text-center">
+                                Đối với sinh viên, phương pháp đào tạo của TechMaster gây thích thú vì những bài giảng thực tế, khuyên khích sự sáng tạo, dám nghĩ dám làm của sinh viên.
+                            </p>
+                        </div>
+                        <div class="col-md-4 col-sm-4 text-center wow fadeInUp">
+                            <div class="feature-box-heading">
+                                <a href="http://techmaster.vn/trungtam/team-building-royal-city" target="_blank">
+                                    <img src="/frontend/acme/assets/img/TechmasterSlider8.png" alt="">
+                                </a>
+                                <h4>
+                                    <b>
+                                        <a href="http://techmaster.vn/trungtam/team-building-royal-city" target="_blank">
+                                            Hoạt động ngoại khóa
+                                        </a>
+                                    </b>
+                                </h4>
+                            </div>
+                            <p class="text-center">
+                                Đi tham quan, chơi thể thao là hoạt động được Techmaster thường xuyên tổ chức nhân viên lập trình và các học viên thực tập dài hạn.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!--feature end-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block jsExtends %}
+    <script type="text/javascript" src="/frontend/acme/assets/libs/bxslider/jquery.bxslider.js"></script>
+    <script src="/frontend/acme/assets/libs/owlcarousel/owl.carousel.js"></script>
+{% endblock %}
