@@ -1,3 +1,7 @@
+body {
+    font-size: 16px;
+}
+
 .logo .icon_logo {
     color: #c30;
 }
@@ -133,10 +137,6 @@ ul.page-footer-list li {
     margin-bottom: 17px;
 }
 
-/*.carousel {*/
-    /*height: 500px;*/
-/*}*/
-
 .carousel .item {
     -webkit-background-size: cover;
     background-size: cover;
@@ -163,3 +163,16 @@ ul.page-footer-list li {
 .carousel-indicators .active {
     margin-right: 5px;
 }
+
+.head-section .navbar-nav > li > a {
+    font-size: 16px;
+}
+
+ul.page-footer-list {
+    padding: 0;
+}
+
+ul.page-footer-list a:hover {
+    color: #48cfad;
+}
+
