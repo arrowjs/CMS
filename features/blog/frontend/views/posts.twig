@@ -1,0 +1,84 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+
+{% block content %}
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-sm-4">
+                    <h1>
+                        {{ title }}
+                    </h1>
+                </div>
+                <div class="col-lg-8 col-sm-8">
+                    <ol class="breadcrumb pull-right">
+                        <li>
+                            <a href="/">
+                                Home
+                            </a>
+                        </li>
+                        <li class="active">
+                            Blog
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 ">
+                {% for post in posts %}
+                    <div class="blog-item">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-2">
+                                <div class="date-wrap">
+                                    <span class="date">
+                                        {{ post.published_at | moment("DD") }}
+                                    </span>
+                                    <span class="month">
+                                        {{ post.published_at | moment("MMMM") }}
+                                    </span>
+                                </div>
+                                <div class="author  text-right">
+                                    By <a href="#">{{ post.user.display_name }}</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-10 col-sm-10">
+                                {% if post.image %}
+                                <div class="blog-img">
+                                    <script>//TODO: remove host name</script>
+                                    <img src="{{ post.image }}" alt=""/>
+                                </div>
+                                {% endif %}
+
+                                <h1>
+                                    <a href="/blog/posts/{{ post.id }}/{{ post.alias }}">
+                                        {{ post.title }}
+                                    </a>
+                                </h1>
+
+                                <p>
+                                    {{ post.intro_text | safe }}
+                                </p>
+                                <a href="/blog/posts/{{ post.id }}/{{ post.alias }}" class="btn btn-primary">
+                                    Continue Reading
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="text-center">
+                    {{ paginateLinks(totalPage, currentPage,baseURL) | safe }}
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="blog-side-item">
+                    {{ getSidebar("right-sidebar") | async | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

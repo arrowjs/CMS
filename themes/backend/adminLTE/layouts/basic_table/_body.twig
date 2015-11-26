@@ -1,0 +1,32 @@
+{% macro getContent(col) %}
+    <span class="{{ col.value_cls }}" style="{{ value_style }}">
+        {% if col.alias %}{{ col.alias }}{% else %}{% if col.type=='datetime' %}{% if col.dateFormat and col.dateFormat == 'withTime' %}{{ col.column|get_value(item)|moment }}{% else %}{{ col.column|get_value(item)|moment }}{% endif %}{% elif col.type=='price' %}{{ col.column|get_value(item)|vnd }}{% elif col.type=='size' %}{{ col.column|get_value(item)|size_to_str }}{% elif col.type=='array' %}{% set arr_value = col.column|get_value(item) %}{{ arr_value|get_value_from_source(sources[col.source], col.key_to_compare, col.key_to_value) }}{% elif col.type=='static_source' %}{% set value = col.column|get_value(item) %}{{ value|get_value_from_source2(sources[col.source], col.key_to_compare, col.key_to_value) }}{% elif col.type=='image' %}<img class="img-circle" src="{{ col.column|get_value(item) }}" style="width: 55px;">{% else %}{{ col.column|get_value(item) }}{% endif %}{% endif %}
+    </span>
+{% endmacro %}
+
+{% for item in items %}
+    <tr>
+        {% for col in table_columns %}
+            <td class="{{ col.cls }}" style="{{ col.style }}">
+                {% if col.type=='inline' and col.link %}
+                    <a href="#" data-name="{{ col.column }}" class="inline-edit"
+                       data-url="{{ col.link|table_link(item) }}"
+                       data-type="text" data-pk="{{ col.pk|inline_pk(item) }}">{{ getContent(col) }}</a>
+                    {% elif col.link %}
+                    <a href="{{ col.link|table_link(item) }}" target="{{ col.target }}"
+                       onclick="{{ col.onclick|table_link(item, acl) }}">{{ getContent(col) }}</a>
+                    {% elif col.type=='checkbox' %}
+                    <input type="checkbox" class="check-element" name="ids[]" value="{{ col.column|get_value(item) }}">
+                    {% elif col.type=='custom' %}
+                    {% for key,value in col.alias %}
+                        {% if key == col.column|get_value(item) %}
+                            {{ value|safe }}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {{ getContent(col) }}
+                {% endif %}
+            </td>
+        {% endfor %}
+    </tr>
+{% endfor %}

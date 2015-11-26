@@ -18,7 +18,6 @@ exports.createUserAdmin = function (app,callback) {
     }catch(err){}
     app.models.user.count()
     .then(function (count) {
-        console.log(count);
         if(count < 1){
             app.models.role.findAndCountAll({
                 limit : 1,
@@ -45,7 +44,6 @@ exports.createUserAdmin = function (app,callback) {
                 }
         })
         .catch(function (err) {
-                console.log(err);
             log.error('Error At CreateUserAdmin in ArrowHelper function : ',err);
             callback(null);
         })
@@ -58,7 +56,6 @@ exports.createUserAdmin = function (app,callback) {
 }
 
 function createUser(app,role_id,callback){
-    console.log('createUser : ',role_id);
     if(role_id<1)
      callback(null);
     app.models.user.create({

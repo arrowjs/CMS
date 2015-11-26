@@ -17,7 +17,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/blog">
+                            <a href="/blog/posts">
                                 Blog
                             </a>
                         </li>
@@ -62,39 +62,22 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-2 col-sm-2 text-right">
-                            <div class="author">
-                                Categories
-                            </div>
-                            <ul class="list-unstyled">
-                                <li>
-                                    <a href="javascript:;">
-                                        <em>
-                                            travel
-                                        </em>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;">
-                                        <em>
-                                            tour
-                                        </em>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;">
-                                        <em>
-                                            recreation
-                                        </em>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;">
-                                        <em>
-                                            tourism
-                                        </em>
-                                    </a>
-                                </li>
-                            </ul>
+                            {%  if categories != '' %}
+                                <div class="author">
+                                    Categories
+                                </div>
+                                <ul class="list-unstyled">
+                                    {%  for category in categories %}
+                                        <li>
+                                            <a href="/blog/posts/categories/{{ category.alias }}/{{ category.id }}">
+                                                <em>
+                                                    {{ category.name }}
+                                                </em>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                         </div>
 
                         <div class="col-lg-10 col-sm-10">

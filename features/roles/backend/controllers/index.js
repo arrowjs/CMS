@@ -8,7 +8,7 @@ let path = require('path');
 
 let route = 'roles';
 
-module.exports = function (controller,component,app) {
+module.exports = function (controller, component, app) {
 
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let isAllow = ArrowHelper.isAllow;
@@ -73,35 +73,35 @@ module.exports = function (controller,component,app) {
                 }
             }
         ];
+
         // Add toolbar
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addSearchButton(isAllow(req,'index'));
+        toolbar.addSearchButton(isAllow(req, 'index'));
         toolbar.addRefreshButton('/admin/roles');
-        toolbar.addCreateButton(isAllow(req,'create'), '/admin/roles/create');
-        toolbar.addDeleteButton(isAllow(req,'delete'));
+        toolbar.addCreateButton(isAllow(req, 'create'), '/admin/roles/create');
+        toolbar.addDeleteButton(isAllow(req, 'delete'));
         toolbar = toolbar.render();
 
-
-        let filter = ArrowHelper.createFilter(req,res,tableStruture,{
+        let filter = ArrowHelper.createFilter(req, res, tableStruture, {
             rootLink: '/admin/roles/sort',
             itemOfPage: itemOfPage
         });
+
         // List roles
         app.models.role.findAll({
             where: filter.values,
             order: column + " " + order
-
         }).then(function (roles) {
-            res.backend.render( 'index', {
+            res.backend.render('index', {
                 title: __('m_roles_backend_controllers_index_findAll_title'),
                 items: roles,
-                toolbar : toolbar
+                toolbar: toolbar
             });
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.backend.render( 'index', {
+            res.backend.render('index', {
                 title: __('m_roles_backend_controllers_index_findAll_title'),
-                toolbar : toolbar,
+                toolbar: toolbar,
                 roles: null
             });
         });
@@ -114,13 +114,15 @@ module.exports = function (controller,component,app) {
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
-        res.locals.backButton =  back_link;
-        res.locals.saveButton =  'update';
+        res.locals.backButton = back_link;
+        res.locals.saveButton = 'update';
+
         // Add toolbar
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req,'update'));
+        toolbar.addSaveButton(isAllow(req, 'update'));
         toolbar = toolbar.render();
+
         // Get role by id
         app.models.role.find({
             where: {
@@ -132,7 +134,7 @@ module.exports = function (controller,component,app) {
                 features: app.permissions.feature,
                 role: roles,
                 permissions: JSON.parse(roles.permissions),
-                toolbar : toolbar
+                toolbar: toolbar
             });
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
@@ -141,7 +143,7 @@ module.exports = function (controller,component,app) {
                 features: app.permissions.feature,
                 role: null,
                 permissions: null,
-                toolbar : toolbar
+                toolbar: toolbar
             });
         });
     };
@@ -149,10 +151,11 @@ module.exports = function (controller,component,app) {
     controller.update = function (req, res) {
         let back_link = '/admin/roles';
         let search_params = req.session.search;
-        let permissions = {feature : {}};
+        let permissions = {feature: {}};
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
+
         // Get role by id
         app.models.role.find({
             where: {
@@ -161,15 +164,16 @@ module.exports = function (controller,component,app) {
         }).then(function (role) {
             for (let k in req.body) {
                 if (k != 'title' && k != 'status') {
-                    permissions.feature[k]=[];
-                    if(typeof req.body[k] == 'string'){
+                    permissions.feature[k] = [];
+                    if (typeof req.body[k] == 'string') {
                         req.body[k] = new Array(req.body[k]);
                     }
-                    for(let temp of req.body[k]){
-                        permissions.feature[k].push({name :temp});
+                    for (let temp of req.body[k]) {
+                        permissions.feature[k].push({name: temp});
                     }
                 }
             }
+
             // Update role
             return role.updateAttributes({
                 name: req.body.title,
@@ -192,16 +196,17 @@ module.exports = function (controller,component,app) {
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
+
         // Add toolbar
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req,'create'));
+        toolbar.addSaveButton(isAllow(req, 'create'));
         toolbar = toolbar.render();
 
         res.backend.render('new', {
             title: __('m_roles_backend_controllers_index_create_title'),
             features: app.permissions.feature,
-            toolbar : toolbar
+            toolbar: toolbar
         });
     };
 
@@ -212,18 +217,18 @@ module.exports = function (controller,component,app) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
 
-        let permissions = {feature : {}};
+        let permissions = {feature: {}};
         for (let k in req.body) {
             if (req.body.hasOwnProperty(k)) {
                 if (k != 'title' && k != 'status') {
-                    permissions.feature[k]=[];
-                    for(let temp of req.body[k]){
-                        permissions.feature[k].push({name :temp});
+                    permissions.feature[k] = [];
+                    for (let temp of req.body[k]) {
+                        permissions.feature[k].push({name: temp});
                     }
                 }
             }
         }
-        //req.body.permissions = permissions;
+
         // Create role
         app.models.role.create({
             name: req.body.title,
@@ -259,7 +264,4 @@ module.exports = function (controller,component,app) {
             }
         });
     };
-
-
-
-}
+};

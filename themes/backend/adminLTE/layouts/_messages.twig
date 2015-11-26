@@ -1,0 +1,35 @@
+{% if messages.error or messages.warning or messages.info or messages.success %}
+    {% set msg_class = 'success' %}
+    {% set msg_icon = 'ban' %}
+    {% set msg = '' %}
+    {% if messages.error %}
+        {% set msg_class = 'danger' %}
+        {% set msg_icon = 'ban' %}
+        {% for m in messages.error %}
+            {% set msg=msg+m+'<br>' %}
+        {% endfor %}
+        {% elif messages.warning %}
+        {% set msg_class = 'warning' %}
+        {% set msg_icon = 'warning' %}
+        {% for m in messages.warning %}
+            {% set msg=msg+m+'<br>' %}
+        {% endfor %}
+        {% elif messages.info %}
+        {% set msg_class = 'notice' %}
+        {% set msg_icon = 'info' %}
+        {% for m in messages.info %}
+            {% set msg=msg+m+'<br>' %}
+        {% endfor %}
+    {% else %}
+        {% set msg_class = 'success' %}
+        {% set msg_icon = 'check' %}
+        {% for m in messages.success %}
+            {% set msg=msg+m+'<br>' %}
+        {% endfor %}
+    {% endif %}
+    <div class="alert alert-{{ msg_class }} alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-{{ msg_icon }}"></i> Alert!</h4>
+        {{ msg | safe }}
+    </div>
+{% endif %}

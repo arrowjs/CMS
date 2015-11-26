@@ -25,6 +25,10 @@
         {{ render_child(mn, menu_data,false) }}
     {% endfor %}
     {% if widget.search == 1 %}
-        <li><input class="form-control search" placeholder=" Search" type="text"></li>
+        <li>
+            <form method="get" action="/blog/posts/search">
+                <input type="text" name="searchStr" class="form-control search" placeholder="Search ...">
+            </form>
+        </li>
     {% endif %}
 </ul>

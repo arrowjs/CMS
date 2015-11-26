@@ -1,10 +1,12 @@
-{% extends 'layout.twig' %}
+{% extends '_layout.twig' %}
+
 {% block content %}
     <div class="row">
         <div class="col-md-12">
-            {% include 'toolbar.twig' %}
+            {% include '_toolbar.twig' %}
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="box box-solid box-primary">
@@ -35,6 +37,7 @@
         </div>
     </div>
 {% endblock %}
+
 {% block jsExtends %}
     <script>
         var password = document.getElementById("user_pass")
@@ -50,6 +53,5 @@
 
         password.onchange = validatePassword;
         confirm_password.onkeyup = validatePassword;
-
     </script>
 {% endblock %}

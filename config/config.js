@@ -10,7 +10,7 @@ module.exports = {
     },
     langPath: "/lang",
     language: 'en_US',
-    long_stack: true,
+    long_stack: false,
     port: process.env.PORT || 8000,
     admin_prefix: 'admin',
     ArrowHelper: "/library/js_utilities/helper/"

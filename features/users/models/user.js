@@ -83,16 +83,6 @@ module.exports = function (sequelize, DataTypes) {
                 }
             }
         },
-        phone: {
-            type: DataTypes.STRING,
-            validate: {
-                isNumber: function (val) {
-                    if (!val.match(/[0-9]{3,}/g)) {
-                        throw new Error('Please input valid user\'s phone');
-                    }
-                }
-            }
-        },
         user_image_url: {
             type: DataTypes.TEXT,
             defaultValue: '/img/noImage.png'

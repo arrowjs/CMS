@@ -1,0 +1,53 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+    {{ toolbar | safe }}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-solid box-primary">
+                <div class="box-body">
+                    <div class="table-container">
+                        <table class="table table-striped table-bordered table-hover" id="datatable_orders">
+                            <thead>
+                            <tr role="row" class="heading">
+                                {% include 'basic_table/_header.twig' %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% include 'basic_table/_body.twig' %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include '_delete_modal.twig' %}
+{% endblock %}
+
+{% block jsExtends %}
+    <script>
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+
+            if (ids.length > 0) {
+                $.ajax({
+                    url: '/admin/menu',
+                    type: 'DELETE',
+                    data: {
+                        ids: ids.join()
+                    },
+                    success: function (result) {
+                        // Do something with the result
+                        window.location.href = "/admin/menu/";
+                    }
+                });
+            }
+        }
+    </script>
+{% endblock %}
