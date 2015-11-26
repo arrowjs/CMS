@@ -44,7 +44,7 @@ module.exports = {
     },
     error: {
         "404": {
-            render: "404"
+            render: "_404"
         },
         "500": {
             render: "500"

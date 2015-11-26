@@ -10,7 +10,7 @@ module.exports = {
     viewExtension: 'twig',
     pagination: {
         numberItem: 10,
-        frontNumberItem: 1
+        frontNumberItem: 10
     },
     date_format: 'DD-MM-YYYY',
     backendTheme: 'adminLTE',

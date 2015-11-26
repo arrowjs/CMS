@@ -111,7 +111,7 @@
                 {% endfor %}
 
                 <div class="text-center">
-                    {{ paginateLinks(totalPage, currentPage, '/blog/page-{page}') | safe }}
+                    {{ paginateLinks(totalPage, currentPage, baseURL) | safe }}
                 </div>
             </div>
 

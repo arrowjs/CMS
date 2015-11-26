@@ -5,7 +5,7 @@ let promise = require('arrowjs').Promise;
 module.exports = function (controller, component, app) {
 
     controller.pageIndex = function (req, res) {
-
+        console.log('page detail');
         app.models.post.find({
             include: [
                 {
@@ -26,7 +26,7 @@ module.exports = function (controller, component, app) {
                 });
             } else {
                 // Redirect to 404 if page not exist
-                res.frontend.render404(req, res);
+                res.frontend.render('_404');
             }
         });
     }

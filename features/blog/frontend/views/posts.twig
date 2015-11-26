@@ -53,7 +53,7 @@
                                 {% endif %}
 
                                 <h1>
-                                    <a href="/blog/{{ post.id }}/{{ post.alias }}">
+                                    <a href="/blog/posts/{{ post.id }}/{{ post.alias }}">
                                         {{ post.title }}
                                     </a>
                                 </h1>
@@ -61,7 +61,7 @@
                                 <p>
                                     {{ post.intro_text | safe }}
                                 </p>
-                                <a href="/blog/{{ post.id }}/{{ post.alias }}" class="btn btn-primary">
+                                <a href="/blog/posts/{{ post.id }}/{{ post.alias }}" class="btn btn-primary">
                                     Continue Reading
                                 </a>
                             </div>
@@ -70,7 +70,7 @@
                 {% endfor %}
 
                 <div class="text-center">
-                    {{ paginateLinks(totalPage, currentPage,routepage) | safe }}
+                    {{ paginateLinks(totalPage, currentPage,baseURL) | safe }}
                 </div>
             </div>
 
