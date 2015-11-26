@@ -24,7 +24,11 @@ module.exports = function (sequelize, DataTypes) {
                 },
                 isName: function (value) {
                     if (typeof value !== 'string' || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)) {
+<<<<<<< HEAD
                         throw new Error('Please input valid value user_login');
+=======
+                        throw new Error('Please input valid value Username');
+>>>>>>> master
                     }
                 }
             }
@@ -116,6 +120,7 @@ module.exports = function (sequelize, DataTypes) {
             set: function (val) {
                 let roleIds = this.getDataValue('role_ids');
                 let flag = false;
+                //set values of role_ids
                 if (roleIds)
                     roleIds.split(',').forEach(function (v) {
                         if (val === v)

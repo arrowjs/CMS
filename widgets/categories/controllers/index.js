@@ -11,7 +11,10 @@ module.exports = function (controller, component, application) {
         form.addText('title', 'Title');
         form.addText('number_of_categories', 'Number of Categories');
         form.addSelect('layout', 'Layout', layouts);
-        return form.render();
+
+        return new Promise(function (fullfill, reject) {
+            fullfill(form.render());
+        })
     };
 
     controller.renderWidget = function (widget) {
