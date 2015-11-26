@@ -134,8 +134,8 @@ module.exports = function (controller, component, app) {
 
 
     controller.saveSortAdminMenu = function (req, res) {
-        let systems = req.body.s || [];
-        let defaults = req.body.d || [];
+        let systems = req.body['s[]'] || [];
+        let defaults = req.body['d[]'] || [];
 
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"))
             .then(function (data) {
@@ -152,16 +152,18 @@ module.exports = function (controller, component, app) {
                         res.sendStatus(200);
                     });
             })
-
     };
 
     controller.sortAdminMenu = function (req, res) {
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addSaveButton(isAllow(req,'update'));
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"))
             .then(function (data) {
                 let menus = JSON.parse(data);
                 res.render('admin_sort', {
                     title: __('m_menus_backend_controller_sort_admin_menu_render_title'),
-                    menus: menus
+                    menus: menus,
+                    toolbar : toolbar.render()
                 });
             })
     };

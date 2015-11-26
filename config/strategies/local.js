@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 let LocalStrategy = require('passport-local').Strategy;
-
+let log = require('arrowjs').logger;
 
 module.exports = function (passport,config,app) {
     // Use local strategy
@@ -21,10 +21,8 @@ module.exports = function (passport,config,app) {
                 ]
             }).then(function (user, err) {
                 if (err) {
-                    console.log('err');
                     return done(err);
                 }else if (!user) {
-                    console.log('!user');
                     ArrowHelper.createUserAdmin(app, function (result) {
                         if(!result){
                             return done(null, false, {
@@ -37,14 +35,17 @@ module.exports = function (passport,config,app) {
                         }
                     })
                 }else if (!user.authenticate(password)) {
-                    console.log('authenticate');
                     return done(null, false,{
                         message: 'Invalid Password ! Please login again.'
                     });
                 }else {
-                    console.log('else');
                     return done(null, user);
                 }
+            }).catch(function (err) {
+                log.error(err);
+                return done(null, false,{
+                    message : 'Database error ! Please login again.'
+                });
             });
         }
     ));
