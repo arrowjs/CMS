@@ -1,0 +1,189 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post">
+                {{ toolbar | safe }}
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-9 col-sm-9">
+                                <div class="form-group">
+                                    <label for="title">{{ __('all_table_column_title') }} <span
+                                                class="required">*</span></label>
+                                    <input type="text" class="form-control" name="title" id="title"
+                                           value="{{ page.title }}" autocomplete="off" required="required"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="full_text">{{ __('m_blog_backend_views_form_content') }}</label>
+                                    <textarea name="full_text" id="full_text"
+                                              class="form-control">{{ page.full_text }}</textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="intro_text">{{ __('m_blog_backend_views_form_short_desc') }}</label>
+                                    <textarea name="intro_text" id="intro_text" class="form-control"
+                                              rows="5">{{ page.intro_text }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-sm-3">
+                                <div class="form-group">
+                                    <label for="published">{{ __('m_blog_backend_views_form_status') }}</label>
+                                    <select data-tags="true" name="published" id="published" class="form-control">
+                                        <option value="0" {% if page.published == 0 %}selected="selected"{% endif %}>
+                                            {{ __('m_blog_backend_views_form_published_option_draft') }}
+                                        </option>
+                                        <option value="1" {% if page.published == 1 %}selected="selected"{% endif %}>
+                                            {{ __('m_blog_backend_views_form_published_option_publish') }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">{{ __('m_blog_backend_views_form_image') }}</label>
+
+                                    <img id="previewImage" src="{{ page.image }}" class="img-thumbnail"/>
+
+                                    <input class="form-control" type="text" name="image" id="txtSelectedFile"
+                                           placeholder="Click here to select a file" onclick="openModelFeature()"
+                                           value="{{ page.image }}"/>
+
+                                    <div id="roxyCustomPanel2" style="display: none;">
+                                        <iframe src="/fileman/index.html?integration=custom&type=files&txtFieldId=txtSelectedFile"
+                                                style="width:100%;height:100%" frameborder="0">
+                                        </iframe>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="alias">{{ __('all_table_column_alias') }}</label>
+                                    <input type="text" class="form-control" name="alias" id="alias"
+                                           value="{{ page.alias }}" autocomplete="off"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    {% include '_editorScript.twig' %}
+
+    <script>
+        function deleteRecords() {
+            var ids = [];
+            ids.push({{ page.id }});
+            $.ajax({
+                url: '/admin/blog/pages',
+                type: 'DELETE',
+                data: {
+                    ids: ids.join()
+                },
+                success: function (result) {
+                    // Do something with the result
+                    window.location.href = "/admin/blog/pages/page/1";
+                }
+            });
+        }
+
+        var modal = '<div class="modal fade" id="feature" tabindex="-1" aria-hidden="true">' +
+                '<div class="modal-dialog"><div class="row">' +
+                '<div class="modal-content col-md-12 col-sm-12">' +
+                '<div class=row><div class="modal-header col-md-12 col-sm-12">' +
+                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>' +
+                '<h4 class="modal-title">' + '{{ __("m_blog_backend_views_form_popup_choose_image") }}' + '</h4>' +
+                '</div><div class="modal-body col-md-12 col-sm-12" id="feature-body"></div>' +
+                '<div class="modal-footer col-md-12 col-sm-12">' +
+                '<button type="button" class="btn default" data-dismiss="modal">' + '{{ __("cancel") }}' + '</button> ' +
+                '<button type="button" class="btn btn-danger" onclick="return selectFeature()">' + '{{ __("choose") }}' + '</button>' +
+                '</div></div></div></div></div></div>';
+        $('body').append(modal);
+
+        function openCustomRoxy2() {
+            var filemanFrame = '<iframe src="/fileman/index.html?integration=custom&type=files&txtFieldId=txtSelectedFile" ' +
+                    'style="width:100%;height:100%" frameborder="0">';
+            $('#feature-body').html(filemanFrame);
+            $('#feature .modal-footer').css('display', 'none');
+            $('#feature').modal('show');
+        }
+
+        function closeCustomRoxy2() {
+            $('#feature').modal('hide');
+        }
+
+        function openModelFeature() {
+            var content = CKEDITOR.instances.full_text.getData();
+            var c = $('<div/>').html(content);
+            var list = [];
+
+            $(c).find('img').each(function (i) {
+                list.push($(this).attr('src'));
+            });
+
+            if (list.length > 0) {
+                var body = '<div class="col-md-7 col-sm-7" id="feature-list"></div>' +
+                        '<div class="col-md-5 col-sm-5">' +
+                        '<img class="img img-thumbnail" id="previewSelect" src=""></div>';
+                $('#feature-body').html(body);
+
+                var html = '<div style="margin-bottom: 15px">' +
+                        '<button class="btn btn-primary btn-sm" id="selectFileman">' +
+                        '{{ __("t_backend_default_feature_choose_image_upload_from" )}}' +
+                        '</button></div><div class="row">';
+                list.forEach(function (l) {
+                    html += '<div class="col-md-3 col-sm-3 ft-item">' +
+                            '<label><input type="radio" name="optionsRadios" value="' + l + '" checked>' +
+                            '<img class="img img-thumbnail" src="' + l + '"></label></div>';
+                });
+                html += '</div>';
+                $('#feature-list').html(html);
+                $('#feature').modal('show')
+            }
+            else openCustomRoxy2();
+        }
+
+        function selectFeature() {
+            var feature = $('input[name=optionsRadios]:checked').val();
+            $('#txtSelectedFile').val(feature);
+            $('#previewImage').attr('src', feature);
+            $('#feature').modal('hide');
+        }
+
+        $(function () {
+            /* BEGIN init ckeditor */
+            CKEDITOR.replace('full_text', {
+                height: 300
+            });
+            CKEDITOR.replace('intro_text', {
+                height: 100,
+                toolbar: [
+                    {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline']}
+                ]
+            });
+            /* END init ckeditor */
+
+            /* BEGIN model feature script */
+            $('body').on('hidden.bs.modal', '#feature', function () {
+                $(this).removeData('bs.modal');
+                $('#feature .modal-footer').css('display', 'block');
+            });
+
+            $(document).on('click', '#selectFileman', function () {
+                openCustomRoxy2();
+            });
+
+            $(document).on('click', 'input[name="optionsRadios"]', function () {
+                if ($(this).is(':checked')) {
+                    $('#previewSelect').attr('src', $(this).val());
+                }
+            });
+            /* END model feature script */
+        });
+    </script>
+{% endblock %}

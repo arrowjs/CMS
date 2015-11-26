@@ -104,9 +104,9 @@ module.exports = function (controller, component, app) {
 
         // Add toolbar
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addSearchButton(isAllow(req,'index'));
+        toolbar.addSearchButton(isAllow(req, 'index'));
         toolbar.addRefreshButton('/admin/users');
-        toolbar.addCreateButton(isAllow(req,'create'), '/admin/users/create');
+        toolbar.addCreateButton(isAllow(req, 'create'), '/admin/users/create');
         toolbar = toolbar.render();
 
         // Config columns
@@ -136,7 +136,6 @@ module.exports = function (controller, component, app) {
                 totalPage: totalPage,
                 toolbar: toolbar
             });
-
         }).catch(function (error) {
             _log.error(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
@@ -150,17 +149,18 @@ module.exports = function (controller, component, app) {
 
     controller.view = function (req, res) {
         // Add button
-
         let back_link = '/admin/users';
         let search_params = req.session.search;
         if (search_params && search_params[route + '_index_list']) {
             back_link = '/admin' + search_params[route + '_index_list'];
         }
+
         //add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req,'index'));
-        toolbar=toolbar.render();
+        toolbar.addSaveButton(isAllow(req, 'index'));
+        toolbar = toolbar.render();
+
         // Get user by session and list roles
         app.models.role.findAll().then(function (roles) {
             res.backend.render(edit_template, {
@@ -168,7 +168,7 @@ module.exports = function (controller, component, app) {
                 roles: roles,
                 item: req._user,
                 id: req.params.uid,
-                toolbar : toolbar //pass params to view button
+                toolbar: toolbar //pass params to view button
             });
         }).catch(function (err) {
             _log.error(err);
@@ -178,7 +178,7 @@ module.exports = function (controller, component, app) {
                 roles: null,
                 item: null,
                 id: 0,
-                toolbar : toolbar //pass params to view button
+                toolbar: toolbar //pass params to view button
             });
         });
     };
@@ -248,8 +248,8 @@ module.exports = function (controller, component, app) {
         //add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req,'index'));
-        toolbar=toolbar.render();
+        toolbar.addSaveButton(isAllow(req, 'index'));
+        toolbar = toolbar.render();
 
         //Get list roles
         app.models.role.findAll({
@@ -258,7 +258,7 @@ module.exports = function (controller, component, app) {
             res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_add_user'),
                 roles: roles,
-                toolbar : toolbar
+                toolbar: toolbar
             });
         }).catch(function (error) {
             _log.error(error);
@@ -266,7 +266,7 @@ module.exports = function (controller, component, app) {
             res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_add_user'),
                 roles: null,
-                toolbar : toolbar
+                toolbar: toolbar
             });
         });
     };
@@ -280,8 +280,8 @@ module.exports = function (controller, component, app) {
         //add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req,'create'));
-        toolbar=toolbar.render();
+        toolbar.addSaveButton(isAllow(req, 'create'));
+        toolbar = toolbar.render();
         // Get form data
         var data = req.body;
         return new Promise(function (fulfill, reject) {
@@ -311,7 +311,7 @@ module.exports = function (controller, component, app) {
                         req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
                         res.backend.render(edit_template, {
                             user: data,
-                            toolbar : toolbar,
+                            toolbar: toolbar,
                             create: 'true',
                             title: __('m_users_backend_controllers_index_update')
                         });
@@ -322,15 +322,13 @@ module.exports = function (controller, component, app) {
                 res.backend.render(edit_template, {
                     title: __('m_users_backend_controllers_index_update'),
                     item: data,
-                    toolbar : toolbar,
+                    toolbar: toolbar,
                     create: true
                 });
             })
     };
 
     controller.delete = function (req, res) {
-
-
         // Delete user
         if (index == -1) {
             app.models.user.destroy({
@@ -349,17 +347,18 @@ module.exports = function (controller, component, app) {
             res.sendStatus(200);
         }
     };
+
     /**
      * Profile
      */
     controller.profile = function (req, res) {
-
         let role_ids = [];
+
         //add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton('/admin');
-        toolbar.addSaveButton(isAllow(req,'create'));
-        toolbar=toolbar.render();
+        toolbar.addSaveButton(isAllow(req, 'create'));
+        toolbar = toolbar.render();
 
         if (!req.user.role_ids) role_ids.push(req.user.role_id);
         else role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
@@ -374,12 +373,13 @@ module.exports = function (controller, component, app) {
         }).then(function (roles) {
             res.backend.render('new', {
                 item: req.user,
-                toolbar :toolbar,
+                toolbar: toolbar,
                 role_ids: roles
             });
         })
 
     };
+
     /**
      * Get Avatar library
      */
@@ -394,17 +394,15 @@ module.exports = function (controller, component, app) {
     /**
      * Change pass view
      */
-
-
     controller.changePass = function (req, res) {
         //add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton('/admin');
-        toolbar=toolbar.render();
+        toolbar = toolbar.render();
         res.backend.render('change-pass', {
             title: "Change User's password",
             item: req.user,
-            toolbar : toolbar
+            toolbar: toolbar
         });
     };
 
@@ -414,7 +412,7 @@ module.exports = function (controller, component, app) {
     controller.updatePass = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton('/admin/users');
-        toolbar=toolbar.render();
+        toolbar = toolbar.render();
         let old_pass = req.body.old_pass;
         let user_pass = req.body.user_pass;
 
@@ -427,11 +425,11 @@ module.exports = function (controller, component, app) {
                 }).catch(function (error) {
                     req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
                 }).finally(function () {
-                    res.backend.render('change-pass',{toolbar : toolbar});
+                    res.backend.render('change-pass', {toolbar: toolbar});
                 });
             } else {
                 req.flash.warning(__('m_users_backend_controllers_index_update_pass_flash_error'));
-                res.backend.render('change-pass',{toolbar : toolbar});
+                res.backend.render('change-pass', {toolbar: toolbar});
             }
         });
     };
@@ -470,12 +468,15 @@ module.exports = function (controller, component, app) {
             console.log('ERROR : ' + err);
         })
     };
+
     controller.forgotPass = function (req, res) {
 
     };
-    controller.forgotPassView = function (req,res) {
+
+    controller.forgotPassView = function (req, res) {
         res.backend.render('forgot-password');
     };
+
     controller.hasAuthorization = function (req, res, next) {
         if (req._user.id !== req.user.id) {
             return false;
@@ -483,4 +484,4 @@ module.exports = function (controller, component, app) {
         return true;
     };
 
-}
+};

@@ -6,7 +6,6 @@ let promise = require('arrowjs').Promise;
 
 let route = 'blog';
 let edit_view = 'post/new';
-let _log = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
@@ -299,7 +298,6 @@ module.exports = function (controller, component, app) {
                             return current_a == current
                         }).length == 0
                 });
-
             }
 
             if (data.published != post.published && data.published == 1) data.published_at = Date.now();
@@ -440,6 +438,7 @@ module.exports = function (controller, component, app) {
             if (post) {
                 // Render view
                 res.frontend.render('post_detail', {
+                    title: post.title,
                     post: post
                 });
             } else {

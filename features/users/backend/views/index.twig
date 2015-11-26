@@ -1,0 +1,32 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ toolbar | safe }}
+
+            <div class="box box-solid box-primary">
+                <div class="box-body table-responsive no-padding">
+                    {% include 'basic_table/_table.twig' %}
+
+                    <div class="dataTables_paginate col-md-12">
+                        {{ paginateLinks(totalPage, currentPage, '/admin/users/page/{page}/sort/' + currentColumn + '/' + currentOrder) | safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    <script>
+        String.prototype.dateFormat = function () {
+            var str = new Date(Date.parse(this));
+            return str.toLocaleDateString();
+        };
+    </script>
+{% endblock %}
+
+
+
+

@@ -2,15 +2,9 @@
 
 let slug = require('slug');
 let promise = require('arrowjs').Promise;
+let logger = require('arrowjs').logger;
 
-//global function
-let createFilter = require(__base+'/library/js_utilities/helper/createFilter');
-let _log = require('arrowjs').logger;
-
-module.exports = function (controller,component,app) {
-    let redis = app.redisClient;
-    let adminPrefix = app.getConfig('admin_prefix') || 'admin';
-    let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
+module.exports = function (controller, component, app) {
     let isAllow = ArrowHelper.isAllow;
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
@@ -71,7 +65,7 @@ module.exports = function (controller,component,app) {
         }).then(function (results) {
             let totalPage = Math.ceil(results.count / itemOfPage);
 
-            res.backend.render('index',  {
+            res.backend.render('index', {
                 title: __('m_category_backend_category_render_title'),
                 totalPage: totalPage,
                 currentPage: page,
@@ -80,7 +74,7 @@ module.exports = function (controller,component,app) {
             });
 
         }).catch(function (err) {
-            _log.error(err);
+            logger.error(err);
             req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
 
             // Render view if has error
@@ -103,7 +97,7 @@ module.exports = function (controller,component,app) {
                 req.flash.success(__('m_category_backend_category_flash_save_success'));
                 res.redirect('/admin/categories');
             }).catch(function (err) {
-                _log.error(err);
+                logger.error(err);
                 req.flash.error(err.name + ': ' + err.message);
                 res.redirect('/admin/categories');
             });

@@ -1,0 +1,49 @@
+{% extends '_layout.twig' %}
+
+{% block content %}
+    {{ toolbar | safe }}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-solid box-primary">
+                <div class="box-body">
+                    <div class="table-container">
+                        <table class="table table-striped table-bordered table-hover" id="datatable_orders">
+                            <thead>
+                            {% include 'basic_table/_header.twig' %}
+                            {% include 'basic_table/_filter.twig' %}
+                            </thead>
+                            <tbody>
+                            {% include 'basic_table/_body.twig' %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block jsExtends %}
+    <script>
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+
+            if (ids.length > 0) {
+                $.ajax({
+                    url: '/admin/roles',
+                    type: 'DELETE',
+                    data: {
+                        ids: ids.join()
+                    }
+                }).done(function (result) {
+                    window.location.href = "/admin/roles/";
+                });
+            }
+        }
+    </script>
+{% endblock %}
