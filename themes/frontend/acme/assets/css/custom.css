@@ -81,3 +81,8 @@ ul.page-footer-list a:hover {
     color: #48cfad;
 }
 
+.recent_post img,
+.picked_post img {
+    width: 100px;
+}
+
