@@ -6,5 +6,3 @@ log/
 .bowerrc
 .DS_Store
 dump.rdb
-
-config/env/development.js
