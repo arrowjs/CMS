@@ -483,7 +483,7 @@ module.exports = function (controller, component, app) {
                 totalPage: totalPage,
                 items: items,
                 title_column: 'title',
-                link_template: '/blog/{id}/{alias}'
+                link_template: '/blog/posts/{id}/{alias}'
             });
         });
     }
