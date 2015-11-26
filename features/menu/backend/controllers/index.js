@@ -227,7 +227,6 @@ module.exports = function (controller, component, app) {
                 }
             });
         }).then(function (count) {
-            console.log(req.body.title);
             let promises = [];
             // Create menu detail
             for (let i in req.body.title) {

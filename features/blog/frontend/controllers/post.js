@@ -2,14 +2,13 @@
 
 let promise = require('arrowjs').Promise;
 
-module.exports = function (controller, component, application) {
+module.exports = function (controller, component, app) {
     controller.allPosts = function (req, res) {
         let page = req.params.page || 1;
         let number_item = 10;
         let totalPage = 1;
-
-        component.models.post.findAndCountAll({
-            include : component.models.user,
+        app.models.post.findAndCountAll({
+            include : app.models.user,
             where: {
                 type: 'post',
                 published: 1
@@ -21,11 +20,12 @@ module.exports = function (controller, component, application) {
             if (posts) {
                 totalPage = Math.ceil(parseInt(posts.count) / number_item) || 1;
                 // Render view
-                res.frontend.render('all_post', {
+                res.frontend.render('posts', {
+                    title : 'All Posts',
                     posts: posts.rows,
                     totalPage: totalPage,
                     currentPage: page,
-                    baseURL: '/blogs/posts/page-'
+                    baseURL: '/blog/page-'
                 });
             } else {
                 // Redirect to 404 if posts not exist
@@ -37,7 +37,7 @@ module.exports = function (controller, component, application) {
     controller.postDetail = function (req, res) {
         let postId = req.params.postId;
 
-        component.models.post.find({
+        app.models.post.find({
             where: {
                 id: postId,
                 type: 'post',
@@ -64,7 +64,7 @@ module.exports = function (controller, component, application) {
         let year_ = req.params.year || '2000';
         let page = req.params.page || 1;
 
-        let number_item = application.getConfig('pagination').frontNumberItem || 10;
+        let number_item = app.getConfig('pagination').frontNumberItem || 10;
 
         let sql = 'select posts.*,users.user_login,users.user_pass,users.user_email,users.user_url,users.user_registered,users.display_name,' +
             'users.user_activation_key,users.user_image_url,users.salt,users.user_status,users.phone ' +
@@ -77,14 +77,15 @@ module.exports = function (controller, component, application) {
             ' "posts"."type" = \'post\' AND "posts"."published" = 1 AND EXTRACT(MONTH FROM posts.created_at ) = ' + month_ + ' AND EXTRACT(YEAR FROM posts.created_at) = ' + year_;
 
 
-        application.models.rawQuery(sql)
+        app.models.rawQuery(sql)
             .then(function (result) {
                 if (result) {
                     // Render view
-                    application.models.rawQuery(sqlCount)
+                    app.models.rawQuery(sqlCount)
                         .then(function (countPost) {
                             let totalPage = Math.ceil(countPost[0][0].count / number_item) || 1;
                             res.frontend.render('archives', {
+                                title : year_ + ' ' + month_,
                                 posts: result[0],
                                 archives_date: year_ + ' ' + month_,
                                 month: month_,
@@ -110,16 +111,16 @@ module.exports = function (controller, component, application) {
     controller.listByAuthor = function (req, res) {
 
         let page = req.params.page || 1;
-        let number_item = application.getConfig('pagination').frontNumberItem || 10;
+        let number_item = app.getConfig('pagination').frontNumberItem || 10;
         let totalPage = 1;
 
         promise.all(
             [
                 // Find all post
-                component.models.post.findAndCountAll({
+                app.models.post.findAndCountAll({
                     include: [
                         {
-                            model: application.models.user,
+                            model: app.models.user,
                             attributes: ['id', 'display_name', 'user_login', 'user_email', 'user_image_url']
                         }
                     ],
@@ -149,11 +150,48 @@ module.exports = function (controller, component, application) {
                     });
                 } else {
                     // Redirect to 404 if post not exist
-                    res.frontend.render404(req, res);
+                    res.frontend.render('_404');
                 }
             }).catch(function (err) {
                 console.log(err.stack)
             });
     };
-
+    controller.search = function (req, res) {
+        let page = req.params.page || 1;
+        let number_item = app.getConfig('pagination').frontNumberItem || 10;
+        let totalPage = 1;
+        let key = req.body.searchStr || req.params.searchStr || req.query.searchStr || '';
+        console.log(key,'--',page);
+        app.models.post.findAndCountAll({
+            include :  app.models.user,
+            where: {
+                $or : {
+                    title : {
+                        $ilike : '%'+key+'%'
+                    },
+                    intro_text : {
+                        $ilike : '%'+key+'%'
+                    }
+                },
+                type: 'post',
+                published: 1
+            },
+            offset: (page - 1) * number_item,
+            limit: number_item,
+            order: 'id DESC'
+        }).then(function (posts) {
+            totalPage = Math.ceil(parseInt(posts.count) / number_item) || 1;
+            res.frontend.render('posts',{
+                title : 'Found ('+posts.count+') Posts With key : '+key,
+                posts: posts.rows,
+                totalPage : totalPage,
+                currentPage : page,
+                routepage : '/blog/posts/search/page/{page}/'+key
+            });
+            // Render view
+        }).catch(function (err) {
+            console.log('search error : ',err);
+            res.render('_404');
+        });
+    }
 };

@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-lg-4 col-sm-4">
                     <h1>
-                        Blog
+                        {{ title }}
                     </h1>
                 </div>
                 <div class="col-lg-8 col-sm-8">
@@ -36,69 +36,23 @@
                                     <span class="date">11</span>
                                     <span class="month">January</span>
                                 </div>
+                                <div class="author  text-right">
+                                    By <a href="#">{{ post.user.display_name }}</a>
+                                </div>
                             </div>
                             <div class="col-lg-10 col-sm-10">
+                                {% if post.image %}
                                 <div class="blog-img">
                                     <script>//TODO: remove host name</script>
                                     <img src="{{ post.image }}" alt=""/>
                                 </div>
+                                {% endif %}
 
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-2 col-sm-2 text-right">
-                                <div class="author">
-                                    By <a href="#">{{ post.author }}</a>
-                                </div>
-                                {#<ul class="list-unstyled">#}
-                                {#<li>#}
-                                {#<a href="javascript:;">#}
-                                {#<em>travel</em>#}
-                                {#</a>#}
-                                {#</li>#}
-                                {#<li>#}
-                                {#<a href="javascript:;">#}
-                                {#<em>tour</em>#}
-                                {#</a>#}
-                                {#</li>#}
-                                {#<li>#}
-                                {#<a href="javascript:;">#}
-                                {#<em>recreation</em>#}
-                                {#</a>#}
-                                {#</li>#}
-                                {#<li>#}
-                                {#<a href="javascript:;">#}
-                                {#<em>tourism</em>#}
-                                {#</a>#}
-                                {#</li>#}
-                                {#</ul>#}
-                                {#<div class="st-view">#}
-                                {#<ul class="list-unstyled">#}
-                                {#<li>#}
-                                {#<a href="javascript:;">#}
-                                {#209 View#}
-                                {#</a>#}
-                                {#</li>#}
-                                {#<li>#}
-                                {#<a href="javascript:;">#}
-                                {#23 Share#}
-                                {#</a>#}
-                                {#</li>#}
-                                {#<li>#}
-                                {#<a href="javascript:;">#}
-                                {#15 comments#}
-                                {#</a>#}
-                                {#</li>#}
-                                {#</ul>#}
-                                {#</div>#}
-                            </div>
-                            <div class="col-lg-10 col-sm-10">
                                 <h1>
                                     <a href="/blog/{{ post.id }}/{{ post.alias }}">
                                         {{ post.title }}
                                     </a>
                                 </h1>
-
                                 <p>
                                     {{ post.intro_text | safe }}
                                 </p>
@@ -111,7 +65,7 @@
                 {% endfor %}
 
                 <div class="text-center">
-                    {{ paginateLinks(totalPage, currentPage, '/blog/page-{page}') | safe }}
+                    {{ paginateLinks(totalPage, currentPage,routepage) | safe }}
                 </div>
             </div>
 
