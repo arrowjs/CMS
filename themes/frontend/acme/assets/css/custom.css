@@ -10,23 +10,12 @@ body {
     color: #607D8B;
 }
 
-.big_header {
-    height: 500px;
-    padding-top: 70px;
-    background: url("/frontend/acme/assets/img/techmaster2.jpg") center center;
-    background-size: cover;
-}
-
-.big_header h1 {
-    margin-bottom: 25px;
-}
-
-.big_header p {
-    margin-bottom: 15px;
-}
-
 .feature-box {
     margin-top: 0;
+}
+
+.feature-head h1 {
+    color: #444e67;
 }
 
 .feature-box .content p {
@@ -37,92 +26,8 @@ body {
     width: 100%;
 }
 
-/*.feature-box-heading {*/
-    /*margin-bottom: 25px;*/
-/*}*/
-
-.parallax_content {
-    height: 470px;
-    background: url("/frontend/acme/assets/img/home_parallax_bg.jpg") center center;
-    background-size: cover;
-    background-attachment: fixed;
-    padding-top: 100px;
-}
-
-.parallax_content h2 {
-    font-size: 50px;
-    margin-bottom: 30px;
-}
-
-.parallax_content .content {
-    width: 70%;
-}
-.parallax_content p {
-    margin-bottom: 25px;
-}
-
-.parallax_content h2,
-.parallax_content p {
-    text-align: center;
-    color: #fff;
-}
-
-.recent_post .feature_image,
-.picked_post .feature_image {
-    width: 35%;
-}
-
-.recent_post .feature_image img,
-.picked_post .feature_image img {
-    width: 100%;
-}
-
-.home-services {
-    padding-top: 60px;
-}
-
-.home-services .service {
-    margin-bottom: 70px;
-}
-
-.home-services h2 {
-    text-transform: uppercase;
-    margin-bottom: 55px;
-}
-
-.home-services .service-content p {
-    text-align: center;
-}
-
-.home-services .icon_service a {
-    color: #fff;
-    text-align: center;
-    padding-top: 25px;
-    background: #797979;
-    display: block;
-    margin: 0 auto;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-}
-
-.home-services .icon_service a:hover {
-    background: #48cfad;
-}
-
-.home-services h4 {
+.feature-box-heading h4 {
     margin-top: 25px;
-    margin-bottom: 25px;
-}
-
-
-.manager_system .col-4 {
-    width: 25%;
-    float: left
-}
-
-.manager_system img {
-    width: 100%;
 }
 
 .social-link-footer li {
@@ -145,15 +50,15 @@ ul.page-footer-list li {
 }
 
 .carousel .slider_1 {
-    background-image: url("/frontend/acme/assets/img/techmaster2.jpg");
+    background-image: url("/frontend/acme/assets/img/techmaster4.jpg");
 }
 
 .carousel .slider_2 {
-    background-image: url("/frontend/acme/assets/img/techmaster3.jpg");
+    background-image: url("/frontend/acme/assets/img/techmaster2.jpg");
 }
 
 .carousel .slider_3 {
-    background-image: url("/frontend/acme/assets/img/techmaster1.jpg");
+    background-image: url("/frontend/acme/assets/img/techmaster3.jpg");
 }
 
 .carousel-control {
