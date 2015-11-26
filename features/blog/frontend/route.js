@@ -52,7 +52,11 @@ module.exports = function (component) {
             get: {
                 handler: controller.pageIndex
             }
+        },
+        "/blog/posts/search(/page/:page([0-9]+)/(:searchStr)?)?" : {
+            get : {
+                handler : controller.search
+            }
         }
-
     }
 };
