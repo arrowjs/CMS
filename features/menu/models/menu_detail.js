@@ -21,16 +21,16 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false
         },
         attribute: {
-            type: DataTypes.STRING(25),
+            type: DataTypes.STRING(255),
             validate: {
                 len: {
-                    args: [0, 25],
+                    args: [0, 255],
                     msg: 'Please input not too long'
                 }
             }
         },
         link: {
-            type: DataTypes.STRING(25),
+            type: DataTypes.STRING(255),
             validate: {
                 len: {
                     args: [1, 255],

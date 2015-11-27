@@ -190,6 +190,8 @@ module.exports = function (controller, component, app) {
         }).then(function (menu) {
             let promises = [];
             // Create menu detail
+            if (typeof req.body.title != 'object' && req.body.title)
+                req.body.title = [req.body.title];
             for (let i in req.body.title) {
                 promises.push(
                     component.models.menu_detail.create({
