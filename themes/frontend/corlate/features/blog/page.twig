@@ -7,47 +7,47 @@
     <div class="page">
         <div class="container">
 
-        <div class="row">
+            <div class="row">
 
-            <!--blog start-->
-            <div class="col-lg-9">
-                <div class="blog-item">
-                    <div class="row">
-                        {% if item.image %}
-                        <div class="col-lg-push-2 col-sm-push-2 col-lg-10 col-sm-10">
-                                <div>
-                                    <img class="img-responsive img-blog" src="{{ item.image }}" alt=""/>
+                <!--blog start-->
+                <div class="col-lg-9">
+                    <div class="blog-item">
+                        <div class="row">
+                            {% if item.image %}
+                                <div class="col-lg-push-2 col-sm-push-2 col-lg-10 col-sm-10">
+                                    <div>
+                                        <img class="img-responsive img-blog" src="{{ item.image }}" alt=""/>
+                                    </div>
                                 </div>
+                            {% endif %}
                         </div>
-                        {% endif %}
-                    </div>
-                    <div class="row">
-                        <!-- noi dung bai viet -->
+                        <div class="row">
+                            <!-- noi dung bai viet -->
 
-                        <div class="col-lg-push-2 col-sm-push-2 col-lg-10 col-sm-10">
-                            <h1>
-                                <a href="#">
-                                    {{ item.title |safe }}
-                                </a>
-                            </h1>
+                            <div class="col-lg-push-2 col-sm-push-2 col-lg-10 col-sm-10">
+                                <h1>
+                                    <a href="#">
+                                        {{ item.title |safe }}
+                                    </a>
+                                </h1>
 
-                            <p>{{ item.full_text |safe }}</p>
+                                <p>{{ item.full_text |safe }}</p>
+
+                            </div>
 
                         </div>
-
                     </div>
+
                 </div>
 
+                <div class="col-lg-3">
+
+                </div>
+
+
             </div>
-
-            <div class="col-lg-3">
-
-            </div>
-
 
         </div>
-
-    </div>
     </div>
 
 {% endblock %}
