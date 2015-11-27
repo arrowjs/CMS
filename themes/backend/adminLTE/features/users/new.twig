@@ -208,7 +208,7 @@
                 url: '/admin/users',
                 type: 'DELETE',
                 data: {
-                    ids: {{ item.id }}
+                    id: {{ item.id }}
                 }
             }).done(function (result) {
                 window.location.href = "/admin/users/";

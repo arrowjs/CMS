@@ -29,7 +29,7 @@ module.exports = function (component,application) {
         },
         "/menu/update/:mid":{
             get : {
-                handler : [comp.read],
+                handler : comp.read,
                 permissions: "update"
             },
             post : {
