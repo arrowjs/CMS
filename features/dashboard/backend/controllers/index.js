@@ -7,10 +7,6 @@ let promise = require('arrowjs').Promise;
 
 module.exports = function (cont, comp, app) {
     cont.view = function (req, res) {
-        ArrowHelper.createUserAdmin(app, function (str) {
-            console.log(str);
-        });
-
         promise.all([
             app.models.user.findAndCountAll({
                 where: {
@@ -42,7 +38,6 @@ module.exports = function (cont, comp, app) {
                 categoryStatistic: results[3],
                 newestUsers: results[0].rows,
                 newestPosts: results[1].rows
-
             });
         }).catch(function (err) {
             res.backend.render('index');

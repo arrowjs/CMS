@@ -220,7 +220,7 @@ module.exports = function (controller, component, app) {
                                 user_tmp.acl = JSON.parse(user_tmp.role.permissions);
                                 redis.setex(user_tmp.key, 300, JSON.stringify(user_tmp));
                             }).catch(function (error) {
-                                console.log(error.stack);
+                                logger.error(error.stack);
                             });
                     });
                     return res.redirect('/' + adminPrefix + '/users/profile/' + req.params.uid);
@@ -361,9 +361,10 @@ module.exports = function (controller, component, app) {
         toolbar = toolbar.render();
 
         if (!req.user.role_ids) role_ids.push(req.user.role_id);
-        else role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
-            return val.match(/d/g);
-        });
+        else
+            role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
+                return val.match(/\d/g);
+            });
         app.models.role.findAll({
             where: {
                 id: {
@@ -375,6 +376,13 @@ module.exports = function (controller, component, app) {
                 item: req.user,
                 toolbar: toolbar,
                 role_ids: roles
+            });
+        }).catch(function (err) {
+            log.error(err);
+            res.backend.render('new', {
+                item: req.user,
+                toolbar: toolbar,
+                role_ids: null
             });
         })
 
@@ -465,7 +473,7 @@ module.exports = function (controller, component, app) {
             req._user = user;
             next();
         }).catch(function (err) {
-            console.log('ERROR : ' + err);
+            logger.error('ERROR : ' + err);
         })
     };
 

@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{{ pageTitle if pageTitle else "Corlate" }}</title>
+    <title>{% block title %}{{ title if title else "Corlate" }}{% endblock %}</title>
 
     <!-- core CSS -->
     <link href="/frontend/corlate/assets/css/bootstrap.min.css" rel="stylesheet">

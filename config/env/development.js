@@ -2,8 +2,9 @@
 
 module.exports = {
     /**
-     * Uncomment to override config for development environment
+     * Uncomment to override config in development environment
      */
+    //port: process.env.PORT || 8000,
     //db: {
     //    host: 'localhost',
     //    port: '5432',

@@ -6,6 +6,7 @@ let promise = require('arrowjs').Promise;
 
 let route = 'blog';
 let edit_view = 'post/new';
+let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
@@ -243,7 +244,7 @@ module.exports = function (controller, component, app) {
             req.flash.success(__('m_blog_backend_post_flash_delete_success'));
             res.sendStatus(200);
         }).catch(function (err) {
-            console.log('postDelete error : ', err);
+            logger.error('postDelete error : ', err);
         });
     };
 
@@ -298,6 +299,7 @@ module.exports = function (controller, component, app) {
                             return current_a == current
                         }).length == 0
                 });
+
             }
 
             if (data.published != post.published && data.published == 1) data.published_at = Date.now();
@@ -396,7 +398,7 @@ module.exports = function (controller, component, app) {
                         })
                     });
                 }).catch(function (err) {
-                    console.log(err);
+                    logger.error(err);
                 });
             }
         }).then(function () {
@@ -437,8 +439,7 @@ module.exports = function (controller, component, app) {
         }).then(function (post) {
             if (post) {
                 // Render view
-                res.frontend.render('post_detail', {
-                    title: post.title,
+                res.frontend.render('post', {
                     post: post
                 });
             } else {
