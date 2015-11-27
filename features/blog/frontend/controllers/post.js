@@ -66,7 +66,7 @@ module.exports = function (controller, component, app) {
                     }
                 }).then(function (categories) {
                     // Render view
-                    res.frontend.render('post_detail', {
+                    res.frontend.render('post', {
                         post: post,
                         categories: categories
                     });

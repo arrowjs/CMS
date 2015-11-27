@@ -40,86 +40,27 @@
                     <div class="row">
                         <div class="col-lg-2 col-sm-2">
                             <div class="date-wrap">
-                  <span class="date">
-                    11
-                  </span>
-                  <span class="month">
-                    January
-                  </span>
+                                <span class="date">
+                                    {{ post.published_at | moment("DD") }}
+                                </span>
+                                <span class="month">
+                                    {{ post.published_at | moment("MMMM") }}
+                                </span>
                             </div>
-
-                        </div>
-                        {% if item.image %}
-                        <div class="col-lg-10 col-sm-10">
-                                <div class="blog-img gs">
-                                    <img src="{{ item.image }}" alt=""/>
-                                </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-2 col-sm-2 text-right">
-                            <div class="author">
+                            <div class="author text-right">
                                 By
                                 <a href="#">
-                                    Admin
+                                    {{ item.user.display_name }}
                                 </a>
-                            </div>
-                            <ul class="list-unstyled">
-                                <li>
-                                    <a href="javascript:;">
-                                        <em>
-                                            travel
-                                        </em>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;">
-                                        <em>
-                                            tour
-                                        </em>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;">
-                                        <em>
-                                            recreation
-                                        </em>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;">
-                                        <em>
-                                            tourism
-                                        </em>
-                                    </a>
-                                </li>
-                            </ul>
-                            <div class="st-view">
-                                <ul class="list-unstyled">
-                                    <li>
-                                        <a href="javascript:;">
-                                            209 View
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;">
-                                            23 Share
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;">
-                                            23 comments
-                                        </a>
-                                    </li>
-
-                                </ul>
                             </div>
                         </div>
 
-                        <!-- noi dung bai viet -->
-
                         <div class="col-lg-10 col-sm-10">
+                            {% if item.image %}
+                            <div class="blog-img gs">
+                                <img src="{{ item.image }}" alt=""/>
+                            </div>
+                            {% endif %}
                             <h1>
                                 <a href="#">
                                     {{ item.title |safe }}
@@ -127,9 +68,7 @@
                             </h1>
 
                             <p>{{ item.full_text |safe }}</p>
-
                         </div>
-
                     </div>
                 </div>
 
