@@ -329,11 +329,17 @@ module.exports = function (controller, component, app) {
     };
 
     controller.delete = function (req, res) {
-        // Delete user
+        // Check delete current user
+        let ids = req.body.ids;
+        let id = req.user.id;
+        let index = ids.indexOf(id);
+
         if (index == -1) {
             app.models.user.destroy({
                 where: {
-                    id: req.params.uid
+                    id: {
+                        "in": ids.split(',')
+                    }
                 }
             }).then(function () {
                 req.flash.success(__('m_users_backend_controllers_index_delete_flash_success'));
