@@ -1,0 +1,103 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+
+{% block content %}
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-sm-4">
+                    <h1>
+                        Blog Details
+                    </h1>
+                </div>
+                <div class="col-lg-8 col-sm-8">
+                    <ol class="breadcrumb pull-right">
+                        <li>
+                            <a href="/">
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/blog/posts">
+                                Blog
+                            </a>
+                        </li>
+                        <li class="active">
+                            Blog Details
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--breadcrumbs end-->
+
+    <!--container start-->
+    <div class="container">
+
+        <div class="row">
+
+            <!--blog start-->
+            <div class="col-lg-9">
+                <div class="blog-item">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2">
+                            <div class="date-wrap">
+                                <span class="date">
+                                    {{ post.published_at | moment("DD") }}
+                                </span>
+                                <span class="month">
+                                    {{ post.published_at | moment("MMMM") }}
+                                </span>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-10 col-sm-10">
+
+                            {% if post.image %}
+                            <div class="blog-img gs">
+                                <img src="{{ post.image }}" alt=""/>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2 text-right">
+                            {%  if categories != '' %}
+                                <div class="author">
+                                    Categories
+                                </div>
+                                <ul class="list-unstyled">
+                                    {%  for category in categories %}
+                                        <li>
+                                            <a href="/blog/posts/categories/{{ category.alias }}/{{ category.id }}">
+                                                <em>
+                                                    {{ category.name }}
+                                                </em>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-lg-10 col-sm-10">
+                            <h1>
+                                <a href="#">
+                                    {{ post.title }}
+                                </a>
+                            </h1>
+
+                            <p>{{ post.full_text | safe }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="blog-side-item">
+                    {{ getSidebar("right-sidebar") | async | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

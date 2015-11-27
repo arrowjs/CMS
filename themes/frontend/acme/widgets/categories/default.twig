@@ -1,13 +1,13 @@
 <div class="category">
     <h3>
-        {{ widget.title }}
+        {{ widget.title | safe }}
     </h3>
 
     <ul class="list-unstyled">
         {% for category in categories %}
             <li>
                 <a href="/blog/posts/categories/{{ category.alias }}/{{ category.id }}">
-                    <i class="fa fa-angle-right pr-10"></i> {{ category.name }}
+                    <i class="fa fa-angle-right pr-10"></i> {{ category.name | safe }}
                 </a>
             </li>
         {% endfor %}
