@@ -13,7 +13,7 @@
                     </a>
                 </h5>
                 <p>
-                    {{ post.intro_text | title(50, '...') }}
+                    {{ post.intro_text | title(50, '...') | safe }}
                 </p>
             </div>
         </div>
