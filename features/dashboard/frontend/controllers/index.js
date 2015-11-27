@@ -4,7 +4,7 @@ module.exports = function (controller, component, application) {
 
     controller.index = function (req, res) {
         res.frontend.render('index', {
-            pageTitle: 'Home page'
+            title: 'Home page'
         })
     };
 };

@@ -1,19 +1,23 @@
 <div class="picked_post">
-    <h3>{{ widget.title }}</h3>
+    <h3>{{ widget.title | safe }}</h3>
 
     {% for post in posts %}
         <div class="media">
-            <a class="pull-left feature_image" href="/blog/{{ post.id }}/{{ post.alias }}">
+            <a class="pull-left feature_image" href="/blog/posts/{{ post.id }}/{{ post.alias }}">
+                {% if post.image %}
                 <img class=" " src="{{ post.image }}" alt="">
+                {% else %}
+                    <img src="/img/noImage.png">
+                {% endif %}
             </a>
             <div class="media-body">
                 <h5 class="media-heading">
                     <a href="/blog/posts/{{ post.id }}/{{ post.alias }}">
-                        {{ post.published_at | moment().format('LL') }}
+                        {{ post.published_at | moment('LL') }}
                     </a>
                 </h5>
                 <p>
-                    {{ post.intro_text | title(50, '...') }}
+                    {{ post.intro_text | title(50, '...') | safe }}
                 </p>
             </div>
         </div>

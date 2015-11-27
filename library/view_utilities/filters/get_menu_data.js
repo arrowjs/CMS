@@ -6,7 +6,7 @@
 module.exports = {
     handler : function (id, _menus_data) {
         for (let i in _menus_data) {
-            if (id == _menus_data[i].id) {
+            if (id == _menus_data[i].detail_id) {
                 return _menus_data[i];
             }
         }

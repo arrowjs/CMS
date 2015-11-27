@@ -330,10 +330,10 @@ module.exports = function (controller, component, app) {
 
     controller.delete = function (req, res) {
         // Delete user
-        if (index == -1) {
+        if (req.body.id) {
             app.models.user.destroy({
                 where: {
-                    id: req.params.uid
+                    id: req.body.id
                 }
             }).then(function () {
                 req.flash.success(__('m_users_backend_controllers_index_delete_flash_success'));
@@ -361,9 +361,10 @@ module.exports = function (controller, component, app) {
         toolbar = toolbar.render();
 
         if (!req.user.role_ids) role_ids.push(req.user.role_id);
-        else role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
-            return val.match(/d/g);
-        });
+        else
+            role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
+                return val.match(/\d/g);
+            });
         app.models.role.findAll({
             where: {
                 id: {
@@ -375,6 +376,13 @@ module.exports = function (controller, component, app) {
                 item: req.user,
                 toolbar: toolbar,
                 role_ids: roles
+            });
+        }).catch(function (err) {
+            log.error(err);
+            res.backend.render('new', {
+                item: req.user,
+                toolbar: toolbar,
+                role_ids: null
             });
         })
 

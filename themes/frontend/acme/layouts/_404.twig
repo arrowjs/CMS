@@ -1,10 +1,15 @@
 {% extends '_layout.' + getConfig('viewExtension') %}
 
+{% block title %}404 not found{% endblock %}
+
 {% block content %}
     <section id="error" class="container text-center">
-        <h1>404, Page not found</h1>
+        <div class="container  error-inner wow flipInX animated" data-wow-animation-name="flipInX"
+             style="visibility: visible; animation-name: flipInX;">
+            <h1>404, Page not found</h1>
 
-        <p class="text-center">The Page you are looking for doesn't exist or an other error occurred.</p>
-        <a class="btn btn-primary" href="/">GO BACK TO THE HOMEPAGE</a><br><br>
+            <p class="text-center">The Page you are looking for doesn't exist or an other error occurred.</p>
+            <a class="btn btn-primary" href="/">GO BACK TO THE HOMEPAGE</a><br><br>
+        </div>
     </section>
 {% endblock %}

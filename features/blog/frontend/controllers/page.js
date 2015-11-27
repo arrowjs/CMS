@@ -26,9 +26,7 @@ module.exports = function (controller, component, app) {
                 });
             } else {
                 // Redirect to 404 if page not exist
-                res.frontend.render('_404', {
-                    pageTitle: '404 not found'
-                });
+                res.frontend.render('_404');
             }
         });
     }
