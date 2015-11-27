@@ -26,10 +26,9 @@ module.exports = function (controller, component, application) {
         } catch (err) {
             layout = component.getLayouts(widget.widget_name)[0];
         }
-
         // Render view with layout
         return component.render(layout, {
-            widget: widget.data
+            widget: JSON.parse(widget.data)
         })
     };
 };
