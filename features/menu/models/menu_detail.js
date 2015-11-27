@@ -2,6 +2,13 @@
 
 module.exports = function (sequelize, DataTypes) {
     let MenuDetail = sequelize.define("menu_detail", {
+        detail_id : {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            isInt: {
+                msg: 'please input a number'
+            }
+        },
         menu_id: {
             type: DataTypes.INTEGER,
             allowNull: false,

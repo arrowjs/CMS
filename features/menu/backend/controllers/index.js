@@ -193,7 +193,7 @@ module.exports = function (controller, component, app) {
             for (let i in req.body.title) {
                 promises.push(
                     component.models.menu_detail.create({
-                        id: req.body.mn_id[i],
+                        detail_id: req.body.mn_id[i],
                         menu_id: req.params.mid,
                         name: req.body.title[i],
                         link: req.body.url[i],
@@ -214,7 +214,6 @@ module.exports = function (controller, component, app) {
 
     controller.save = function (req, res) {
         let menu_id = 0;
-
         component.models.menu.create({
             name: req.body.name,
             menu_order: req.body.output
@@ -229,10 +228,12 @@ module.exports = function (controller, component, app) {
         }).then(function (count) {
             let promises = [];
             // Create menu detail
+            if (typeof req.body.title != 'object' && req.body.title)
+                req.body.title = [req.body.title];
             for (let i in req.body.title) {
                 promises.push(
                     component.models.menu_detail.create({
-                        id: req.body.mn_id[i],
+                        detail_id: req.body.mn_id[i],
                         menu_id: menu_id,
                         name: req.body.title[i],
                         link: req.body.url[i],
