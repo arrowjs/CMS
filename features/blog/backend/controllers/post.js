@@ -439,7 +439,7 @@ module.exports = function (controller, component, app) {
         }).then(function (post) {
             if (post) {
                 // Render view
-                res.frontend.render('post_detail', {
+                res.frontend.render('post', {
                     post: post
                 });
             } else {

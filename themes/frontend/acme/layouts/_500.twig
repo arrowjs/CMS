@@ -4,8 +4,11 @@
 
 {% block content %}
     <section id="error" class="container text-center">
-        <h1>500, Internal Server Error</h1>
+        <div class="container  error-inner wow flipInX animated" data-wow-animation-name="flipInX"
+             style="visibility: visible; animation-name: flipInX;">
+            <h1>500, Internal Server Error</h1>
 
-        <p class="text-center">Please come back later.</p>
+            <p class="text-center">Please come back later.</p>
+        </div>
     </section>
 {% endblock %}

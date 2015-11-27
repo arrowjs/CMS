@@ -68,3 +68,17 @@ body {
     float: left;
     margin-right: 20px;
 }
+
+#error {
+    margin-bottom: 200px;
+}
+
+.page {
+    margin-top: 50px;
+}
+
+.page .img-blog {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}

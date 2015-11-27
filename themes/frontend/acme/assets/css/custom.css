@@ -16,14 +16,28 @@ body {
 
 .feature-head h1 {
     color: #444e67;
+    margin-bottom: 50px;
 }
 
 .feature-box .content p {
     text-align: center;
 }
 
-.feature-box .content img {
+.feature-box-heading img {
     width: 100%;
+}
+
+.feature-box-heading i {
+    width: 100px;
+    height: 100px;
+    padding-top: 30px;
+    background: #cccccc;
+    color: #fff;
+    border: none;
+}
+
+.feature-box-heading i:hover {
+    background: #39CCCC;
 }
 
 .feature-box-heading h4 {

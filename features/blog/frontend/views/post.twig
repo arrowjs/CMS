@@ -1,9 +1,6 @@
 {% extends '_layout.' + getConfig('viewExtension') %}
 
-
 {% block content %}
-
-    <!--breadcrumbs start-->
     <div class="breadcrumbs">
         <div class="container">
             <div class="row">
@@ -19,8 +16,13 @@
                                 Home
                             </a>
                         </li>
+                        <li>
+                            <a href="/blog/posts">
+                                Blog
+                            </a>
+                        </li>
                         <li class="active">
-                            Page Details
+                            Blog Details
                         </li>
                     </ol>
                 </div>
@@ -47,41 +49,54 @@
                                     {{ post.published_at | moment("MMMM") }}
                                 </span>
                             </div>
-                            <div class="author text-right">
-                                By
-                                <a href="#">
-                                    {{ item.user.display_name }}
-                                </a>
+
+                        </div>
+                        {% if post.image %}
+                        <div class="col-lg-10 col-sm-10">
+                            <div class="blog-img gs">
+                                <img src="{{ post.image }}" alt=""/>
                             </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-2 text-right">
+                            {%  if categories != '' %}
+                                <div class="author">
+                                    Categories
+                                </div>
+                                <ul class="list-unstyled">
+                                    {%  for category in categories %}
+                                        <li>
+                                            <a href="/blog/posts/categories/{{ category.alias }}/{{ category.id }}">
+                                                <em>
+                                                    {{ category.name }}
+                                                </em>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                         </div>
 
                         <div class="col-lg-10 col-sm-10">
-                            {% if item.image %}
-                            <div class="blog-img gs">
-                                <img src="{{ item.image }}" alt=""/>
-                            </div>
-                            {% endif %}
                             <h1>
                                 <a href="#">
-                                    {{ item.title |safe }}
+                                    {{ post.title }}
                                 </a>
                             </h1>
 
-                            <p>{{ item.full_text |safe }}</p>
+                            <p>{{ post.full_text | safe }}</p>
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <div class="col-lg-3">
-
+                <div class="blog-side-item">
+                    {{ getSidebar("right-sidebar") | async | safe }}
+                </div>
             </div>
-
-
         </div>
-
     </div>
-
-
 {% endblock %}

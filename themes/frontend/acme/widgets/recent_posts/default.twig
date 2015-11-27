@@ -1,4 +1,4 @@
-<div class="picked_post widget categories">
+<div class="recent_post">
     <h3>{{ widget.title }}</h3>
 
     {% for post in posts %}
@@ -6,12 +6,14 @@
             <a class="pull-left feature_image" href="/blog/posts/{{ post.id }}/{{ post.alias }}">
                 <img class=" " src="{{ post.image }}" alt="">
             </a>
+
             <div class="media-body">
                 <h5 class="media-heading">
                     <a href="/blog/posts/{{ post.id }}/{{ post.alias }}">
-                        {{ post.published_at | moment().format('LL') }}
+                        {{ post.title | safe }}
                     </a>
                 </h5>
+
                 <p>
                     {{ post.intro_text | title(50, '...') | safe }}
                 </p>

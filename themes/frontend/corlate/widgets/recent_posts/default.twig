@@ -9,11 +9,11 @@
             <div class="media-body">
                 <h5 class="media-heading">
                     <a href="/blog/posts/{{ post.id }}/{{ post.alias }}">
-                        {{ post.title }}
+                        {{ post.title | safe }}
                     </a>
                 </h5>
                 <p>
-                    {{ post.intro_text | title(50, '...') }}
+                    {{ post.intro_text | title(50, '...') | safe }}
                 </p>
             </div>
         </div>
