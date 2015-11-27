@@ -27,15 +27,6 @@ body {
     width: 100%;
 }
 
-.feature-box-heading i {
-    width: 100px;
-    height: 100px;
-    padding-top: 30px;
-    background: #cccccc;
-    color: #fff;
-    border: none;
-}
-
 .feature-box-heading i:hover {
     background: #39CCCC;
 }
