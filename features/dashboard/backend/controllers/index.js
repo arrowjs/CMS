@@ -38,7 +38,6 @@ module.exports = function (cont, comp, app) {
                 categoryStatistic: results[3],
                 newestUsers: results[0].rows,
                 newestPosts: results[1].rows
-
             });
         }).catch(function (err) {
             res.backend.render('index');
