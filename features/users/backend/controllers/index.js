@@ -330,10 +330,10 @@ module.exports = function (controller, component, app) {
 
     controller.delete = function (req, res) {
         // Delete user
-        if (index == -1) {
+        if (req.body.id) {
             app.models.user.destroy({
                 where: {
-                    id: req.params.uid
+                    id: req.body.id
                 }
             }).then(function () {
                 req.flash.success(__('m_users_backend_controllers_index_delete_flash_success'));
