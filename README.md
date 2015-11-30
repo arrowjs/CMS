@@ -1,7 +1,9 @@
 ArrowJS CMS
 ==================
 
-Welcome to ArrowJS CMS! ArrowJS CMS is CMS base on ArrowJS framework. By default, we are blog platform support SQL database like Wordpress. We have many features like themes, widget , multi-language, authenticate , Role-base v.v
+Join our online chat at [![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/trquoccuong/arrowjs)
+
+> Welcome to ArrowJS CMS! ArrowJS CMS is CMS base on ArrowJS framework. By default, we are blog platform support SQL database like Wordpress. We have many features like themes, widget , multi-language, authenticate , Role-base v.v
 Our platform is easy to scale to build large system like e-commerce v.v.
 
 Email us if you need any support to build your own business
