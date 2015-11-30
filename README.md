@@ -17,17 +17,19 @@ English documents will be coming soon.
 ## Requirements
 
 To run this CMS you need at least:
-- Nodejs 4.0.0 or higher
-- PostgreSQL 9.4 or higher ([http://www.postgresql.org/](http://www.postgresql.org/))
-- Redis server. ([http://redis.io/](http://redis.io/))
 
-If you have new VPS, you can auto install ArrowJS CMS with one command line :
+- Nodejs 4.0.0 or higher
+
+## Install ArrowCMS on fresh CMS
 
 ```
     $ bash <(curl -s http://arrowjs.io/install.sh)
+
 ```
 
-## Installation
+This bashscript auto install Redis, Postgres for you.
+
+## Installation 
 
 Clone project from github:
 
@@ -40,6 +42,39 @@ Go to project folder and install npm packages
 ```
     cd CMS
     sudo npm install
+```
+## Configuration
+
+We tested with PostgreSQL and MySQL.
+By default, Arrow CMS use PostgreSQL and Redis. If you don't have Redis or PostgreSQL modify the config file :
+
+
+```
+//Database config
+//config/database.js
+ db: {
+        host: 'localhost',    // database host
+        port: '5432',         // database port
+        database: 'arrowjs',  // database name
+        username: 'postgres', // database usename
+        password: '',         // database password
+        dialect: 'postgres',  // database type 
+        logging: false
+    },
+    
+```
+
+
+```
+
+//Redis cache config
+//config/redis.js
+redis: {
+        host: 'localhost',
+        port: '6379',
+        type: 'fakeredis'  // if you installed redis, change it to "redis".
+    },
+    
 ```
 
 ## Run CMS
