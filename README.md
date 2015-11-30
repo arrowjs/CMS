@@ -1,9 +1,10 @@
 ArrowJS CMS
 ==================
 
-Welcome to ArrowJS CMS! ArrowJS CMS is CMS base on ArrowJS framework, it helps you build your web application easier.
+Welcome to ArrowJS CMS! ArrowJS CMS is CMS base on ArrowJS framework. By default, we are blog platform support SQL database like Wordpress. We have many features like themes, widget , multi-language, authenticate , Role-base v.v
+Our platform is easy to scale to build large system like e-commerce v.v.
 
-Please write us if you have any feedback.
+Email us if you need any support to build your own business
 
 Thanks.
 
@@ -20,7 +21,8 @@ To run this CMS you need at least:
 
 - Nodejs 4.0.0 or higher
 
-## Install ArrowCMS on fresh CMS
+
+## Install ArrowCMS on fresh VPS
 
 ```
     $ bash <(curl -s http://arrowjs.io/install.sh)
@@ -86,7 +88,6 @@ Start application:
 ```
 
 or
-
 
 ```
     npm start

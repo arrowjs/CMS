@@ -8,6 +8,9 @@
     "type": "git",
     "url": "git://github.com/TechMaster/ArrowCMS.git"
   },
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "adm-zip": "^0.4.7",
     "arrowjs": "*",
