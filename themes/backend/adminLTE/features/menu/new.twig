@@ -254,7 +254,7 @@
                                 <div class="box-tools" style="width: 100%;">
                                     <button type="button" class="btn btn-box-tool"
                                             style="width: 100%; text-align: right;"
-                                            onclick="collapseBox(this); loadModuleDetail(this, '{{ module.route }}', 1, '', {{ module.search }});">
+                                            onclick="collapseBox(this); loadModuleDetail(this,'{{ module.list }}' ,'{{ module.route }}', 1, '', {{ module.search }});">
                                         <i class="fa fa-plus arr-collapse-icon"></i>
                                     </button>
                                 </div>
@@ -346,7 +346,7 @@
 
         var btnLoadModule = {};
 
-        function loadModuleDetail(button, route, page, search, useSearch) {
+        function loadModuleDetail(button,listLink , route, page, search, useSearch) {
             $.ajax({
                 url: '/admin' + route + '?page=' + page + '&searchStr=' + search
             }).done(function (result) {
@@ -389,6 +389,7 @@
                 module_detail_view += getPagination(total_pages, page, route, search, useSearch);
 
                 module_detail_view += '</div><div class="form-group btn-add-menu-wrapper">' +
+                '<div class="checkbox" style="float: left;"><label><input type="checkbox" name="arr_link_item" value="'+ listLink +'">List all items</label></div>'+
                 '<button type="button" class="btn btn-primary btn-add-menu" ' +
                 'onclick="return addNewMenu(this);">' +
                 '{{ __('m_menus_backend_views_new_btn_add_menu') }}&nbsp;<i class="fa fa-arrow-circle-right"></i></button></div>';
