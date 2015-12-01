@@ -1,5 +1,7 @@
 "use strict";
 
+var favicon = require('serve-favicon');
+
 /**
  * Setting for express
  * @param app
@@ -12,6 +14,8 @@ module.exports = function (app, config, setting) {
     /**
      * Set folder static resource
      */
+    app.use(favicon(__base + 'upload/img/favicon.ico'));
+
     app.middleware.serveStatic();
 
     /**
