@@ -1,0 +1,50 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+
+{% block content %}
+    <section id="blog" class="container">
+        <div class="blog">
+            <div class="row">
+                <div class="col-md-8">
+                    {% for post in posts %}
+                        <div class="blog-item">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-2 text-center">
+                                    <div class="entry-meta">
+                                        <span id="publish_date">
+                                            {{ post.published_at | moment("ll") }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-10 blog-content">
+                                    <a href="/blog/posts/{{ post.id }}/{{ post.alias }}"><img
+                                                class="img-responsive img-blog" src="{{ post.image }}" width="100%"
+                                                alt=""/></a>
+
+                                    <h2>
+                                        <a href="/blog/posts/{{ post.id }}/{{ post.alias }}l">{{ post.title | safe }}</a>
+                                    </h2>
+
+                                    <h3>{{ post.intro_text | safe }}</h3>
+                                    <a class="btn btn-primary readmore"
+                                       href="/blog/posts/{{ post.id }}/{{ post.alias }}">Read More <i
+                                                class="fa fa-angle-right"></i></a>
+                                </div>
+                            </div>
+                        </div><!--/.blog-item-->
+                    {% endfor %}
+
+                    <div class="text-center">
+                        {{ paginateLinks(totalPage, currentPage, baseURL) | safe }}
+                    </div>
+                </div>
+                <!--/.col-md-8-->
+
+                <aside class="col-md-4">
+                    {{ getSidebar("right-sidebar") | async | safe }}
+                </aside>
+            </div>
+            <!--/.row-->
+        </div>
+    </section><!--/#blog-->
+{% endblock %}

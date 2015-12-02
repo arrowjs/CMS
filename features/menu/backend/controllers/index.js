@@ -190,8 +190,6 @@ module.exports = function (controller, component, app) {
         }).then(function (menu) {
             let promises = [];
             // Create menu detail
-            if (typeof req.body.title != 'object' && req.body.title)
-                req.body.title = [req.body.title];
             for (let i in req.body.title) {
                 promises.push(
                     app.models.menu_detail.create({
@@ -230,8 +228,6 @@ module.exports = function (controller, component, app) {
         }).then(function (count) {
             let promises = [];
             // Create menu detail
-            if (typeof req.body.title != 'object' && req.body.title)
-                req.body.title = [req.body.title];
             for (let i in req.body.title) {
                 promises.push(
                     app.models.menu_detail.create({

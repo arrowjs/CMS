@@ -1,0 +1,23 @@
+{
+  "information": {
+    "theme_name": "Corlate",
+    "theme_uri": "https://shapebootstrap.net/item/1524962-corlate-free-responsive-business-html-template",
+    "author": "SHAPEBOOTSTRAP",
+    "author_email": "support@shapebootstrap.net",
+    "version": "1.0",
+    "description": "Free Responsive Business HTML Template",
+    "license": "GNU General Public License v2 or later",
+    "license_uri": "http://www.gnu.org/licenses/gpl-2.0.html",
+    "tag": "bootstrap, corporate, html, responsive, corlate"
+  },
+  "sidebars": [
+    {
+      "name": "right-sidebar",
+      "title": "Right sidebar"
+    },
+    {
+      "name": "main-menu",
+      "title": "Main nenu"
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+
+{% block content %}
+    <section id="main-slider" class="no-margin">
+        <div class="carousel slide">
+            <ol class="carousel-indicators">
+                <li data-target="#main-slider" data-slide-to="0" class="active"></li>
+                <li data-target="#main-slider" data-slide-to="1"></li>
+                <li data-target="#main-slider" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+
+                <div class="item active" style="background-image: url(/frontend/corlate/assets/img/techmaster4.jpg)">
+                    <div class="container">
+                        <div class="row slide-margin">
+                        </div>
+                    </div>
+                </div><!--/.item-->
+
+                <div class="item" style="background-image: url(/frontend/corlate/assets/img/techmaster2.jpg)">
+                    <div class="container">
+                        <div class="row slide-margin">
+                            <div class="col-sm-6">
+                                <div class="carousel-content">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 hidden-xs animation animated-item-4">
+                                <div class="slider-img">
+                                    <img src="images/slider/img2.png" class="img-responsive">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div><!--/.item-->
+
+                <div class="item" style="background-image: url(/frontend/corlate/assets/img/techmaster3.jpg)">
+                    <div class="container">
+                    </div>
+                </div><!--/.item-->
+            </div><!--/.carousel-inner-->
+        </div><!--/.carousel-->
+        <a class="prev hidden-xs" href="#main-slider" data-slide="prev">
+            <i class="fa fa-chevron-left"></i>
+        </a>
+        <a class="next hidden-xs" href="#main-slider" data-slide="next">
+            <i class="fa fa-chevron-right"></i>
+        </a>
+    </section><!--/#main-slider-->
+
+    <div class="feature-box">
+        <div class="container">
+            <div class="row mar-b-50">
+                <div class="col-md-12">
+                    <div class="text-center feature-head">
+                        <h1 class="">
+                            Our Company
+                        </h1>
+
+                    </div>
+
+                    <div class="row content">
+                        <div class="col-md-4 col-sm-4 text-center">
+                            <div class="feature-box-heading">
+                                <a href="http://techmaster.vn/trungtam/Trung-tam" target="_blank">
+                                    <img src="/frontend/acme/assets/img/TechmasterSlider6.png" alt="">
+
+                                </a>
+                                <h4>
+                                    <b>
+                                        <a href="http://techmaster.vn/trungtam/Trung-tam" target="_blank">
+                                            Techmaster
+                                        </a>
+                                    </b>
+                                </h4>
+                            </div>
+                            <p class="text-center">
+                                TechMaster là trung tâm đào tạo công nghệ thông tin được thành lập bởi nhóm chuyên gia CNTT, lập trình viên có nhiều năm kinh nghiệm làm việc tại tập đoàn Microsoft.
+                            </p>
+                        </div>
+                        <div class="col-md-4 col-sm-4 text-center">
+                            <div class="feature-box-heading">
+                                <a href="http://techmaster.vn/khoa-hoc" target="_blank">
+                                    <img src="/frontend/acme/assets/img/TechmasterSlider4.png" alt="">
+                                </a>
+                                <h4>
+                                    <b>
+                                        <a href="http://techmaster.vn/khoa-hoc" target="_blank">
+                                            Đào tạo
+                                        </a>
+                                    </b>
+                                </h4>
+                            </div>
+                            <p class="text-center">
+                                Đối với sinh viên, phương pháp đào tạo của TechMaster gây thích thú vì những bài giảng thực tế, khuyên khích sự sáng tạo, dám nghĩ dám làm của sinh viên.
+                            </p>
+                        </div>
+                        <div class="col-md-4 col-sm-4 text-center">
+                            <div class="feature-box-heading">
+                                <a href="http://techmaster.vn/trungtam/team-building-royal-city" target="_blank">
+                                    <img src="/frontend/acme/assets/img/TechmasterSlider8.png" alt="">
+                                </a>
+                                <h4>
+                                    <b>
+                                        <a href="http://techmaster.vn/trungtam/team-building-royal-city" target="_blank">
+                                            Hoạt động ngoại khóa
+                                        </a>
+                                    </b>
+                                </h4>
+                            </div>
+                            <p class="text-center">
+                                Đi tham quan, chơi thể thao là hoạt động được Techmaster thường xuyên tổ chức nhân viên lập trình và các học viên thực tập dài hạn.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!--feature end-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block jsExtends %}
+    <script type="text/javascript" src="/frontend/acme/assets/libs/bxslider/jquery.bxslider.js"></script>
+    <script src="/frontend/acme/assets/libs/owlcarousel/owl.carousel.js"></script>
+{% endblock %}

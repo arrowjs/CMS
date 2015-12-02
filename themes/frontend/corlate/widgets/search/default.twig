@@ -1,0 +1,7 @@
+{% if widget %}
+    <div class="search-row">
+        <form method="get" action="/blog/posts/search">
+            <input type="text" name="searchStr" class="form-control" placeholder="{{ widget.placeholder }}">
+        </form>
+    </div>
+{% endif %}

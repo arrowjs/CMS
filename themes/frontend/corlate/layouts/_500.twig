@@ -1,0 +1,12 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+
+{% block title %}404 not found{% endblock %}
+
+{% block content %}
+    <section id="error" class="container text-center">
+        <h1>500, Internal Server Error</h1>
+
+        <p>Please come back later.</p>
+        <a class="btn btn-primary" href="index.html">GO BACK TO THE HOMEPAGE</a>
+    </section>
+{% endblock %}

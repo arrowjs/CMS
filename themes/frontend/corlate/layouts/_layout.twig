@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}{{ title if title else "Corlate" }}{% endblock %}</title>
+
+    <!-- core CSS -->
+    <link href="/frontend/corlate/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/frontend/corlate/assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/frontend/corlate/assets/css/animate.min.css" rel="stylesheet">
+    <link href="/frontend/corlate/assets/css/prettyPhoto.css" rel="stylesheet">
+    <link href="/frontend/corlate/assets/css/main.css" rel="stylesheet">
+    <link href="/frontend/corlate/assets/css/responsive.css" rel="stylesheet">
+    <link href="/frontend/corlate/assets/css/custom.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="/frontend/corlate/assets/js/html5shiv.js"></script>
+    <script src="/frontend/corlate/assets/js/respond.min.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="/img/favicon.ico"  type="image/x-icon"/>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144"
+          href="/frontend/corlate/assets/img/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114"
+          href="/frontend/corlate/assets/img/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72"
+          href="/frontend/corlate/assets/img/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed"
+          href="/frontend/corlate/assets/img/ico/apple-touch-icon-57-precomposed.png">
+
+    {% block cssExtends %}{% endblock %}
+</head>
+<!--/head-->
+
+<body>
+<!--header start-->
+{% include '_header.twig' %}
+<!--header end-->
+
+{% block content %}
+{% endblock %}
+
+<!--footer start-->
+{% include '_footer.twig' %}
+<!--footer end-->
+
+<script src="/frontend/corlate/assets/js/jquery.js"></script>
+<script src="/frontend/corlate/assets/js/bootstrap.min.js"></script>
+<script src="/frontend/corlate/assets/js/jquery.prettyPhoto.js"></script>
+<script src="/frontend/corlate/assets/js/jquery.isotope.min.js"></script>
+<script src="/frontend/corlate/assets/js/main.js"></script>
+<script src="/frontend/corlate/assets/js/wow.min.js"></script>
+
+{% block jsExtends %}{% endblock %}
+</body>
+</html>
