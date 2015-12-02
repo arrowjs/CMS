@@ -84,7 +84,7 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         user_image_url: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(255),
             defaultValue: '/img/noImage.png'
         },
         salt: {
@@ -119,7 +119,7 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         role_ids: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(255),
             defaultValue: '{0}',
             set: function (val) {
                 let value = val.toString().split(',')

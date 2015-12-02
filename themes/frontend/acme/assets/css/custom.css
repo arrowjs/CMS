@@ -27,9 +27,17 @@ body {
     width: 100%;
 }
 
+.feature-box-heading i {
+    width: 100px;
+    height: 100px;
+    padding-top: 30px;
+    background: #cccccc;
+    color: #fff;
+    border: none;
+}
+
 .feature-box-heading i:hover {
     background: #39CCCC;
-    color: #ffffff;
 }
 
 .feature-box-heading h4 {
@@ -90,12 +98,5 @@ ul.page-footer-list a:hover {
 .recent_post img,
 .picked_post img {
     width: 100px;
-}
-
-i.fa-3x {
-    width: 80px;
-    height: 80px;
-    line-height: 80px;
-    border: 3px solid #48cfad;
 }
 

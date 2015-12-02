@@ -68,11 +68,13 @@ module.exports = {
         posts : {
             title : 'Link Posts',
             route : '/blog/post/link/menu',
+            list : '/blog/posts',
             search : true
         },
         pages : {
             title : 'Link Pages',
             route : '/blog/page/link/menu',
+            list : '/blog/pages',
             search : true
         }
     }

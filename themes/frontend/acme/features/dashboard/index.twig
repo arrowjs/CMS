@@ -1,19 +1,36 @@
 {% extends '_layout.' + getConfig('viewExtension') %}
 
-{% block cssExtends %}
-    <link href="/frontend/acme/assets/css/terminal.css" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
-    <div class="container">
-        <section class="terminal-window">
-            <div class="title-bar text-center">Arrowjs Generator - Bash</div>
-            <div class="terminal">
-                <div class="history"></div>
-                $&nbsp;<span class="prompt"></span>
-                <span class="typed-cursor"></span>
+    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+            <div class="item active slider_1">
+
             </div>
-        </section>
+            <div class="item slider_2">
+
+            </div>
+            <div class="item slider_3">
+
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
 
     <div class="feature-box">
@@ -21,111 +38,76 @@
             <div class="row mar-b-50">
                 <div class="col-md-12">
                     <div class="text-center feature-head wow fadeInDown">
-                        <h1>Features</h1>
+                        <h1 class="">
+                            Our Company
+                        </h1>
+
                     </div>
 
                     <div class="row content">
-                        <div class="col-md-3 col-sm-3 text-center wow fadeInUp">
+                        <div class="col-md-4 col-sm-4 text-center wow fadeInUp">
                             <div class="feature-box-heading">
-                                <i class="fa fa-rocket fa-3x"></i>
+                                <a href="http://techmaster.vn/trungtam/Trung-tam" target="_blank">
+                                    <img src="/frontend/acme/assets/img/TechmasterSlider6.png" alt="">
 
+                                </a>
                                 <h4>
                                     <b>
-                                        Fast
+                                        <a href="http://techmaster.vn/trungtam/Trung-tam" target="_blank">
+                                            Techmaster
+                                        </a>
                                     </b>
                                 </h4>
                             </div>
-
-                            <p class="">
-                                Faster than Mean.js, Sails.js
-                            </p>
-                            <p class="">
-                                Scale out: Nginx + Node.js
-                            </p>
-                            <p class="">
-                                Caching HTML output using Redis
-                            </p>
-                            <p class="">
-                                Precompile template
-                            </p>
-                            <p>
-                                100% use Promise - Bluebird
+                            <p class="text-center">
+                                TechMaster là trung tâm đào tạo công nghệ thông tin được thành lập bởi nhóm chuyên gia CNTT, lập trình viên có nhiều năm kinh nghiệm làm việc tại tập đoàn Microsoft.
                             </p>
                         </div>
-
-                        <div class="col-md-3 col-sm-3 text-center wow fadeInUp">
+                        <div class="col-md-4 col-sm-4 text-center wow fadeInUp">
                             <div class="feature-box-heading">
-                                <i class="fa fa-dashboard fa-3x"></i>
+                                <a href="http://techmaster.vn/khoa-hoc" target="_blank">
+                                    <img src="/frontend/acme/assets/img/TechmasterSlider4.png" alt="">
+                                </a>
                                 <h4>
                                     <b>
-                                        Reactive
+                                        <a href="http://techmaster.vn/khoa-hoc" target="_blank">
+                                            Đào tạo
+                                        </a>
                                     </b>
                                 </h4>
                             </div>
-                            <p class="">
-                                Integrate Socket.io
-                            </p>
-                            <p class="">
-                                Support Facebook React
-                            </p>
-                            <p class="">
-                                Callback notify long run task
+                            <p class="text-center">
+                                Đối với sinh viên, phương pháp đào tạo của TechMaster gây thích thú vì những bài giảng thực tế, khuyên khích sự sáng tạo, dám nghĩ dám làm của sinh viên.
                             </p>
                         </div>
-
-                        <div class="col-md-3 col-sm-3 text-center wow fadeInUp">
+                        <div class="col-md-4 col-sm-4 text-center wow fadeInUp">
                             <div class="feature-box-heading">
-                                <i class="fa fa-eye fa-3x"></i>
+                                <a href="http://techmaster.vn/trungtam/team-building-royal-city" target="_blank">
+                                    <img src="/frontend/acme/assets/img/TechmasterSlider8.png" alt="">
+                                </a>
                                 <h4>
                                     <b>
-                                        Theme
+                                        <a href="http://techmaster.vn/trungtam/team-building-royal-city" target="_blank">
+                                            Hoạt động ngoại khóa
+                                        </a>
                                     </b>
                                 </h4>
                             </div>
-                            <p class="">
-                                Switch themes on fly
-                            </p>
-                            <p class="">
-                                Easy to convert from WordPress, Joomla
-                            </p>
-                            <p class="">
-                                Nunjucks advanced features
-                            </p>
-                            <p class="">
-                                Highlight template syntax in IDE
-                            </p>
-                        </div>
-
-                        <div class="col-md-3 col-sm-3 text-center wow fadeInUp">
-                            <div class="feature-box-heading">
-                                <i class="fa fa-sitemap fa-3x"></i>
-                                <h4>
-                                    <b>
-                                        Microservice
-                                    </b>
-                                </h4>
-                            </div>
-                            <p class="">
-                                Loosely coupling features
-                            </p>
-                            <p class="">
-                                Support ActionHero, Seneca, Restify
-                            </p>
-                            <p class="">
-                                Flexible, multi targets logging
-                            </p>
-                            <p class="">
-                                Support ZeroMQ
+                            <p class="text-center">
+                                Đi tham quan, chơi thể thao là hoạt động được Techmaster thường xuyên tổ chức nhân viên lập trình và các học viên thực tập dài hạn.
                             </p>
                         </div>
                     </div>
+
+                    <!--feature end-->
                 </div>
             </div>
         </div>
     </div>
+
 {% endblock %}
 
 {% block jsExtends %}
-    <script type="text/javascript" src="/frontend/acme/assets/libs/typedjs/dist/typed.min.js"></script>
-    <script type="text/javascript" src="/frontend/acme/assets/js/terminal.js"></script>
+    <script type="text/javascript" src="/frontend/acme/assets/libs/bxslider/jquery.bxslider.js"></script>
+    <script src="/frontend/acme/assets/libs/owlcarousel/owl.carousel.js"></script>
 {% endblock %}

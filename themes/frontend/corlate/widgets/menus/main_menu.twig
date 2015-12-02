@@ -1,0 +1,30 @@
+{% macro render_child(mn, menu_data ,isSubMenus) %}
+    {% if mn.children.length > 0 %}
+        <li class="dropdown{% if isSubMenus %}-submenu{% endif %}">
+            <a href="{{ menu_data.link }}" {% if not isSubMenus %} class="dropdown-toggle" data-close-others="false" data-delay="0" data-hover="dropdown" data-toggle="dropdown"{% endif %}>
+                {{ menu_data.name }} {% if not isSubMenus %}<i class="fa fa-angle-down"></i>{% endif %}
+            </a>
+            <ul class="dropdown-menu"{% if isSubMenus %} style="display: none;"{% endif %}>
+                {% for subMn in mn.children %}
+                    {% set _data = subMn.id|get_menu_data(menuItems) %}
+                    {{ render_child(subMn, _data,true) }}
+                {% endfor %}
+            </ul>
+        </li>
+    {% else %}
+        <li>
+            <a href="{{ menu_data.link }}">
+                {{ menu_data.name }}
+            </a>
+        </li>
+    {% endif %}
+{% endmacro %}
+<ul class="nav navbar-nav">
+    {% for mn in menuOrder %}
+        {% set menu_data = mn.id|get_menu_data(menuItems) %}
+        {{ render_child(mn, menu_data,false) }}
+    {% endfor %}
+    {% if widget.search == 1 %}
+        <li><input class="form-control search" placeholder=" Search" type="text"></li>
+    {% endif %}
+</ul>
