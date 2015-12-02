@@ -1,7 +1,7 @@
 'use strict';
 
 let slug = require('slug');
-let _ = require('arrowjs')._;
+let _ = require('arrowjs')._;//lodash
 let promise = require('arrowjs').Promise;
 
 let route = 'blog';
@@ -14,6 +14,10 @@ module.exports = function (controller, component, app) {
     let isAllow = ArrowHelper.isAllow;
 
     controller.postList = function (req, res) {
+
+        // Get current page and default sorting
+        var page = req.params.page || 1;
+
         // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton('/admin/blog/posts');
@@ -21,11 +25,6 @@ module.exports = function (controller, component, app) {
         toolbar.addCreateButton(isAllow(req, 'post_create'), '/admin/blog/posts/create');
         toolbar.addDeleteButton(isAllow(req, 'post_delete'));
         toolbar = toolbar.render();
-
-        res.locals.user = req.user;
-
-        //// Get current page and default sorting
-        let page = req.params.page || 1;
 
         // Store search data to session
         let session_search = {};
@@ -108,7 +107,7 @@ module.exports = function (controller, component, app) {
         ];
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/blog/posts/page/' + page + '/sort',
+            rootLink: '/admin/blog/posts/page/$page/sort',
             limit: itemOfPage,
             customCondition: "AND type='post'"
         });
@@ -123,6 +122,7 @@ module.exports = function (controller, component, app) {
                     where: ['1 = 1']
                 }
             ],
+            order: filter.order,
             limit: filter.limit,
             offset: (page - 1) * itemOfPage
         }).then(function (results) {
@@ -150,7 +150,7 @@ module.exports = function (controller, component, app) {
         });
 
     };
-
+    // get data to display post detail
     controller.postView = function (req, res) {
         // set back link default
         let back_link = '/admin/blog/posts/page/1';
@@ -180,9 +180,13 @@ module.exports = function (controller, component, app) {
                 }
             })
         ]).then(function (results) {
-            let data = results[2];
-            data.full_text = data.full_text.replace(/&lt/g, "&amp;lt");
-
+            let data ;
+            if (req['post']){
+                data = req.post;
+            }else{
+                data = results[2];
+                data.full_text = data.full_text.replace(/&lt/g, "&amp;lt");
+            }
             // Add preview button
             toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', '/admin/blog/posts/preview/' + results[2].id,
                 {
@@ -205,7 +209,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.postDelete = function (req, res) {
-        res.locals.user = req.user;
         app.models.post.findAll({
             where: {
                 id: {
@@ -247,7 +250,7 @@ module.exports = function (controller, component, app) {
             logger.error('postDelete error : ', err);
         });
     };
-
+    //update post after form submited
     controller.postUpdate = function (req, res, next) {
         // set back link default
         let back_link = '/admin/blog/posts/page/1';
@@ -269,69 +272,85 @@ module.exports = function (controller, component, app) {
         data.author_visible = (data.author_visible != null);
         if (!data.published) data.published = 0;
 
-        app.models.post.findById(req.params.cid).then(function (post) {
-            let tag = post.categories;
-            if (tag != null && tag != '') {
-                tag = tag.split(':');
-                tag.shift();
-                tag.pop(tag.length - 1);
-            } else tag = [];
+        app.models.post.findById(req.params.cid)
+            .then(function (post) {
+                let tag = post.categories;
+                if (tag != null && tag != '') {
+                    tag = tag.split(':');
+                    tag.shift();
+                    tag.pop(tag.length - 1);
+                } else tag = [];
 
-            let newtag = data.categories;
-            if (newtag != null && newtag != '') {
-                newtag = newtag.split(':');
-                newtag.shift();
-                newtag.pop(newtag.length - 1);
-            } else newtag = [];
+                let newtag = data.categories;
+                if (newtag != null && newtag != '') {
+                    newtag = newtag.split(':');
+                    newtag.shift();
+                    newtag.pop(newtag.length - 1);
+                } else newtag = [];
 
-            // Update count for category
-            let onlyInA = [],
-                onlyInB = [];
+                // Update count for category
+                let onlyInA = [],
+                    onlyInB = [];
 
-            if (Array.isArray(tag) && Array.isArray(newtag)) {
-                onlyInA = tag.filter(function (current) {
-                    return newtag.filter(function (current_b) {
-                            return current_b == current
-                        }).length == 0
-                });
-                onlyInB = newtag.filter(function (current) {
-                    return tag.filter(function (current_a) {
-                            return current_a == current
-                        }).length == 0
-                });
+                if (Array.isArray(tag) && Array.isArray(newtag)) {
+                    onlyInA = tag.filter(function (current) {
+                        return newtag.filter(function (current_b) {
+                                return current_b == current
+                            }).length == 0
+                    });
+                    onlyInB = newtag.filter(function (current) {
+                        return tag.filter(function (current_a) {
+                                return current_a == current
+                            }).length == 0
+                    });
 
-            }
+                }
 
-            if (data.published != post.published && data.published == 1) data.published_at = Date.now();
+                if (data.published != post.published && data.published == 1) data.published_at = Date.now();
 
-            // update data
-            return post.updateAttributes(data).then(function () {
-                return promise.all([
-                    promise.map(onlyInA, function (id) {
-                        return app.models.category.findById(id).then(function (tag) {
-                            let count = +tag.count - 1;
-                            return tag.updateAttributes({
-                                count: count
+                // update data
+                return post.updateAttributes(data)
+                    .then(function () {
+                        return promise.all([
+                            promise.map(onlyInA, function (id) {
+                                return app.models.category.findById(id).then(function (tag) {
+                                    let count = +tag.count - 1;
+                                    return tag.updateAttributes({
+                                        count: count
+                                    })
+                                });
+                            }),
+                            promise.map(onlyInB, function (id) {
+                                return app.models.category.findById(id).then(function (tag) {
+                                    let count = +tag.count + 1;
+                                    return tag.updateAttributes({
+                                        count: count
+                                    })
+                                });
                             })
-                        });
-                    }),
-                    promise.map(onlyInB, function (id) {
-                        return app.models.category.findById(id).then(function (tag) {
-                            let count = +tag.count + 1;
-                            return tag.updateAttributes({
-                                count: count
-                            })
-                        });
+                        ])
                     })
-                ])
-            })
-        }).then(function () {
-            req.flash.success(__('m_blog_backend_post_flash_update_success'));
-            next();
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
-        });
+            }).then(function () {
+                req.flash.success(__('m_blog_backend_post_flash_update_success'));
+                if(req['post'])
+                delete req.post;
+                next();
+            }).catch(function (err) {
+                let messageError ='' ;
+                if(err.name == 'SequelizeValidationError'){
+                    err.errors.map(function (e) {
+                        if(e)
+                            messageError += e.message+'<br />';
+                    })
+                }else if (err.name == 'SequelizeUniqueConstraintError'){
+                    messageError = "Alias was duplicated";
+                }else{
+                    messageError = err.message;
+                }
+                req.flash.error(messageError);
+                res.locals.post = data;
+                next();
+            });
     };
 
     controller.postCreate = function (req, res) {
@@ -341,7 +360,6 @@ module.exports = function (controller, component, app) {
         if (search_params && search_params[route + '_post_list']) {
             back_link = '/admin' + search_params[route + '_post_list'];
         }
-
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(back_link);
         toolbar.addSaveButton(isAllow(req, 'post_create'));
@@ -355,7 +373,6 @@ module.exports = function (controller, component, app) {
                 order: "id asc"
             })
         ]).then(function (results) {
-
             res.backend.render(edit_view, {
                 title: __('m_blog_backend_post_render_create'),
                 categories: results[0],
@@ -368,7 +385,7 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.postSave = function (req, res) {
+    controller.postSave = function (req, res, next) {
         let data = req.body;
         data.title = data.title.trim();
         data.created_by = req.user.id;
@@ -405,17 +422,24 @@ module.exports = function (controller, component, app) {
             req.flash.success(__('m_blog_backend_post_flash_create_success'));
             res.redirect('/admin/blog/posts/' + post_id);
         }).catch(function (err) {
-            if (err.name == 'SequelizeUniqueConstraintError') {
-                req.flash.error("Alias was duplicated");
-            } else {
-                req.flash.error(err.message);
+            let messageError ='' ;
+            if(err.name == 'SequelizeValidationError'){
+                err.errors.map(function (e) {
+                    if(e)
+                        messageError += e.message+'<br />';
+                })
+            }else if (err.name == 'SequelizeUniqueConstraintError'){
+                messageError = "Alias was duplicated";
+            }else{
+                messageError = err.message;
             }
-            res.redirect('/admin/blog/posts/create');
+            req.flash.error(messageError);
+            res.locals.post = data;
+            next();
         });
     };
 
     controller.postRead = function (req, res, next, id) {
-        res.locals.user = req.user;
         app.models.post.findById(id).then(function (post) {
             req.post = post;
             next();
@@ -423,14 +447,13 @@ module.exports = function (controller, component, app) {
     };
 
     controller.hasAuthorization = function (req, res, next) {
-        res.locals.user = req.user;
         return next((req.post.created_by !== req.user.id));
     };
 
-    controller.postPreView = function (req, res) {
+    controller.postPreview = function (req, res) {
         let postId = req.params.postId;
 
-        component.models.post.find({
+        app.models.post.find({
             where: {
                 id: postId,
                 type: 'post'

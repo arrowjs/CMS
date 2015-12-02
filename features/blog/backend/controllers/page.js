@@ -11,17 +11,13 @@ module.exports = function (controller, component, app) {
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
     controller.pageList = function (req, res) {
+
+        var page = req.params.page || 1;
         // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addCreateButton(isAllow(req, 'page_create'), '/admin/blog/pages/create');
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
         toolbar = toolbar.render();
-
-        // Get current page and default sorting
-        let page = req.params.page || 1;
-        let column = req.params.sort || 'created_by';
-        let order = req.params.order || 'desc';
-        res.locals.root_link = '/admin/blog/pages/page/' + page + '/sort';
 
         // Store search data to session
         let session_search = {};
@@ -104,7 +100,7 @@ module.exports = function (controller, component, app) {
         ];
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/blog/pages/page/' + page + '/sort',
+            rootLink: '/admin/blog/pages/page/$page/sort',
             limit: itemOfPage,
             customCondition: " AND type='page' "
         });
@@ -118,6 +114,7 @@ module.exports = function (controller, component, app) {
                 }
             ],
             where: filter.conditions,
+            order: filter.order,
             limit: itemOfPage,
             offset: (page - 1) * itemOfPage
         }).then(function (results) {
@@ -186,7 +183,7 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.pageSave = function (req, res) {
+    controller.pageSave = function (req, res, next) {
         // Add button
         let back_link = '/admin/blog/pages/page/1';
         let search_params = req.session.search;
@@ -212,9 +209,19 @@ module.exports = function (controller, component, app) {
             req.flash.success(__('m_blog_backend_page_flash_create_success'));
             res.locals.toolbar = toolbar.render();
             res.redirect('/admin/blog/pages/' + page.id);
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
+        }).catch(function (err) {
+            let messageError ='' ;
+            if(err.name == 'SequelizeValidationError'){
+                err.errors.map(function (e) {
+                    if(e)
+                    messageError += e.message+'<br />';
+                })
+            }else{
+                messageError = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
+            }
+            req.flash.error(messageError);
+            res.locals.page = data,
+            next();
         });
     };
 

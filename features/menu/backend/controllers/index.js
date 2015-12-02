@@ -40,7 +40,7 @@ module.exports = function (controller, component, app) {
             rootLink: '/admin/menu/sort'
         });
 
-        component.models.menu.findAll({
+        app.models.menu.findAll({
             order: column + " " + order,
             raw: true
         }).then(function (menus) {
@@ -98,9 +98,9 @@ module.exports = function (controller, component, app) {
     };
 
     controller.menuById = function (req, res, next, id) {
-        component.models.menu.findById(id).then(function (menu) {
+        app.models.menu.findById(id).then(function (menu) {
             res.locals.menu = menu;
-            return component.models.menu_detail.findAll({
+            return app.models.menu_detail.findAll({
                 where: {
                     menu_id: id
                 },
@@ -116,7 +116,7 @@ module.exports = function (controller, component, app) {
     };
 
     controller.delete = function (req, res) {
-        component.models.menu.destroy({
+        app.models.menu.destroy({
             where: {
                 id: {
                     "in": req.body.ids.split(',')
@@ -170,7 +170,7 @@ module.exports = function (controller, component, app) {
 
     controller.update = function (req, res) {
         // Find menu to update
-        component.models.menu.find({
+        app.models.menu.find({
             where: {
                 id: req.params.mid
             }
@@ -182,7 +182,7 @@ module.exports = function (controller, component, app) {
             });
         }).then(function (menu) {
             // Delete old menu detail
-            return component.models.menu_detail.destroy({
+            return app.models.menu_detail.destroy({
                 where: {
                     menu_id: menu.id
                 }
@@ -194,7 +194,7 @@ module.exports = function (controller, component, app) {
                 req.body.title = [req.body.title];
             for (let i in req.body.title) {
                 promises.push(
-                    component.models.menu_detail.create({
+                    app.models.menu_detail.create({
                         detail_id: req.body.mn_id[i],
                         menu_id: req.params.mid,
                         name: req.body.title[i],
@@ -216,13 +216,13 @@ module.exports = function (controller, component, app) {
 
     controller.save = function (req, res) {
         let menu_id = 0;
-        component.models.menu.create({
+        app.models.menu.create({
             name: req.body.name,
             menu_order: req.body.output
         }).then(function (menu) {
             menu_id = menu.id;
             // Delete old menu detail
-            return component.models.menu_detail.destroy({
+            return app.models.menu_detail.destroy({
                 where: {
                     menu_id: menu_id
                 }
@@ -234,7 +234,7 @@ module.exports = function (controller, component, app) {
                 req.body.title = [req.body.title];
             for (let i in req.body.title) {
                 promises.push(
-                    component.models.menu_detail.create({
+                    app.models.menu_detail.create({
                         detail_id: req.body.mn_id[i],
                         menu_id: menu_id,
                         name: req.body.title[i],
