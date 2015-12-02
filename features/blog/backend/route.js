@@ -51,7 +51,7 @@ module.exports = function (component, application) {
                 permissions: "post_create"
             },
             post: {
-                handler: comp.postSave,
+                handler: [comp.postSave,comp.postCreate],
                 authenticate: true,
                 permissions: "post_create"
             }
@@ -69,7 +69,7 @@ module.exports = function (component, application) {
             }
         },"/blog/posts/preview/:postId([0-9]+)": {
             get: {
-                handler: comp.postPreView,
+                handler: comp.postPreview,
                 authenticate: true,
                 permissions: "post_index"
             }
@@ -112,7 +112,7 @@ module.exports = function (component, application) {
                 permissions: "page_create"
             },
             post: {
-                handler: comp.pageSave,
+                handler: [comp.pageSave,comp.pageCreate],
                 authenticate: true,
                 permissions: "page_create"
             }

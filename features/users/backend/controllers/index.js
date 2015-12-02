@@ -61,14 +61,6 @@ module.exports = function (controller, component, app) {
                 }
             },
             {
-                column: "phone",
-                width: '12%',
-                header: __('all_table_column_phone'),
-                filter: {
-                    data_type: 'string'
-                }
-            },
-            {
                 column: "role.name",
                 width: '10%',
                 header: __('all_table_column_role'),
