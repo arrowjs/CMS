@@ -1,0 +1,80 @@
+.terminal-window {
+    background-color: #2C3E50;
+}
+
+.terminal-window .title-bar {
+    padding: 5px;
+    background-color: #dddddd;
+    text-shadow: rgba(255, 255, 255, 0.8) 0px 1px 0px;
+}
+
+.terminal-window .terminal {
+    padding: 20px;
+    height: 330px;
+    color: #f0f0f0;
+    text-shadow: #000 0px 1px 0px;
+    font-family: "Consolas", "Courier New", "Courier";
+    font-size: 1.3em;
+    line-height: 1.4em;
+    font-weight: 500;
+    text-align: left;
+    overflow-y: hidden;
+    -webkit-transition: all 0.5s ease-out;
+    -moz-transition: all 0.5s ease-out;
+    -ms-transition: all 0.5s ease-out;
+    -o-transition: all 0.5s ease-out;
+    transition: all 0.5s ease-out;
+}
+
+.terminal-window .gray {
+    color: #aaaaaa;
+}
+
+.typed-cursor {
+    opacity: 1;
+    -webkit-animation: blink 0.7s infinite;
+    -moz-animation: blink 0.7s infinite;
+    animation: blink 0.7s infinite;
+}
+
+@media (max-width: 768px) {
+    .terminal {
+        overflow-y: scroll;
+    }
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
