@@ -276,7 +276,7 @@ module.exports = function (controller, component, app) {
             res.backend.render('_404');
         })
     };
-
+    // todo: not yet check data when user update successfully or unsuccessfully
     controller.pageUpdate = function (req, res) {
         let back_link = '/admin/blog/pages/page/1';
         let search_params = req.session.search;
