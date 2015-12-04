@@ -60,7 +60,7 @@ module.exports = function (component,application) {
                 handler : [comp.update,comp.profile],
                 name : "users-profile-post", //unique string, name route.
                 authenticate : true, //boolean true false.
-                permissions :  ["update"]
+                permissions :  "update_profile"
             }
         },
 
