@@ -12,7 +12,6 @@
             font-size: 13px;
             line-height: 20px;
         }
-
         .dd-list {
             display: block;
             position: relative;
@@ -20,15 +19,12 @@
             padding: 0;
             list-style: none;
         }
-
         .dd-list .dd-list {
             padding-left: 30px;
         }
-
         .dd-collapsed .dd-list {
             display: none;
         }
-
         .dd-item, .dd-empty, .dd-placeholder {
             display: block;
             position: relative;
@@ -39,20 +35,16 @@
             line-height: 32px;
             margin-bottom: 10px;
         }
-
         .box-body label {
             font-size: 16px;
         }
-
         .dd-item label {
             font-size: 16px;
             font-weight: 500;
         }
-
         .dd-item > .box.box-solid {
             margin-top: -5px;
         }
-
         .dd-handle {
             display: block;
             height: 45px;
@@ -69,12 +61,10 @@
             box-sizing: border-box;
             -moz-box-sizing: border-box;
         }
-
         .dd-handle:hover {
             color: #2ea8e5;
             background: #fff;
         }
-
         .dd-item > button {
             display: block;
             position: relative;
@@ -94,7 +84,6 @@
             text-align: center;
             font-weight: bold;
         }
-
         .dd-item > button:before {
             content: '+';
             display: block;
@@ -103,11 +92,9 @@
             text-align: center;
             text-indent: 0;
         }
-
         .dd-item > button[data-action="collapse"]:before {
             content: '-';
         }
-
         .dd-placeholder, .dd-empty {
             margin: 5px 0;
             padding: 0;
@@ -117,7 +104,6 @@
             box-sizing: border-box;
             -moz-box-sizing: border-box;
         }
-
         .dd-empty {
             border: 1px dashed #bbb;
             min-height: 100px;
@@ -128,45 +114,36 @@
             background-size: 60px 60px;
             background-position: 0 0, 30px 30px;
         }
-
         .dd-dragel {
             position: absolute;
             pointer-events: none;
             z-index: 9999;
         }
-
         .dd-dragel > .dd-item .dd-handle {
             margin-top: 0;
         }
-
         .dd-dragel .dd-handle {
             -webkit-box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, .1);
             box-shadow: 2px 4px 6px 0 rgba(0, 0, 0, .1);
         }
-
         @media only screen and (min-width: 700px) {
             .dd {
                 float: left;
                 width: 99%;
             }
-
             .dd + .dd {
                 margin-left: 2%;
             }
         }
-
         .dd-hover > .dd-handle {
             background: #2ea8e5 !important;
         }
-
         .dd-dragel > .dd3-item > .dd3-content {
             margin: 0;
         }
-
         .dd3-item > button {
             margin-left: 30px;
         }
-
         .expand_arrow {
             position: absolute;
             top: 10px;
@@ -175,27 +152,22 @@
             width: 50px;
             font-size: 25px;
         }
-
         .btn-add-menu-wrapper {
             display: table;
             width: 100%;
         }
-
         .btn-add-menu {
             margin-top: 5px;
             float: right;
         }
-
         #name {
             width: 99%;
             height: 40px;
             font-size: 16px;
         }
-
         .arr-module-pagination {
             text-align: center;
         }
-
         .information {
             color: #808080;
             cursor: pointer;
@@ -303,7 +275,6 @@
         $(function () {
             // Init popover
             $('.information').popover();
-
             /* BEGIN init select2 */
             var select2 = $('#menu-location');
             select2.select2({
@@ -315,10 +286,8 @@
                 }
             });
         });
-
         function collapseBox(button) {
             var parent = $(button).parent().parent().parent('.box');
-
             if (parent.hasClass('collapsed-box')) {
                 // Collapse all box except this box
                 $('.arr-collapse-icon').not($(button).children()).removeClass('fa-minus').addClass('fa-plus');
@@ -326,13 +295,11 @@
                 module_box.children('.box-body').slideUp('fast', function () {
                     module_box.addClass('collapsed-box');
                 });
-
                 // Expand this box
                 $(button).children('i').removeClass('fa-plus').addClass('fa-minus');
                 parent.children('.box-body').slideDown('fast', function () {
                     parent.removeClass('collapsed-box');
                 });
-
                 // Re-assign btnLoadModule
                 btnLoadModule = button;
             } else {
@@ -343,9 +310,7 @@
                 });
             }
         }
-
         var btnLoadModule = {};
-
         function loadModuleDetail(button,listLink , route, page, search, useSearch) {
             $.ajax({
                 url: '/admin' + route + '?page=' + page + '&searchStr=' + search
@@ -354,19 +319,16 @@
                 var title_column = result.title_column;
                 var link_template = result.link_template;
                 var total_pages = result.totalPage;
-
                 var module_detail_view = '<div class="form-group">';
-
                 if (useSearch) {
                     module_detail_view += '<div class="arr-module-search"><div class="input-group input-group-sm">' +
-                    '<input class="form-control arr-search-menu-item" type="text" value="' + search + '" />' +
-                    '<span class="input-group-btn">' +
-                    '<button class="btn btn-default btn-flat" type="button" ' +
-                    'onclick="setSearchKeyword(this, \'' + route + '\')">' +
-                    '<i class="fa fa-search"></i> Search' +
-                    '</button></span></div></div> ';
+                            '<input class="form-control arr-search-menu-item" type="text" value="' + search + '" />' +
+                            '<span class="input-group-btn">' +
+                            '<button class="btn btn-default btn-flat" type="button" ' +
+                            'onclick="setSearchKeyword(this, \'' + route + '\')">' +
+                            '<i class="fa fa-search"></i> Search' +
+                            '</button></span></div></div> ';
                 }
-
                 if (items && items.length > 0) {
                     for (var i = 0; i < items.length; i++) {
                         // Replace template to get link
@@ -376,37 +338,31 @@
                                 link_item = link_item.replace(new RegExp('{' + key + '}', 'g'), items[i][key]);
                             }
                         }
-
                         if (items[i][title_column]) {
                             module_detail_view += '<div class="checkbox">' +
-                            '<label><input type="checkbox" name="arr_link_item" value="' + link_item + '">'
-                            + items[i][title_column] + '</label></div>';
+                                    '<label><input type="checkbox" name="arr_link_item" value="' + link_item + '">'
+                                    + items[i][title_column] + '</label></div>';
                         }
                     }
                 }
-
                 btnLoadModule = button;
                 module_detail_view += getPagination(total_pages, page, route, search, useSearch);
-
-                module_detail_view += '</div><div class="form-group btn-add-menu-wrapper">' +
-                '<div class="checkbox" style="float: left;"><label><input type="checkbox" name="arr_link_item" value="'+ listLink +'">List all items</label></div>'+
-                '<button type="button" class="btn btn-primary btn-add-menu" ' +
-                'onclick="return addNewMenu(this);">' +
-                '{{ __('m_menus_backend_views_new_btn_add_menu') }}&nbsp;<i class="fa fa-arrow-circle-right"></i></button></div>';
-
+                module_detail_view += '</div><div class="form-group btn-add-menu-wrapper">' ;
+                console.log(listLink);
+                if (listLink)
+                    module_detail_view += '<div class="checkbox" style="float: left;"><label><input type="checkbox" name="arr_link_item" value="'+ listLink +'">List all items</label></div>';
+                module_detail_view += '<button type="button" class="btn btn-primary btn-add-menu" ' +
+                        'onclick="return addNewMenu(this);">' +
+                        '{{ __('m_menus_backend_views_new_btn_add_menu') }}&nbsp;<i class="fa fa-arrow-circle-right"></i></button></div>';
                 $(button).parent().parent('.box-header').next('.box-body').html(module_detail_view);
-
                 // Remove call ajax after first call
                 $(button).attr('onclick', 'collapseBox(this);');
             });
         }
-
         function getPagination(total_pages, current_page, route, search, useSearch) {
             var pagination = '';
-
             if (total_pages > 1) {
                 var start_index = 1;
-
                 if (total_pages > 6) {
                     if (current_page > 4) {
                         start_index = start_index + current_page - 4;
@@ -415,18 +371,14 @@
                         start_index = total_pages - 5;
                     }
                 }
-
                 pagination += '<ul class="pagination pagination-sm no-margin">';
-
                 if (current_page > 1) {
                     pagination += '<li><a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + 1 + ', \'' + search + '\', ' + useSearch + ')">«</a></li>';
                 }
-
                 for (var page_index = start_index; page_index <= total_pages; page_index++) {
                     if (page_index == start_index + 6) {
                         break;
                     }
-
                     if (page_index == current_page) {
                         pagination += '<li class="active">';
                     } else {
@@ -434,31 +386,24 @@
                     }
                     pagination += '<a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + page_index + ', \'' + search + '\', ' + useSearch + ')">' + page_index + '</a></li>';
                 }
-
                 if (current_page < total_pages) {
                     pagination += '<li><a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + total_pages + ', \'' + search + '\', ' + useSearch + ')">»</a></li>';
                 }
-
                 pagination += '</ul><div class="row"></div>';
             }
-
             return pagination;
         }
-
         function setSearchKeyword(button, route) {
             // Get search input value to reload items
             var search = $(button).parent('span').prev('input').val();
             loadModuleDetail(btnLoadModule, route, 1, search, true);
         }
-
         //        $('.box-body').on('keypress', '.arr-search-menu-item', function (e) {
         //            return (e.keyCode == 13);
         //        });
-
         var number_menu_item = 1;
         var updateOutput = function (e) {
             var list = e.length ? e : $(e.target);
-
             if (list.data('output')) {
                 if (window.JSON) {
                     list.data('output').val(window.JSON.stringify(list.nestable('serialize')));
@@ -467,38 +412,30 @@
                 }
             }
         };
-
         var obj = '{{ menu.menu_order | safe }}';
         var menu_details = {};
-
         {% if menu_details %}
         menu_details = {{ menu_details | safe }};
         {% endif %}
-
         if (obj != '') {
             $.each(JSON.parse(obj), function (index, item) {
                 $('#nestable3 ol').first().append(buildItem(item));
             });
         }
-
         $('#nestable3').nestable().on('change', updateOutput);
         updateOutput($('#nestable3').data('output', $('#output')));
-
         function renderNewMenu(label_input_value, url_input_value) {
             var htm = renderMenuItemHtml(number_menu_item, label_input_value, url_input_value, '');
             var html = $(htm + '</li>');
-
             $('#nestable3 > ol').append(html);
             number_menu_item++;
 //            $('#nestable3 li:last-child').attr('data-id', number_menu_item++);
             updateOutputValue();
-
             // Highlight added menu item
             html.children().not('ol').css({
                 'background': 'orange',
                 'color': 'white'
             });
-
             // Remove highlight after 0.1s
             setTimeout(function () {
                 html.children().not('ol').css({
@@ -506,11 +443,9 @@
                     'color': ''
                 });
             }, 100);
-
             // Re-init popover
             $('.information').popover();
         }
-
         function addCustomLink() {
             var custom_link_title = $('#custom_link_title').val();
             var custom_link_url = $('#custom_link_url').val();
@@ -518,14 +453,12 @@
             if (custom_link_url != '') {
                 // Create new menu item
                 renderNewMenu(custom_link_title, custom_link_url);
-
                 // Reset value
                 $('#custom_link_url').val('');
             } else {
                 alert('URL is missing!');
             }
         }
-
         function addNewMenu(button) {
             // Update label, url, title
             var checkbox = $(button).parent('div').parent('.box-body').find('input[type="checkbox"]');
@@ -533,13 +466,11 @@
                 if ($(this).is(':checked')) {
                     // Create new menu item
                     renderNewMenu($(this).parent('label').text().trim(), $(this).val());
-
                     // Reset checkbox
                     $(this).prop('checked', false);
                 }
             });
         }
-
         function updateOutputValue() {
             try {
                 $("#output").val(JSON.stringify($('#nestable3').nestable('serialize')));
@@ -547,33 +478,26 @@
                 $("#output").val(JSON.stringify($('#nestable3').nestable('serialize')));
             }
         }
-
         function changeTitle(element) {
             var header = $(element).parents("li").first().find('.dd-handle')[0];
             header.innerHTML = $(element).val();
         }
-
         function changePreview(element) {
             var preview = $(element).parents(".row").first().find('a.preview-link');
             preview.attr('href', $(element).val());
         }
-
         function buildItem(item) {
             number_menu_item++;
             var detail = {};
-
             for (var i in menu_details) {
-                if (item.id == menu_details[i].id) {
+                if (item.id == menu_details[i].detail_id) {
                     detail = menu_details[i];
                     break;
                 }
             }
-
             if (detail.attribute == null) detail.attribute = '';
-
             var html = '';
-            html += renderMenuItemHtml(detail.id, detail.name, detail.link, detail.attribute);
-
+            html += renderMenuItemHtml(detail.detail_id, detail.name, detail.link, detail.attribute);
             if (item.children) {
                 html += "<ol class='dd-list'>";
                 $.each(item.children, function (index, sub) {
@@ -581,11 +505,9 @@
                 });
                 html += "</ol>";
             }
-
             html += "</li>";
             return html;
         }
-
         function renderMenuItemHtml(id, title, url, attribute) {
             return '<li class="dd-item" data-id="' + id + '">' +
                     '<div class="dd-handle"> ' + title + '</div>' +
@@ -637,7 +559,6 @@
                     '<i class="fa fa-arrow-circle-up"></i>{{ __("close") }}</a>' +
                     '</div></div></div></div>';
         }
-
         function showDetail(element, isChangeIcon) {
             var box = $(element).parents("li").first().find('.box').first();
             if (box.hasClass('open')) {
@@ -645,7 +566,6 @@
                     box.removeClass('open');
                     box.addClass('close');
                 });
-
                 if (isChangeIcon) {
                     $(element).removeClass('fa-caret-down');
                     $(element).addClass('fa-caret-left');
@@ -659,7 +579,6 @@
                 box.slideDown('fast');
                 box.removeClass('close');
                 box.addClass('open');
-
                 if (isChangeIcon) {
                     $(element).removeClass('fa-caret-left');
                     $(element).addClass('fa-caret-down');
@@ -667,7 +586,6 @@
             }
             return false;
         }
-
         function removeMenu(element) {
             // Highlight deleted menu item
             showDetail(element, true);
@@ -680,7 +598,6 @@
                 'background': 'red',
                 'color': 'white'
             });
-
             // Delete after 0.1s
             setTimeout(function () {
                 li.remove();
@@ -691,15 +608,12 @@
                 updateOutputValue();
                 number_menu_item--;
             }, 100);
-
             return false;
         }
-
         function hideAll() {
             $("#nestable3 .box").each(function (index) {
                 $(this).removeClass('open');
                 $(this).addClass('close');
-
                 var el = $(this).parents('li').first().find('a').first();
                 $(el).removeClass('fa-caret-down');
                 $(el).addClass('fa-caret-left');
