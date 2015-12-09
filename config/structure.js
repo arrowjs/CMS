@@ -12,6 +12,12 @@ module.exports = {
             system: true,
             active: true
         },
+        action: {
+            path: {
+                folder: 'actions',
+                file: '*.js'
+            }
+        },
         controller: [
             {
                 path: {
