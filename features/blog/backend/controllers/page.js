@@ -169,17 +169,9 @@ module.exports = function (controller, component, app) {
         toolbar.addSaveButton(isAllow(req, 'page_create'));
         toolbar = toolbar.render();
 
-        app.models.user.findAll({
-            order: "id asc"
-        }).then(function (results) {
-            res.backend.render('page/new', {
-                title: __('m_blog_backend_page_render_create'),
-                users: results,
-                toolbar: toolbar
-            });
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
+        res.backend.render('page/new', {
+            title: __('m_blog_backend_page_render_create'),
+            toolbar: toolbar
         });
     };
 
@@ -210,18 +202,18 @@ module.exports = function (controller, component, app) {
             res.locals.toolbar = toolbar.render();
             res.redirect('/admin/blog/pages/' + page.id);
         }).catch(function (err) {
-            let messageError ='' ;
-            if(err.name == 'SequelizeValidationError'){
+            let messageError = '';
+            if (err.name == 'SequelizeValidationError') {
                 err.errors.map(function (e) {
-                    if(e)
-                    messageError += e.message+'<br />';
+                    if (e)
+                        messageError += e.message + '<br />';
                 })
-            }else{
+            } else {
                 messageError = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
             }
             req.flash.error(messageError);
             res.locals.page = data,
-            next();
+                next();
         });
     };
 
@@ -240,23 +232,18 @@ module.exports = function (controller, component, app) {
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
         toolbar = toolbar.render();
 
-        promise.all([
-            app.models.user.findAll({
-                order: "id asc"
-            }),
-            app.models.post.find({
-                include: [app.models.user],
-                where: {
-                    id: req.params.cid,
-                    type: 'page'
-                }
-            })
-        ]).then(function (results) {
-            res.locals.viewButton = results[1].alias;
+
+        app.models.post.find({
+            include: [app.models.user],
+            where: {
+                id: req.params.cid,
+                type: 'page'
+            }
+        }).then(function (results) {
+            res.locals.viewButton = results.alias;
             res.backend.render('page/new', {
                 title: __('m_blog_backend_page_render_update'),
-                users: results[0],
-                page: results[1],
+                page: results,
                 toolbar: toolbar
             });
         }).catch(function (error) {

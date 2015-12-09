@@ -169,9 +169,6 @@ module.exports = function (controller, component, app) {
             app.models.category.findAll({
                 order: "id asc"
             }),
-            app.models.user.findAll({
-                order: "id asc"
-            }),
             app.models.post.find({
                 include: [app.models.user],
                 where: {
@@ -180,15 +177,15 @@ module.exports = function (controller, component, app) {
                 }
             })
         ]).then(function (results) {
-            let data ;
-            if (req['post']){
+            let data;
+            if (req['post']) {
                 data = req.post;
-            }else{
-                data = results[2];
+            } else {
+                data = results[1];
                 data.full_text = data.full_text.replace(/&lt/g, "&amp;lt");
             }
             // Add preview button
-            toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', '/admin/blog/posts/preview/' + results[2].id,
+            toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', '/admin/blog/posts/preview/' + results[1].id,
                 {
                     icon: '<i class="fa fa-eye"></i>',
                     buttonClass: 'btn btn-info',
@@ -198,7 +195,6 @@ module.exports = function (controller, component, app) {
             res.backend.render(edit_view, {
                 title: __('m_blog_backend_post_render_update'),
                 categories: results[0],
-                users: results[1],
                 post: data,
                 toolbar: toolbar.render()
             });
@@ -332,19 +328,19 @@ module.exports = function (controller, component, app) {
                     })
             }).then(function () {
                 req.flash.success(__('m_blog_backend_post_flash_update_success'));
-                if(req['post'])
-                delete req.post;
+                if (req['post'])
+                    delete req.post;
                 next();
             }).catch(function (err) {
-                let messageError ='' ;
-                if(err.name == 'SequelizeValidationError'){
+                let messageError = '';
+                if (err.name == 'SequelizeValidationError') {
                     err.errors.map(function (e) {
-                        if(e)
-                            messageError += e.message+'<br />';
+                        if (e)
+                            messageError += e.message + '<br />';
                     })
-                }else if (err.name == 'SequelizeUniqueConstraintError'){
+                } else if (err.name == 'SequelizeUniqueConstraintError') {
                     messageError = "Alias was duplicated";
-                }else{
+                } else {
                     messageError = err.message;
                 }
                 req.flash.error(messageError);
@@ -365,18 +361,13 @@ module.exports = function (controller, component, app) {
         toolbar.addSaveButton(isAllow(req, 'post_create'));
         toolbar = toolbar.render();
 
-        promise.all([
-            app.models.category.findAll({
-                order: "id asc"
-            }),
-            app.models.user.findAll({
-                order: "id asc"
-            })
-        ]).then(function (results) {
+
+        app.models.category.findAll({
+            order: "id asc"
+        }).then(function (results) {
             res.backend.render(edit_view, {
                 title: __('m_blog_backend_post_render_create'),
-                categories: results[0],
-                users: results[1],
+                categories: results,
                 toolbar: toolbar
             });
         }).catch(function (error) {
@@ -422,15 +413,15 @@ module.exports = function (controller, component, app) {
             req.flash.success(__('m_blog_backend_post_flash_create_success'));
             res.redirect('/admin/blog/posts/' + post_id);
         }).catch(function (err) {
-            let messageError ='' ;
-            if(err.name == 'SequelizeValidationError'){
+            let messageError = '';
+            if (err.name == 'SequelizeValidationError') {
                 err.errors.map(function (e) {
-                    if(e)
-                        messageError += e.message+'<br />';
+                    if (e)
+                        messageError += e.message + '<br />';
                 })
-            }else if (err.name == 'SequelizeUniqueConstraintError'){
+            } else if (err.name == 'SequelizeUniqueConstraintError') {
                 messageError = "Alias was duplicated";
-            }else{
+            } else {
                 messageError = err.message;
             }
             req.flash.error(messageError);
