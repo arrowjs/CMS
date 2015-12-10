@@ -165,10 +165,9 @@ module.exports = function (controller, component, app) {
         toolbar.addSaveButton(isAllow(req, 'post_create'));
         toolbar.addDeleteButton(isAllow(req, 'post_delete'));
 
+        //todo: don't call another models in promise
         promise.all([
-            app.models.category.findAll({
-                order: "id asc"
-            }),
+            app.feature.category.actions.findAll({order:'id asc'}),
             app.models.post.find({
                 include: [app.models.user],
                 where: {
@@ -218,15 +217,16 @@ module.exports = function (controller, component, app) {
                     tag = tag.split(':');
                     tag.shift();
                     tag.pop(tag.length - 1);
-
                     if (tag.length > 0) {
                         tag.forEach(function (id) {
-                            app.models.category.findById(id).then(function (cat) {
-                                let count = +cat.count - 1;
-                                cat.updateAttributes({
-                                    count: count
-                                });
-                            });
+                            app.feature.category.actions.findById(id, function (err,cat) {
+                                if(!err){
+                                    let count = +cat.count - 1;
+                                    cat.updateAttributes({
+                                        count: count
+                                    });
+                                }
+                            })
                         });
                     }
                 }
@@ -306,23 +306,30 @@ module.exports = function (controller, component, app) {
 
                 // update data
                 return post.updateAttributes(data)
-                    .then(function () {
+                    .then(function (result) {
                         return promise.all([
                             promise.map(onlyInA, function (id) {
-                                return app.models.category.findById(id).then(function (tag) {
-                                    let count = +tag.count - 1;
-                                    return tag.updateAttributes({
-                                        count: count
-                                    })
+                                return app.feature.category.actions.findById(id)
+                                .then(function (category) {
+                                        console.log(category);
+                                        if(category){
+                                            let count = +category.count - 1;
+                                            return app.feature.category.actions.updateAttributes(category,{
+                                                count: count
+                                            });
+                                        }
                                 });
                             }),
                             promise.map(onlyInB, function (id) {
-                                return app.models.category.findById(id).then(function (tag) {
-                                    let count = +tag.count + 1;
-                                    return tag.updateAttributes({
-                                        count: count
-                                    })
-                                });
+                                return app.feature.category.actions.findById(id)
+                                    .then(function (category) {
+                                        if(category){
+                                            let count = +category.count + 1;
+                                            return app.feature.category.actions.updateAttributes(category,{
+                                                count: count
+                                            });
+                                        }
+                                    });
                             })
                         ])
                     })

@@ -1,8 +1,6 @@
 'use strict';
 
 let slug = require('slug');
-let promise = require('arrowjs').Promise;
-
 let route = 'blog';
 
 module.exports = function (controller, component, app) {
