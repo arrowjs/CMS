@@ -19,14 +19,6 @@ module.exports = function (controller, component, app) {
         let column = req.params.sort || 'id';
         let order = req.params.order || '';
 
-        // Store search data to session
-        let session_search = {};
-        if (req.session.search) {
-            session_search = req.session.search;
-        }
-        session_search[route + '_index_list'] = req.url;
-        req.session.search = session_search;
-
         // Config columns
         let tableStruture = [
             {
@@ -84,12 +76,13 @@ module.exports = function (controller, component, app) {
 
         let filter = ArrowHelper.createFilter(req, res, tableStruture, {
             rootLink: '/admin/roles/sort',
-            itemOfPage: itemOfPage
+            itemOfPage: itemOfPage,
+            backLink : 'role_back_link'
         });
 
         // List roles
         app.models.role.findAll({
-            where: filter.values,
+            where: filter.conditions,
             order: column + " " + order
         }).then(function (roles) {
             res.backend.render('index', {
@@ -108,18 +101,9 @@ module.exports = function (controller, component, app) {
     };
 
     controller.view = function (req, res) {
-        // Add button
-        let back_link = '/admin/roles';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_index_list']) {
-            back_link = '/admin' + search_params[route + '_index_list'];
-        }
-        res.locals.backButton = back_link;
-        res.locals.saveButton = 'update';
-
         // Add toolbar
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
+        toolbar.addBackButton('role_back_link');
         toolbar.addSaveButton(isAllow(req, 'update'));
         toolbar = toolbar.render();
 
@@ -149,19 +133,13 @@ module.exports = function (controller, component, app) {
     };
 
     controller.update = function (req, res) {
-        let back_link = '/admin/roles';
-        let search_params = req.session.search;
-        let permissions = {feature: {}};
-        if (search_params && search_params[route + '_index_list']) {
-            back_link = '/admin' + search_params[route + '_index_list'];
-        }
-
         // Get role by id
         app.models.role.find({
             where: {
                 id: req.params.rid
             }
         }).then(function (role) {
+            let permissions = {};
             for (let k in req.body) {
                 if (k != 'title' && k != 'status') {
                     permissions.feature[k] = [];
@@ -182,24 +160,17 @@ module.exports = function (controller, component, app) {
             });
         }).then(function () {
             req.flash.success(__('m_roles_backend_controllers_index_update_flash_success'));
-            res.redirect(back_link);
+            res.redirect(req.originalUrl);
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
+            res.redirect(req.originalUrl);
         });
     };
 
     controller.create = function (req, res) {
-        // Add button
-        let back_link = '/admin/roles';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_index_list']) {
-            back_link = '/admin' + search_params[route + '_index_list'];
-        }
-
         // Add toolbar
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
+        toolbar.addBackButton('role_back_link');
         toolbar.addSaveButton(isAllow(req, 'create'));
         toolbar = toolbar.render();
 
@@ -211,12 +182,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.save = function (req, res) {
-        let back_link = '/admin/roles';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_index_list']) {
-            back_link = '/admin' + search_params[route + '_index_list'];
-        }
-
         let permissions = {feature: {}};
         for (let k in req.body) {
             if (req.body.hasOwnProperty(k)) {
@@ -236,10 +201,10 @@ module.exports = function (controller, component, app) {
             permissions: JSON.stringify(permissions)
         }).then(function () {
             req.flash.success(__('m_roles_backend_controllers_index_create_save_flash_success'));
-            res.redirect(back_link);
+            res.redirect(req.originalUrl);
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
+            res.redirect(req.originalUrl);
         });
     };
 
