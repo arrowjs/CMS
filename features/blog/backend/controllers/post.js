@@ -26,14 +26,6 @@ module.exports = function (controller, component, app) {
         toolbar.addDeleteButton(isAllow(req, 'post_delete'));
         toolbar = toolbar.render();
 
-        // Store search data to session
-        let session_search = {};
-        if (req.session.search) {
-            session_search = req.session.search;
-        }
-        session_search[route + '_post_list'] = req.url;
-        req.session.search = session_search;
-
         // Config columns
         let tableStructure = [
             {
@@ -109,7 +101,8 @@ module.exports = function (controller, component, app) {
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: '/admin/blog/posts/page/$page/sort',
             limit: itemOfPage,
-            customCondition: "AND type='post'"
+            customCondition: "AND type='post'",
+            backLink: 'post_backend_back_link'
         });
 
         // Find all posts
@@ -152,16 +145,9 @@ module.exports = function (controller, component, app) {
     };
     // get data to display post detail
     controller.postView = function (req, res) {
-        // set back link default
-        let back_link = '/admin/blog/posts/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_post_list']) {
-            back_link = '/admin' + search_params[route + '_post_list'];
-        }
-
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
+        toolbar.addBackButton('post_backend_back_link');
         toolbar.addSaveButton(isAllow(req, 'post_create'));
         toolbar.addDeleteButton(isAllow(req, 'post_delete'));
 
@@ -248,16 +234,10 @@ module.exports = function (controller, component, app) {
     };
     //update post after form submited
     controller.postUpdate = function (req, res, next) {
-        // set back link default
-        let back_link = '/admin/blog/posts/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_post_list']) {
-            back_link = '/admin' + search_params[route + '_post_list'];
-        }
 
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
+        toolbar.addBackButton('post_backend_back_link');
 
         // Get data in req.body and update
         let data = req.body;
@@ -311,7 +291,6 @@ module.exports = function (controller, component, app) {
                             promise.map(onlyInA, function (id) {
                                 return app.feature.category.actions.findById(id)
                                 .then(function (category) {
-                                        console.log(category);
                                         if(category){
                                             let count = +category.count - 1;
                                             return app.feature.category.actions.updateAttributes(category,{
@@ -357,14 +336,9 @@ module.exports = function (controller, component, app) {
     };
 
     controller.postCreate = function (req, res) {
-        // Add button
-        let back_link = '/admin/blog/posts/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_post_list']) {
-            back_link = '/admin' + search_params[route + '_post_list'];
-        }
+
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
+        toolbar.addBackButton('post_backend_back_link');
         toolbar.addSaveButton(isAllow(req, 'post_create'));
         toolbar = toolbar.render();
 
@@ -405,13 +379,15 @@ module.exports = function (controller, component, app) {
                 tag.pop(tag.length - 1);
 
                 return promise.map(tag, function (id) {
-
-                    return app.models.category.findById(id).then(function (tag) {
-                        let count = +tag.count + 1;
-                        return tag.updateAttributes({
-                            count: count
-                        })
-                    });
+                    return app.feature.category.actions.findById(id)
+                        .then(function (category) {
+                            if(category){
+                                let count = +category.count + 1;
+                                return app.feature.category.actions.updateAttributes(category,{
+                                    count: count
+                                });
+                            }
+                        });
                 }).catch(function (err) {
                     logger.error(err);
                 });

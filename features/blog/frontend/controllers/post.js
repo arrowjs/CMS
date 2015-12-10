@@ -201,13 +201,9 @@ module.exports = function (controller, component, app) {
                 offset: (page - 1) * number_item,
                 limit: number_item
             }),
-            app.models.category.findAll({
-                order: 'id ASC'
-            })
+            app.feature.category.actions.findAll({order:'id asc'})
         ]).then(function (result) {
-
             let totalPage = Math.ceil(result[0].count / number_item);
-
             if (result) {
                 // Render view
                 res.frontend.render('posts', {
