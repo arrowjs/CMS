@@ -24,13 +24,7 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         permissions: {
-            type : DataTypes.STRING(2000),
-            validate: {
-                len : {
-                    args : [1,2000],
-                    msg : 'Please input not too long'
-                }
-            }
+            type : DataTypes.TEXT
         },
         created_at: {
             type : DataTypes.DATE
