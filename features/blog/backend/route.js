@@ -85,7 +85,7 @@ module.exports = function (component, application) {
                 permissions: "category_index"
             },
             delete: {
-                handler: controller.category_delete,
+                handler: controller.categoryDelete,
                 authenticate: true,
                 permissions: "category_delete"
             }
@@ -104,23 +104,33 @@ module.exports = function (component, application) {
                 permissions: "category_index"
             }
         },
-        "/blog/categories/create": {
-            post: {
-                handler: controller.categorySave,
-                authenticate: true,
-                permissions: "category_create"
-            }
-        },
         "/blog/categories/quick-create": {
             post: {
-                handler: controller.categoryQuickSave,
+                handler: controller.categoryQuickCreate,
                 authenticate: true,
                 permissions: "category_create"
             }
         },
-        "/blog/categories/:catId": {
+        "/blog/categories/create": {
+            get: {
+                handler: controller.categoryCreate,
+                authenticate: true,
+                permissions: "category_create"
+            },
             post: {
-                handler: controller.categoryUpdate,
+                handler: [controller.categorySave, controller.categoryCreate],
+                authenticate: true,
+                permissions: "category_create"
+            }
+        },
+        "/blog/categories/:categoryId([0-9]+)": {
+            get: {
+                handler: controller.categoryView,
+                authenticate: true,
+                permissions: "category_edit"
+            },
+            post: {
+                handler: [controller.categoryUpdate, controller.categoryView],
                 authenticate: true,
                 permissions: "category_edit"
             }

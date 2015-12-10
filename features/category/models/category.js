@@ -10,7 +10,6 @@ module.exports = function (sequelize, DataTypes) {
         },
         name: {
             type: DataTypes.STRING,
-            unique: true,
             allowNull: false,
             validate: {
                 len: {
@@ -54,6 +53,16 @@ module.exports = function (sequelize, DataTypes) {
             }
         }
     }, {
+        indexes: [
+            {
+                unique: true,
+                fields: ['name', 'type']
+            },
+            {
+                unique: true,
+                fields: ['alias', 'type']
+            }
+        ],
         tableName: 'arr_category',
         timestamps: false
     });

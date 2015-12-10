@@ -1,47 +1,61 @@
-/**
- * Created by thangnv on 12/9/15.
- */
-"use strict";
-let log = require('arrowjs').logger;
-module.exports = function(action,comp,app){
-    action.findById = function (id) {
-        return app.models.category.findById(id)
-        .then(function (result) {
-                return result
-        })
-        .catch(function (err) {
-            log.error(err);
-            return null;
-        })
-    };
-    action.findAll = function (params) {
-        let offset = params.page || 0,
-            limit = params.limit || 0,
-            order = params.order || 'id desc',
-            conditions = params.conditions || [' 1=1 '];
-        return app.models.category.findAll({
-            where : conditions,
-            order : order,
-            limit : limit,
-            offset : offset
-        })
-        .then(function (result) {
-                return result;
-        })
-        .catch(function (err) {
-            log.error(err);
-            return null;
-        })
-    };
-    action.updateAttributes = function(category,data){
-        return category.updateAttributes(data)
-            .then(function (result) {
-                return result;
-            })
-            .catch(function (err) {
-                log.error(err);
-                return null;
-            });
-    }
+'use strict';
 
-}
+let slug = require('slug');
+let log = require('arrowjs').logger;
+
+module.exports = function (action, component, app) {
+
+    /**
+     * Find category by ID
+     */
+    action.findById = function (id) {
+        return app.models.category.findById(id);
+    };
+
+    /**
+     * Find categories with conditions
+     */
+    action.find = function (conditions) {
+        return app.models.category.find(conditions);
+    };
+
+    /**
+     * Find and count categories with conditions
+     */
+    action.findAndCountAll = function (conditions) {
+        return app.models.category.findAndCountAll(conditions);
+    };
+
+    /**
+     * Create new category
+     */
+    action.create = function (data, type) {
+        data.type = type;
+        data.name = data.name.trim();
+        if (!data.alias) data.alias = slug(data.name.toLowerCase());
+        return app.models.category.create(data);
+    };
+
+    /**
+     * Update category
+     */
+    action.update = function (category, data) {
+        data.name = data.name.trim();
+        if (!data.alias) data.alias = slug(data.name.toLowerCase());
+        return category.updateAttributes(data);
+    };
+
+    /**
+     * Delete categories by ids
+     */
+    action.destroy = function (ids) {
+        return app.models.category.destroy({
+            where: {
+                id: {
+                    'in': ids
+                }
+            }
+        })
+    };
+
+};

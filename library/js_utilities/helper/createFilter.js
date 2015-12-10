@@ -3,7 +3,7 @@
 let _ = require('arrowjs')._;
 let logger = require('arrowjs').logger;
 
-exports.createFilter = function(req, res, columns, options) {
+exports.createFilter = function (req, res, columns, options) {
     let customCondition;
     let limit;
     let current_column = req.params.sort || columns[0].column || "id";
@@ -82,7 +82,7 @@ exports.createFilter = function(req, res, columns, options) {
         offset: (page - 1) * limit,
         conditions: values
     };
-}
+};
 
 function parseCondition(column_name, value, col) {
     if (col.filter.filter_key) {
