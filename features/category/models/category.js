@@ -1,58 +1,61 @@
 'use strict';
 
-let slug = require('slug');
-
 module.exports = function (sequelize, DataTypes) {
+
     return sequelize.define("category", {
-        id : {
-            type : DataTypes.INTEGER,
-            primaryKey : true,
-            autoIncrement : true,
-            validate: {
-                isInt: {
-                    msg: 'Count must be an integer number'
-                }
-            }
-        },
-        count: {
+        id: {
             type: DataTypes.INTEGER,
-            defaultValue: 0,
-            validate : {
-                isInt : {
-                    msg : 'Count must be an integer number'
-                }
-            }
+            primaryKey: true,
+            autoIncrement: true
         },
         name: {
             type: DataTypes.STRING,
             unique: true,
             allowNull: false,
             validate: {
-                isEmp: function (value) {
-                    if (typeof value !== 'string' || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)){
+                len: {
+                    args: [1, 255],
+                    msg: 'Title cannot empty or too long'
+                }
+            }
+        },
+        alias: {
+            type: DataTypes.STRING,
+            validate: {
+                len: {
+                    args: [1, 255],
+                    msg: 'Alias cannot empty or too long'
+                },
+                isSlug: function (value) {
+                    if (typeof value !== 'string' || !value.match(/[a-zA-Z0-9-_]/g)) {
                         throw new Error('Alias cannot includes special characters!');
                     }
                 }
             }
         },
-        alias: {
-            type :   DataTypes.STRING,
-            validate : {
-                isAlias : function (value) {
-                    if (typeof value !== 'string' || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)){
-                        throw new Error('Alias cannot includes special characters!');
+        type: {
+            type: DataTypes.STRING,
+            validate: {
+                isSlug: function (value) {
+                    if (typeof value !== 'string' || !value.match(/[a-zA-Z0-9-_]/g)) {
+                        throw new Error('Type cannot includes special characters!');
                     }
+                }
+            }
+        },
+        description: DataTypes.TEXT,
+        count: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            validate: {
+                isInt: {
+                    msg: 'Count must be an integer number'
                 }
             }
         }
     }, {
         tableName: 'arr_category',
-        timestamps: false,
-        hooks: {
-            beforeCreate: function (category, op, fn) {
-                category.alias = slug(category.name).toLowerCase();
-                fn(null, category);
-            }
-        }
+        timestamps: false
     });
+
 };

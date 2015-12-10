@@ -6,6 +6,7 @@ module.exports = {
     version: '0.1.0',
     description: __('m_blog_backend_module_desc'),
     permissions: [
+        // Post
         {
             name: 'post_index',
             title: __('m_blog_backend_module_post_index')
@@ -26,6 +27,24 @@ module.exports = {
             name: 'post_delete',
             title: __('m_blog_backend_module_post_delete')
         },
+        // Category
+        {
+            name: 'category_index',
+            title: __('m_category_backend_module_category_index')
+        },
+        {
+            name: 'category_create',
+            title: __('m_category_backend_module_category_create')
+        },
+        {
+            name: 'category_edit',
+            title: __('m_category_backend_module_category_edit')
+        },
+        {
+            name: 'category_delete',
+            title: __('m_category_backend_module_category_delete')
+        },
+        // Page
         {
             name: 'page_index',
             title: __('m_blog_backend_module_page_index')
@@ -60,23 +79,29 @@ module.exports = {
                 permission: 'page_index',
                 title: __('m_blog_backend_module_menu_backend_menu_page_index'),
                 link: '/pages/page/1'
+            },
+            {
+                permission: 'category_index',
+                title: "Categories",
+                link: '/categories/page/1'
             }
         ]
     },
-    //is define this module has link to shows on menu
-    add_link_menu : {
-        posts : {
-            title : 'Link Posts',
-            route : '/blog/post/link/menu',
-            list : '/blog/posts',
-            search : true
+    // Define this module has link to shows on menu
+    add_link_menu: {
+        posts: {
+            title: 'Link Posts',
+            route: '/blog/post/link/menu',
+            list: '/blog/posts',
+            search: true
         },
-        pages : {
-            title : 'Link Pages',
-            route : '/blog/page/link/menu',
-            list : '/blog/pages',
-            search : true
+        pages: {
+            title: 'Link Pages',
+            route: '/blog/page/link/menu',
+            list: '/blog/pages',
+            search: true
         }
     }
-}
+
+};
 

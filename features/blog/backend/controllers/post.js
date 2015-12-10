@@ -14,7 +14,6 @@ module.exports = function (controller, component, app) {
     let isAllow = ArrowHelper.isAllow;
 
     controller.postList = function (req, res) {
-
         // Get current page and default sorting
         var page = req.params.page || 1;
 

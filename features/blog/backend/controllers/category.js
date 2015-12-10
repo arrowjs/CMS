@@ -8,7 +8,7 @@ module.exports = function (controller, component, app) {
     let isAllow = ArrowHelper.isAllow;
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
-    controller.category_list = function (req, res) {
+    controller.categoryList = function (req, res) {
         let page = req.params.page || 1;
 
         let tableStructure = [
@@ -27,18 +27,18 @@ module.exports = function (controller, component, app) {
                 filter: {
                     data_type: 'string'
                 },
-                width: '20%'
+                width: '25%'
             },
             {
                 column: 'alias',
                 header: __('all_table_column_alias'),
                 link: '/admin/categories/{id}',
                 type: 'inline',
-                pk: '{id}'
-            },
-            {
-                column: 'type',
-                header: 'Type'
+                pk: '{id}',
+                filter: {
+                    data_type: 'string'
+                },
+                width: '25%'
             },
             {
                 column: 'description',
@@ -46,13 +46,15 @@ module.exports = function (controller, component, app) {
             },
             {
                 column: 'count',
-                header: 'Count'
+                header: 'Count',
+                width: '10%'
             }
         ];
 
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton('/admin/categories');
         toolbar.addSearchButton('true');
+        toolbar.addCreateButton(isAllow(req, 'category_create'), '/admin/blog/categories/create');
         toolbar.addDeleteButton(isAllow(req, 'category_delete'));
         toolbar = toolbar.render();
 
@@ -91,8 +93,22 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.category_save = function (req, res) {
+    controller.categoryQuickSave = function (req, res) {
+        let data = req.body;
+        data.name = data.name.trim();
+        data.alias = slug(data.name.toLowerCase());
 
+        app.models.category.create(data).then(function () {
+            req.flash.success(__('m_category_backend_category_flash_save_success'));
+            res.redirect('/admin/blog/categories');
+        }).catch(function (err) {
+            logger.error(err);
+            req.flash.error(err.name + ': ' + err.message);
+            res.redirect('/admin/blog/categories');
+        });
+    };
+
+    controller.categorySave = function (req, res) {
         let data = req.body;
         data.name = data.name.trim();
 
@@ -108,7 +124,6 @@ module.exports = function (controller, component, app) {
     };
 
     controller.category_update = function (req, res) {
-
         let data = req.body;
 
         if (data.name == 'name') {
@@ -141,7 +156,7 @@ module.exports = function (controller, component, app) {
         })
     };
 
-    controller.category_delete = function (req, res, next) {
+    controller.categoryDelete = function (req, res, next) {
 
         let listId = req.body.ids.split(',');
 
@@ -198,4 +213,3 @@ module.exports = function (controller, component, app) {
         })
     };
 };
-
