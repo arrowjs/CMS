@@ -139,6 +139,7 @@ module.exports = function (controller, component, app) {
                 id: req.params.rid
             }
         }).then(function (role) {
+            let permissions = {};
             for (let k in req.body) {
                 if (k != 'title' && k != 'status') {
                     permissions.feature[k] = [];
