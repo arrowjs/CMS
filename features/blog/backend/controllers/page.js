@@ -1,8 +1,6 @@
 'use strict';
 
 let slug = require('slug');
-let promise = require('arrowjs').Promise;
-
 let route = 'blog';
 
 module.exports = function (controller, component, app) {
@@ -18,14 +16,6 @@ module.exports = function (controller, component, app) {
         toolbar.addCreateButton(isAllow(req, 'page_create'), '/admin/blog/pages/create');
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
         toolbar = toolbar.render();
-
-        // Store search data to session
-        let session_search = {};
-        if (req.session.search) {
-            session_search = req.session.search;
-        }
-        session_search[route + '_page_list'] = req.url;
-        req.session.search = session_search;
 
         let tableStructure = [
             {
@@ -102,7 +92,8 @@ module.exports = function (controller, component, app) {
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: '/admin/blog/pages/page/$page/sort',
             limit: itemOfPage,
-            customCondition: " AND type='page' "
+            customCondition: " AND type='page' ",
+            backLink: 'page_backend_back_link'
         });
 
         // List pages

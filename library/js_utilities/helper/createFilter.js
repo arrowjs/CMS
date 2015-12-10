@@ -17,6 +17,11 @@ exports.createFilter = function(req, res, columns, options) {
         if (options.rootLink) {
             res.locals.root_link = options.rootLink.replace("$page", page);
         }
+
+        if (options.backLink) {
+            req.session.search = req.session.search || {};
+            req.session.search[options.backLink] = req.originalUrl;
+        }
     }
 
     let conditions = [];

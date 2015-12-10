@@ -43,8 +43,14 @@ class Toolbar {
     /**
      * Add back button
      */
-    addBackButton(link) {
-        link = link || 'javascript: window.history.back();';
+    addBackButton(req, key) {
+        let link;
+        if(req.session && req.session.search) {
+            link = req.session.search[key]  ? req.session.search[key] : 'javascript: window.history.back();';
+
+        } else {
+            link = 'javascript: window.history.back();'
+        }
         this.addGeneralButton(true, 'Back', link, {icon: '<i class="fa fa-angle-left"></i>'});
     }
 
