@@ -37,7 +37,8 @@ module.exports = function (controller, component, app) {
 
         // Config columns
         let filter = ArrowHelper.createFilter(req, res, table, {
-            rootLink: '/admin/menu/sort'
+            rootLink: '/admin/menu/sort',
+            backLink: 'menu_back_link'
         });
 
         app.models.menu.findAll({
@@ -63,7 +64,7 @@ module.exports = function (controller, component, app) {
     controller.create = function (req, res) {
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('/admin/menu');
+        toolbar.addBackButton('menu_back_link');
         toolbar.addSaveButton(isAllow(req,'create'));
 
         readFileAsync(__base + "themes/frontend/" + app.getConfig('frontendTheme') + "/theme.json", "utf8")
@@ -254,7 +255,7 @@ module.exports = function (controller, component, app) {
 
     controller.read = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('/admin/menu');
+        toolbar.addBackButton('menu_back_link');
         toolbar.addSaveButton(isAllow(req,'create'));
 
         readFileAsync(__base + "themes/frontend/" + app.getConfig('frontendTheme') + "/theme.json", "utf8")

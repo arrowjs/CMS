@@ -11,14 +11,29 @@ module.exports = function(action,comp,app){
         })
         .catch(function (err) {
             log.error(err);
-            return null;
+            return err;
+        })
+    };
+    action.count = function(params){
+        if (!params)params={};
+        let conditions = params['where'] || [' 1=1 '];
+        return app.models.category.count({
+            where : conditions
+        })
+        .then(function (result) {
+            return result;
+        })
+        .catch(function (err) {
+            log.error(err);
+            return err;
         })
     };
     action.findAll = function (params) {
+        if (!params)params={};
         let offset = params.page || 0,
             limit = params.limit || 0,
             order = params.order || 'id desc',
-            conditions = params.conditions || [' 1=1 '];
+            conditions = params['where'] || [' 1=1 '];
         return app.models.category.findAll({
             where : conditions,
             order : order,
@@ -30,7 +45,7 @@ module.exports = function(action,comp,app){
         })
         .catch(function (err) {
             log.error(err);
-            return null;
+            return err;
         })
     };
     action.updateAttributes = function(category,data){
@@ -40,7 +55,7 @@ module.exports = function(action,comp,app){
             })
             .catch(function (err) {
                 log.error(err);
-                return null;
+                return err;
             });
     }
 

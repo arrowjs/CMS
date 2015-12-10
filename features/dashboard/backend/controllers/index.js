@@ -8,14 +8,14 @@ let promise = require('arrowjs').Promise;
 module.exports = function (cont, comp, app) {
     cont.view = function (req, res) {
         promise.all([
-            app.models.user.findAndCountAll({
+            app.feature.users.actions.findAndCountAll({
                 where: {
                     user_status: 'publish'
                 },
                 limit: 8,
                 order: 'id DESC'
             }),
-            app.models.post.findAndCountAll({
+            app.feature.blog.actions.findAndCountAll({
                 where: {
                     published: 1,
                     type: 'post'
@@ -23,13 +23,13 @@ module.exports = function (cont, comp, app) {
                 limit: 4,
                 order: 'id DESC'
             }),
-            app.models.post.count({
+            app.feature.blog.actions.count({
                 where: {
                     published: 1,
                     type: 'page'
                 }
             }),
-            app.models.category.count()
+            app.feature.category.actions.count()
         ]).then(function (results) {
             res.backend.render('index', {
                 pageStatistic: results[2],
