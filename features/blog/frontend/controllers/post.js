@@ -162,12 +162,12 @@ module.exports = function (controller, component, app) {
                     totalPage = Math.ceil(parseInt(results[0].count) / number_item) || 1;
 
                     // Render view
-                    res.frontend.render('author', {
+                    res.frontend.render('posts', {
                         posts: results[0].rows,
                         totalPage: totalPage,
                         currentPage: page,
-                        route: '/blog/posts/' + req.params.author + '/page-{page}',
-                        byAuthor: req.params.author
+                        baseURL: '/blog/posts/' + req.params.author + '/page-{page}',
+                        title: req.params.author+'\'s Posts'
                     });
                 } else {
                     // Redirect to 404 if post not exist
