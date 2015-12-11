@@ -139,19 +139,19 @@ module.exports = function (controller, component, app) {
                 id: req.params.rid
             }
         }).then(function (role) {
-            let permissions = {};
-            for (let k in req.body) {
+            let permissions = {feature : {}};
+            let data=JSON.parse(JSON.stringify(req.body));
+            _.map(data,function (v,k) {
                 if (k != 'title' && k != 'status') {
                     permissions.feature[k] = [];
-                    if (typeof req.body[k] == 'string') {
-                        req.body[k] = new Array(req.body[k]);
+                    if (_.isString(v)) {
+                        permissions.feature[k].push({name : v});
                     }
-                    for (let temp of req.body[k]) {
-                        permissions.feature[k].push({name: temp});
+                    for (let temp of v) {
+                        permissions.feature[k].push({name : temp});
                     }
                 }
-            }
-
+            })
             // Update role
             return role.updateAttributes({
                 name: req.body.title,

@@ -102,5 +102,28 @@ module.exports = {
         extend: {
             getLayouts: getLayouts
         }
+    },
+    plugin : {
+        path: {
+            folder: "/plugins",
+            file: "plugin.js"
+        },
+        model : {
+            path: {
+                folder: 'models',
+                file: '*.js'
+            }
+        },
+        controller: {
+            path: {
+                folder: 'controllers',
+                file: '*.js'
+            }
+        },
+        view: {
+            path: {
+                folder: "views"
+            }
+        }
     }
 };

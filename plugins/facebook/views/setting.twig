@@ -1,0 +1,142 @@
+<div class="form-group">
+    <label for="appId">App ID</label>
+    <input class="form-control" type="text" name="appId" id="appId" value="{{ plugin.appId }}">
+</div>
+
+<div class="form-group">
+    <label for="language">Language</label>
+    <select class="form-control arr-select2" name="language" id="language">
+        <option value="af_ZA" {% if plugin.language == "af_ZA" %}selected="selected"{% endif %}>Afrikaans</option>
+        <option value="ak_GH" {% if plugin.language == "ak_GH" %}selected="selected"{% endif %}>Akan</option>
+        <option value="am_ET" {% if plugin.language == "am_ET" %}selected="selected"{% endif %}>Amharic</option>
+        <option value="ar_AR" {% if plugin.language == "ar_AR" %}selected="selected"{% endif %}>Arabic</option>
+        <option value="as_IN" {% if plugin.language == "as_IN" %}selected="selected"{% endif %}>Assamese</option>
+        <option value="ay_BO" {% if plugin.language == "ay_BO" %}selected="selected"{% endif %}>Aymara</option>
+        <option value="az_AZ" {% if plugin.language == "az_AZ" %}selected="selected"{% endif %}>Azerbaijani</option>
+        <option value="be_BY" {% if plugin.language == "be_BY" %}selected="selected"{% endif %}>Belarusian</option>
+        <option value="bg_BG" {% if plugin.language == "bg_BG" %}selected="selected"{% endif %}>Bulgarian</option>
+        <option value="bn_IN" {% if plugin.language == "bn_IN" %}selected="selected"{% endif %}>Bengali</option>
+        <option value="br_FR" {% if plugin.language == "br_FR" %}selected="selected"{% endif %}>Breton</option>
+        <option value="bs_BA" {% if plugin.language == "bs_BA" %}selected="selected"{% endif %}>Bosnian</option>
+        <option value="ca_ES" {% if plugin.language == "ca_ES" %}selected="selected"{% endif %}>Catalan</option>
+        <option value="cb_IQ" {% if plugin.language == "cb_IQ" %}selected="selected"{% endif %}>Sorani Kurdish</option>
+        <option value="ck_US" {% if plugin.language == "ck_US" %}selected="selected"{% endif %}>Cherokee</option>
+        <option value="co_FR" {% if plugin.language == "co_FR" %}selected="selected"{% endif %}>Corsican</option>
+        <option value="cs_CZ" {% if plugin.language == "cs_CZ" %}selected="selected"{% endif %}>Czech</option>
+        <option value="cx_PH" {% if plugin.language == "cx_PH" %}selected="selected"{% endif %}>Cebuano</option>
+        <option value="cy_GB" {% if plugin.language == "cy_GB" %}selected="selected"{% endif %}>Welsh</option>
+        <option value="da_DK" {% if plugin.language == "da_DK" %}selected="selected"{% endif %}>Danish</option>
+        <option value="de_DE" {% if plugin.language == "de_DE" %}selected="selected"{% endif %}>German</option>
+        <option value="el_GR" {% if plugin.language == "el_GR" %}selected="selected"{% endif %}>Greek</option>
+        <option value="en_GB" {% if plugin.language == "en_GB" %}selected="selected"{% endif %}>English (UK)</option>
+        <option value="en_IN" {% if plugin.language == "en_IN" %}selected="selected"{% endif %}>English (India)</option>
+        <option value="en_PI" {% if plugin.language == "en_PI" %}selected="selected"{% endif %}>English (Pirate)</option>
+        <option value="en_UD" {% if plugin.language == "en_UD" %}selected="selected"{% endif %}>English (Upside Down)</option>
+        <option value="en_US" {% if plugin.language == "en_US" %}selected="selected"{% endif %}>English (US)</option>
+        <option value="eo_EO" {% if plugin.language == "eo_EO" %}selected="selected"{% endif %}>Esperanto</option>
+        <option value="es_CO" {% if plugin.language == "es_CO" %}selected="selected"{% endif %}>Spanish (Colombia)</option>
+        <option value="es_ES" {% if plugin.language == "es_ES" %}selected="selected"{% endif %}>Spanish (Spain)</option>
+        <option value="es_LA" {% if plugin.language == "es_LA" %}selected="selected"{% endif %}>Spanish</option>
+        <option value="et_EE" {% if plugin.language == "et_EE" %}selected="selected"{% endif %}>Estonian</option>
+        <option value="eu_ES" {% if plugin.language == "eu_ES" %}selected="selected"{% endif %}>Basque</option>
+        <option value="fa_IR" {% if plugin.language == "fa_IR" %}selected="selected"{% endif %}>Persian</option>
+        <option value="fb_LT" {% if plugin.language == "fb_LT" %}selected="selected"{% endif %}>Leet Speak</option>
+        <option value="ff_NG" {% if plugin.language == "ff_NG" %}selected="selected"{% endif %}>Fulah</option>
+        <option value="fi_FI" {% if plugin.language == "fi_FI" %}selected="selected"{% endif %}>Finnish</option>
+        <option value="fo_FO" {% if plugin.language == "fo_FO" %}selected="selected"{% endif %}>Faroese</option>
+        <option value="fr_CA" {% if plugin.language == "fr_CA" %}selected="selected"{% endif %}>French (Canada)</option>
+        <option value="fr_FR" {% if plugin.language == "fr_FR" %}selected="selected"{% endif %}>French (France)</option>
+        <option value="fy_NL" {% if plugin.language == "fy_NL" %}selected="selected"{% endif %}>Frisian</option>
+        <option value="ga_IE" {% if plugin.language == "ga_IE" %}selected="selected"{% endif %}>Irish</option>
+        <option value="gl_ES" {% if plugin.language == "gl_ES" %}selected="selected"{% endif %}>Galician</option>
+        <option value="gn_PY" {% if plugin.language == "gn_PY" %}selected="selected"{% endif %}>Guarani</option>
+        <option value="gu_IN" {% if plugin.language == "gu_IN" %}selected="selected"{% endif %}>Gujarati</option>
+        <option value="gx_GR" {% if plugin.language == "gx_GR" %}selected="selected"{% endif %}>Classical Greek</option>
+        <option value="ha_NG" {% if plugin.language == "ha_NG" %}selected="selected"{% endif %}>Hausa</option>
+        <option value="he_IL" {% if plugin.language == "he_IL" %}selected="selected"{% endif %}>Hebrew</option>
+        <option value="hi_IN" {% if plugin.language == "hi_IN" %}selected="selected"{% endif %}>Hindi</option>
+        <option value="hr_HR" {% if plugin.language == "hr_HR" %}selected="selected"{% endif %}>Croatian</option>
+        <option value="hu_HU" {% if plugin.language == "hu_HU" %}selected="selected"{% endif %}>Hungarian</option>
+        <option value="hy_AM" {% if plugin.language == "hy_AM" %}selected="selected"{% endif %}>Armenian</option>
+        <option value="id_ID" {% if plugin.language == "id_ID" %}selected="selected"{% endif %}>Indonesian</option>
+        <option value="ig_NG" {% if plugin.language == "ig_NG" %}selected="selected"{% endif %}>Igbo</option>
+        <option value="is_IS" {% if plugin.language == "is_IS" %}selected="selected"{% endif %}>Icelandic</option>
+        <option value="it_IT" {% if plugin.language == "it_IT" %}selected="selected"{% endif %}>Italian</option>
+        <option value="ja_JP" {% if plugin.language == "ja_JP" %}selected="selected"{% endif %}>Japanese</option>
+        <option value="ja_KS" {% if plugin.language == "ja_KS" %}selected="selected"{% endif %}>Japanese (Kansai)</option>
+        <option value="jv_ID" {% if plugin.language == "jv_ID" %}selected="selected"{% endif %}>Javanese</option>
+        <option value="ka_GE" {% if plugin.language == "ka_GE" %}selected="selected"{% endif %}>Georgian</option>
+        <option value="kk_KZ" {% if plugin.language == "kk_KZ" %}selected="selected"{% endif %}>Kazakh</option>
+        <option value="km_KH" {% if plugin.language == "km_KH" %}selected="selected"{% endif %}>Khmer</option>
+        <option value="kn_IN" {% if plugin.language == "kn_IN" %}selected="selected"{% endif %}>Kannada</option>
+        <option value="ko_KR" {% if plugin.language == "ko_KR" %}selected="selected"{% endif %}>Korean</option>
+        <option value="ku_TR" {% if plugin.language == "ku_TR" %}selected="selected"{% endif %}>Kurdish (Kurmanji)</option>
+        <option value="la_VA" {% if plugin.language == "la_VA" %}selected="selected"{% endif %}>Latin</option>
+        <option value="lg_UG" {% if plugin.language == "lg_UG" %}selected="selected"{% endif %}>Ganda</option>
+        <option value="li_NL" {% if plugin.language == "li_NL" %}selected="selected"{% endif %}>Limburgish</option>
+        <option value="lo_LA" {% if plugin.language == "lo_LA" %}selected="selected"{% endif %}>Lao</option>
+        <option value="lt_LT" {% if plugin.language == "lt_LT" %}selected="selected"{% endif %}>Lithuanian</option>
+        <option value="lv_LV" {% if plugin.language == "lv_LV" %}selected="selected"{% endif %}>Latvian</option>
+        <option value="mg_MG" {% if plugin.language == "mg_MG" %}selected="selected"{% endif %}>Malagasy</option>
+        <option value="mk_MK" {% if plugin.language == "mk_MK" %}selected="selected"{% endif %}>Macedonian</option>
+        <option value="ml_IN" {% if plugin.language == "ml_IN" %}selected="selected"{% endif %}>Malayalam</option>
+        <option value="mn_MN" {% if plugin.language == "mn_MN" %}selected="selected"{% endif %}>Mongolian</option>
+        <option value="mr_IN" {% if plugin.language == "mr_IN" %}selected="selected"{% endif %}>Marathi</option>
+        <option value="ms_MY" {% if plugin.language == "ms_MY" %}selected="selected"{% endif %}>Malay</option>
+        <option value="mt_MT" {% if plugin.language == "mt_MT" %}selected="selected"{% endif %}>Maltese</option>
+        <option value="my_MM" {% if plugin.language == "my_MM" %}selected="selected"{% endif %}>Burmese</option>
+        <option value="nb_NO" {% if plugin.language == "nb_NO" %}selected="selected"{% endif %}>Norwegian (bokmal)</option>
+        <option value="nd_ZW" {% if plugin.language == "nd_ZW" %}selected="selected"{% endif %}>Ndebele</option>
+        <option value="ne_NP" {% if plugin.language == "ne_NP" %}selected="selected"{% endif %}>Nepali</option>
+        <option value="nl_BE" {% if plugin.language == "nl_BE" %}selected="selected"{% endif %}>Dutch (België)</option>
+        <option value="nl_NL" {% if plugin.language == "nl_NL" %}selected="selected"{% endif %}>Dutch</option>
+        <option value="nn_NO" {% if plugin.language == "nn_NO" %}selected="selected"{% endif %}>Norwegian (nynorsk)</option>
+        <option value="ny_MW" {% if plugin.language == "ny_MW" %}selected="selected"{% endif %}>Chewa</option>
+        <option value="or_IN" {% if plugin.language == "or_IN" %}selected="selected"{% endif %}>Oriya</option>
+        <option value="pa_IN" {% if plugin.language == "pa_IN" %}selected="selected"{% endif %}>Punjabi</option>
+        <option value="pl_PL" {% if plugin.language == "pl_PL" %}selected="selected"{% endif %}>Polish</option>
+        <option value="ps_AF" {% if plugin.language == "ps_AF" %}selected="selected"{% endif %}>Pashto</option>
+        <option value="pt_BR" {% if plugin.language == "pt_BR" %}selected="selected"{% endif %}>Portuguese (Brazil)</option>
+        <option value="pt_PT" {% if plugin.language == "pt_PT" %}selected="selected"{% endif %}>Portuguese (Portugal)</option>
+        <option value="qu_PE" {% if plugin.language == "qu_PE" %}selected="selected"{% endif %}>Quechua</option>
+        <option value="rm_CH" {% if plugin.language == "rm_CH" %}selected="selected"{% endif %}>Romansh</option>
+        <option value="ro_RO" {% if plugin.language == "ro_RO" %}selected="selected"{% endif %}>Romanian</option>
+        <option value="ru_RU" {% if plugin.language == "ru_RU" %}selected="selected"{% endif %}>Russian</option>
+        <option value="rw_RW" {% if plugin.language == "rw_RW" %}selected="selected"{% endif %}>Kinyarwanda</option>
+        <option value="sa_IN" {% if plugin.language == "sa_IN" %}selected="selected"{% endif %}>Sanskrit</option>
+        <option value="sc_IT" {% if plugin.language == "sc_IT" %}selected="selected"{% endif %}>Sardinian</option>
+        <option value="se_NO" {% if plugin.language == "se_NO" %}selected="selected"{% endif %}>Northern Sámi</option>
+        <option value="si_LK" {% if plugin.language == "si_LK" %}selected="selected"{% endif %}>Sinhala</option>
+        <option value="sk_SK" {% if plugin.language == "sk_SK" %}selected="selected"{% endif %}>Slovak</option>
+        <option value="sl_SI" {% if plugin.language == "sl_SI" %}selected="selected"{% endif %}>Slovenian</option>
+        <option value="sn_ZW" {% if plugin.language == "sn_ZW" %}selected="selected"{% endif %}>Shona</option>
+        <option value="so_SO" {% if plugin.language == "so_SO" %}selected="selected"{% endif %}>Somali</option>
+        <option value="sq_AL" {% if plugin.language == "sq_AL" %}selected="selected"{% endif %}>Albanian</option>
+        <option value="sr_RS" {% if plugin.language == "sr_RS" %}selected="selected"{% endif %}>Serbian</option>
+        <option value="sv_SE" {% if plugin.language == "sv_SE" %}selected="selected"{% endif %}>Swedish</option>
+        <option value="sw_KE" {% if plugin.language == "sw_KE" %}selected="selected"{% endif %}>Swahili</option>
+        <option value="sy_SY" {% if plugin.language == "sy_SY" %}selected="selected"{% endif %}>Syriac</option>
+        <option value="ta_IN" {% if plugin.language == "ta_IN" %}selected="selected"{% endif %}>Tamil</option>
+        <option value="te_IN" {% if plugin.language == "te_IN" %}selected="selected"{% endif %}>Telugu</option>
+        <option value="tg_TJ" {% if plugin.language == "tg_TJ" %}selected="selected"{% endif %}>Tajik</option>
+        <option value="th_TH" {% if plugin.language == "th_TH" %}selected="selected"{% endif %}>Thai</option>
+        <option value="tl_PH" {% if plugin.language == "tl_PH" %}selected="selected"{% endif %}>Filipino</option>
+        <option value="tl_ST" {% if plugin.language == "tl_ST" %}selected="selected"{% endif %}>Klingon</option>
+        <option value="tr_TR" {% if plugin.language == "tr_TR" %}selected="selected"{% endif %}>Turkish</option>
+        <option value="tt_RU" {% if plugin.language == "tt_RU" %}selected="selected"{% endif %}>Tatar</option>
+        <option value="tz_MA" {% if plugin.language == "tz_MA" %}selected="selected"{% endif %}>Tamazight</option>
+        <option value="uk_UA" {% if plugin.language == "uk_UA" %}selected="selected"{% endif %}>Ukrainian</option>
+        <option value="ur_PK" {% if plugin.language == "ur_PK" %}selected="selected"{% endif %}>Urdu</option>
+        <option value="uz_UZ" {% if plugin.language == "uz_UZ" %}selected="selected"{% endif %}>Uzbek</option>
+        <option value="vi_VN" {% if plugin.language == "vi_VN" %}selected="selected"{% endif %}>Vietnamese</option>
+        <option value="wo_SN" {% if plugin.language == "wo_SN" %}selected="selected"{% endif %}>Wolof</option>
+        <option value="xh_ZA" {% if plugin.language == "xh_ZA" %}selected="selected"{% endif %}>Xhosa</option>
+        <option value="yi_DE" {% if plugin.language == "yi_DE" %}selected="selected"{% endif %}>Yiddish</option>
+        <option value="yo_NG" {% if plugin.language == "yo_NG" %}selected="selected"{% endif %}>Yoruba</option>
+        <option value="zh_CN" {% if plugin.language == "zh_CN" %}selected="selected"{% endif %}>Simplified Chinese (China)</option>
+        <option value="zh_HK" {% if plugin.language == "zh_HK" %}selected="selected"{% endif %}>Traditional Chinese (Hong Kong)</option>
+        <option value="zh_TW" {% if plugin.language == "zh_TW" %}selected="selected"{% endif %}>Traditional Chinese (Taiwan)</option>
+        <option value="zu_ZA" {% if plugin.language == "zu_ZA" %}selected="selected"{% endif %}>Zulu</option>
+        <option value="zz_TR" {% if plugin.language == "zz_TR" %}selected="selected"{% endif %}>Zazaki</option>
+    </select>
+</div>
