@@ -20,6 +20,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         alias: {
             type: DataTypes.STRING,
+            allowNull: false,
             validate: {
                 len: {
                     args: [1, 255],
@@ -34,6 +35,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         type: {
             type: DataTypes.STRING,
+            allowNull: false,
             validate: {
                 isSlug: function (value) {
                     if (typeof value !== 'string' || !value.match(/[a-zA-Z0-9-_]/g)) {

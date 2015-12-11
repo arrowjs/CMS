@@ -13,17 +13,31 @@ module.exports = function (action, component, app) {
     };
 
     /**
-     * Find categories with conditions
+     * Find category with conditions
      */
     action.find = function (conditions) {
         return app.models.category.find(conditions);
     };
 
     /**
-     * Find and count categories with conditions
+     * Find all categories with conditions
+     */
+    action.findAll = function (conditions) {
+        return app.models.category.findAll(conditions);
+    };
+
+    /**
+     * Find and count all categories with conditions
      */
     action.findAndCountAll = function (conditions) {
         return app.models.category.findAndCountAll(conditions);
+    };
+
+    /**
+     * Count categories
+     */
+    action.count = function () {
+        return app.models.category.count()
     };
 
     /**
