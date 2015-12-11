@@ -114,6 +114,17 @@ module.exports = {
                 file: '*.js'
             }
         },
+        action: {
+            path: {
+                folder: 'actions',
+                file: '*.js'
+            }
+        },
+        route: {
+            path: {
+                file: 'route.js'
+            }
+        },
         controller: {
             path: {
                 folder: 'controllers',

@@ -3,10 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Developed By M Abdur Rokib Promy">
-    <meta name="author" content="cosmic">
-    <meta name="keywords" content="Bootstrap 3, Template, Theme, Responsive, Corporate, Business">
-    <link rel="shortcut icon" href="/img/favicon.ico"  type="image/x-icon"/>
+    {% block headExtends %}
+        <meta name="description" content="Developed By M Abdur Rokib Promy">
+        <meta name="author" content="cosmic">
+        <meta name="keywords" content="Bootstrap 3, Template, Theme, Responsive, Corporate, Business">
+    {% endblock %}
+
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
 
     <title>{% block title %}{{ title if title else "ACME" }}{% endblock %}</title>
 
@@ -19,10 +22,7 @@
     <!--external css-->
     <link href="/frontend/acme/assets/libs/font-awesome/css/font-awesome.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/frontend/acme/assets/css/flexslider.css"/>
-    <link href="/frontend/acme/assets/libs/bxslider/jquery.bxslider.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/frontend/acme/assets/css/animate.css">
-    <link rel="stylesheet" href="/frontend/acme/assets/libs/owlcarousel/owl.carousel.css">
-    <link rel="stylesheet" href="/frontend/acme/assets/libs/owlcarousel/owl.theme.css">
 
     <link href="/frontend/acme/assets/css/superfish.css" rel="stylesheet" media="screen">
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
