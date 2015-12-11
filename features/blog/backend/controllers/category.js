@@ -100,7 +100,7 @@ module.exports = function (controller, component, app) {
 
             let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
 
-            if (err.name == 'SequelizeUniqueConstraintError') {
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
                 errorMsg = 'A category with the name provided already exists';
             }
 
@@ -132,7 +132,7 @@ module.exports = function (controller, component, app) {
 
             let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
 
-            if (err.name == 'SequelizeUniqueConstraintError') {
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
                 for (let i in err.errors) {
                     data[err.errors[i].path] = '';
                 }
@@ -188,7 +188,7 @@ module.exports = function (controller, component, app) {
 
             let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
 
-            if (err.name == 'SequelizeUniqueConstraintError') {
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
                 for (let i in err.errors) {
                     if (oldCategory && oldCategory._previousDataValues)
                         data[err.errors[i].path] = oldCategory._previousDataValues[err.errors[i].path];

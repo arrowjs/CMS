@@ -13,37 +13,37 @@ module.exports = function (component, application) {
             get: {
                 handler: controller.postList,
                 authenticate: true,
-                permissions: "post_index"
+                permissions: ["post_index_all", "post_index"]
             },
             param: {
-                key: "cid",
+                key: "postId",
                 handler: controller.postRead
-            }
-        },
-        "/blog/posts/page/:page": {
-            get: {
-                handler: controller.postList,
-                authenticate: true,
-                permissions: "post_index"
-            }
-        },
-        "/blog/posts/page/:page/sort/:sort/(:order)?": {
-            get: {
-                handler: controller.postList,
-                authenticate: true,
-                permissions: "post_index"
             }
         },
         "/blog/posts": {
             get: {
                 handler: controller.postList,
                 authenticate: true,
-                permissions: "post_index"
+                permissions: ["post_index_all", "post_index"]
             },
             delete: {
                 handler: controller.postDelete,
                 authenticate: true,
                 permissions: "post_delete"
+            }
+        },
+        "/blog/posts/page/:page": {
+            get: {
+                handler: controller.postList,
+                authenticate: true,
+                permissions: ["post_index_all", "post_index"]
+            }
+        },
+        "/blog/posts/page/:page/sort/:sort/(:order)?": {
+            get: {
+                handler: controller.postList,
+                authenticate: true,
+                permissions: ["post_index_all", "post_index"]
             }
         },
         "/blog/posts/create": {
@@ -58,11 +58,11 @@ module.exports = function (component, application) {
                 permissions: "post_create"
             }
         },
-        "/blog/posts/:cid": {
+        "/blog/posts/:postId([0-9]+)": {
             get: {
                 handler: controller.postView,
                 authenticate: true,
-                permissions: "post_index"
+                permissions: ["post_index_all", "post_index"]
             },
             post: {
                 handler: [controller.postUpdate, controller.postView],
@@ -74,7 +74,7 @@ module.exports = function (component, application) {
             get: {
                 handler: controller.postPreview,
                 authenticate: true,
-                permissions: "post_index"
+                permissions: ["post_index_all", "post_index"]
             }
         },
         // Post category
@@ -140,7 +140,7 @@ module.exports = function (component, application) {
             get: {
                 handler: controller.pageList,
                 authenticate: true,
-                permissions: "page_index"
+                permissions: ["page_index_all", "page_index"]
             },
             delete: {
                 handler: controller.pageDelete,
@@ -152,14 +152,14 @@ module.exports = function (component, application) {
             get: {
                 handler: controller.pageList,
                 authenticate: true,
-                permissions: "page_index"
+                permissions: ["page_index_all", "page_index"]
             }
         },
         "/blog/pages/page/:page/sort/:sort/(:order)?": {
             get: {
                 handler: controller.pageList,
                 authenticate: true,
-                permissions: "page_index"
+                permissions: ["page_index_all", "page_index"]
             }
         },
         "/blog/pages/create": {
@@ -174,23 +174,23 @@ module.exports = function (component, application) {
                 permissions: "page_create"
             }
         },
-        "/blog/pages/:cid([0-9]+)": {
+        "/blog/pages/:postId([0-9]+)": {
             get: {
                 handler: controller.pageView,
                 authenticate: true,
-                permissions: "page_index"
+                permissions: ["page_index_all", "page_index"]
             },
             post: {
                 handler: [controller.pageUpdate, controller.pageView],
                 authenticate: true,
-                permissions: "page_edit"
+                permissions: ["page_edit_all", "page_edit"]
             }
         },
-        "/blog/pages/:name": {
+        "/blog/page/preview/:postId([0-9]+)": {
             get: {
-                handler: controller.redirectToView,
+                handler: controller.pagePreview,
                 authenticate: true,
-                permissions: "page_edit"
+                permissions: ["page_index_all", "page_index"]
             }
         },
 
@@ -199,13 +199,13 @@ module.exports = function (component, application) {
          * */
         "/blog/post/link/menu": {
             get: {
-                handler: controller.link_menu_post,
+                handler: controller.linkMenuPost,
                 authenticate: true
             }
         },
         "/blog/page/link/menu": {
             get: {
-                handler: controller.link_menu_page,
+                handler: controller.linkMenuPage,
                 authenticate: true
             }
         }

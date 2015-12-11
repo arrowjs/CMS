@@ -47,6 +47,7 @@ module.exports = function (action, component, app) {
         data.type = type;
         data.name = data.name.trim();
         if (!data.alias) data.alias = slug(data.name.toLowerCase());
+
         return app.models.category.create(data);
     };
 
@@ -54,8 +55,11 @@ module.exports = function (action, component, app) {
      * Update category
      */
     action.update = function (category, data) {
-        data.name = data.name.trim();
-        if (!data.alias) data.alias = slug(data.name.toLowerCase());
+        if(data.name) {
+            data.name = data.name.trim();
+            if (!data.alias) data.alias = slug(data.name.toLowerCase());
+        }
+
         return category.updateAttributes(data);
     };
 

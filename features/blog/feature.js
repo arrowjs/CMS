@@ -9,6 +9,10 @@ module.exports = {
         // Post
         {
             name: 'post_index',
+            title: 'View Own Post'
+        },
+        {
+            name: 'post_index_all',
             title: __('m_blog_backend_module_post_index')
         },
         {
@@ -47,6 +51,10 @@ module.exports = {
         // Page
         {
             name: 'page_index',
+            title: 'View Own Post'
+        },
+        {
+            name: 'page_index_all',
             title: __('m_blog_backend_module_page_index')
         },
         {

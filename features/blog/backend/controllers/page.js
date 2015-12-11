@@ -1,19 +1,42 @@
 'use strict';
 
 let slug = require('slug');
-let route = 'blog';
+let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
     let isAllow = ArrowHelper.isAllow;
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
+    let baseRoute = '/admin/blog/pages/';
+
+    function getErrorMsg(err, oldData, newData) {
+        logger.error(err);
+
+        let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
+
+        if (err.name == ArrowHelper.UNIQUE_ERROR) {
+            for (let i in err.errors) {
+                if (oldData && oldData._previousDataValues)
+                    newData[err.errors[i].path] = oldData._previousDataValues[err.errors[i].path];
+                else
+                    newData[err.errors[i].path] = '';
+            }
+
+            errorMsg = 'A page with the alias provided already exists';
+        }
+
+        return errorMsg;
+    }
 
     controller.pageList = function (req, res) {
-
+        // Get current page and default sorting
         var page = req.params.page || 1;
+
         // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addCreateButton(isAllow(req, 'page_create'), '/admin/blog/pages/create');
+        toolbar.addRefreshButton(baseRoute);
+        toolbar.addSearchButton('true');
+        toolbar.addCreateButton(isAllow(req, 'page_create'), baseRoute + 'create');
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
         toolbar = toolbar.render();
 
@@ -28,7 +51,7 @@ module.exports = function (controller, component, app) {
                 column: 'title',
                 width: '25%',
                 header: __('all_table_column_title'),
-                link: '/admin/blog/pages/{id}',
+                link: baseRoute + '{id}',
                 acl: 'blog.post_edit',
                 filter: {
                     data_type: 'string'
@@ -89,11 +112,15 @@ module.exports = function (controller, component, app) {
             }
         ];
 
+        // Check permissions view all pages
+        let customCondition = " AND type='page'";
+        if (req.permissions.indexOf('page_index_all') == -1) customCondition += " AND created_by = " + req.user.id;
+
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/blog/pages/page/$page/sort',
+            rootLink: baseRoute + 'page/$page/sort',
             limit: itemOfPage,
-            customCondition: " AND type='page' ",
-            backLink: 'page_backend_back_link'
+            customCondition: customCondition,
+            backLink: 'page_back_link'
         });
 
         // List pages
@@ -110,6 +137,7 @@ module.exports = function (controller, component, app) {
             offset: (page - 1) * itemOfPage
         }).then(function (results) {
             let totalPage = Math.ceil(results.count / itemOfPage);
+
             // Render view
             res.backend.render('page/index', {
                 title: __('m_blog_backend_page_render_title'),
@@ -118,9 +146,9 @@ module.exports = function (controller, component, app) {
                 currentPage: page,
                 toolbar: toolbar
             });
-
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+        }).catch(function (err) {
+            logger.error(err);
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
 
             // Render view if has error
             res.backend.render('page/index', {
@@ -133,6 +161,107 @@ module.exports = function (controller, component, app) {
         });
     };
 
+    controller.pageCreate = function (req, res) {
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton('post_back_link');
+        toolbar.addSaveButton(isAllow(req, 'post_create'));
+
+        res.backend.render('page/new', {
+            title: __('m_blog_backend_page_render_create'),
+            toolbar: toolbar.render()
+        });
+    };
+
+    controller.pageSave = function (req, res, next) {
+        let data = req.body;
+        data.title = data.title.trim();
+        data.alias = data.alias || slug(data.title.toLowerCase());
+        data.type = 'page';
+        data.created_by = req.user.id;
+        data.published = data.published || 0;
+        if (data.published == 1) data.published_at = Date.now();
+
+        let oldPage;
+
+        app.models.post.create(data).then(function (page) {
+            oldPage = page;
+            req.flash.success(__('m_blog_backend_page_flash_create_success'));
+            res.redirect(baseRoute + page.id);
+        }).catch(function (err) {
+            req.flash.error(getErrorMsg(err, oldPage, data));
+            res.locals.page = data;
+            next();
+        });
+    };
+
+    controller.pageView = function (req, res) {
+        let page = req.post;
+
+        // Recheck permissions to prevent access by url
+        if (req.permissions.indexOf('page_index_all') == -1 && page.created_by != req.user.id){
+            req.flash.error("You do not have permission to access");
+            return res.redirect('/admin/403');
+        }
+
+        // Add buttons
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton('page_back_link');
+        toolbar.addSaveButton(isAllow(req, 'page_create'));
+        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
+
+        // Add preview button
+        toolbar.addGeneralButton(isAllow(req, 'page_index'), 'Preview', baseRoute + 'preview/' + page.id,
+            {
+                icon: '<i class="fa fa-eye"></i>',
+                buttonClass: 'btn btn-info',
+                target: '_blank'
+            });
+
+        // Render view
+        res.backend.render('page/new', {
+            title: __('m_blog_backend_page_render_update'),
+            page: page,
+            toolbar: toolbar.render()
+        });
+    };
+
+    controller.pageUpdate = function (req, res, next) {
+        let page = req.post;
+
+        // Check permissions
+        if (req.permissions.indexOf('page_edit_all') == -1 && page.created_by != req.user.id){
+            req.flash.error("You do not have permission to update this page");
+            return res.redirect(baseRoute + page.id);
+        }
+
+        let data = req.body;
+        data.title = data.title.trim();
+        data.alias = data.alias || slug(data.title.toLowerCase());
+        data.published = data.published || 0;
+        if (data.published != page.published && data.published == 1) data.published_at = Date.now();
+
+        page.updateAttributes(data).then(function () {
+            req.flash.success(__('m_blog_backend_page_flash_update_success'));
+            res.redirect(baseRoute + req.params.postId);
+        }).catch(function (err) {
+            req.flash.error(getErrorMsg(err, page, data));
+            res.locals.page = data;
+            next();
+        });
+    };
+
+    controller.pagePreview = function (req, res) {
+        if (req.post) {
+            // Render frontend view
+            res.frontend.render('page', {
+                page: req.page
+            });
+        } else {
+            // Redirect to 404 if post not exist
+            res.frontend.render('_404');
+        }
+    };
+
     controller.pageDelete = function (req, res) {
         app.models.post.destroy({
             where: {
@@ -142,166 +271,18 @@ module.exports = function (controller, component, app) {
             }
         }).then(function () {
             req.flash.success(__('m_blog_backend_page_flash_delete_success'));
-            res.send(200);
-        });
-    };
-
-    controller.pageCreate = function (req, res) {
-        // Add button
-        let back_link = '/blog/pages/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_page_list']) {
-            back_link = '/admin' + search_params[route + '_page_list'];
-        }
-
-        // Add buttons
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req, 'page_create'));
-        toolbar = toolbar.render();
-
-        res.backend.render('page/new', {
-            title: __('m_blog_backend_page_render_create'),
-            toolbar: toolbar
-        });
-    };
-
-    controller.pageSave = function (req, res, next) {
-        // Add button
-        let back_link = '/admin/blog/pages/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_page_list']) {
-            back_link = '/admin' + search_params[route + '_page_list'];
-        }
-
-        // Add buttons
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req, 'page_create'));
-        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
-
-        let data = req.body;
-        data.title = data.title.trim();
-        if (data.alias == null || data.alias == '')
-            data.alias = slug(data.title).toLowerCase();
-        data.created_by = req.user.id;
-        data.type = 'page';
-        if (!data.published) data.published = 0;
-
-        app.models.post.create(data).then(function (page) {
-            req.flash.success(__('m_blog_backend_page_flash_create_success'));
-            res.locals.toolbar = toolbar.render();
-            res.redirect('/admin/blog/pages/' + page.id);
+            res.sendStatus(200);
         }).catch(function (err) {
-            let messageError = '';
-            if (err.name == 'SequelizeValidationError') {
-                err.errors.map(function (e) {
-                    if (e)
-                        messageError += e.message + '<br />';
-                })
-            } else {
-                messageError = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
-            }
-            req.flash.error(messageError);
-            res.locals.page = data,
-                next();
+            logger.error(err);
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            res.sendStatus(200);
         });
     };
 
-    controller.pageView = function (req, res) {
-        // Add button
-        let back_link = '/admin/blog/pages/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_page_list']) {
-            back_link = '/admin' + search_params[route + '_page_list'];
-        }
-
-        // Add buttons
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req, 'page_create'));
-        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
-        toolbar = toolbar.render();
-
-
-        app.models.post.find({
-            include: [app.models.user],
-            where: {
-                id: req.params.cid,
-                type: 'page'
-            }
-        }).then(function (results) {
-            res.locals.viewButton = results.alias;
-            res.backend.render('page/new', {
-                title: __('m_blog_backend_page_render_update'),
-                page: results,
-                toolbar: toolbar
-            });
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
-        });
-    };
-
-    controller.redirectToView = function (req, res) {
-        app.models.post.find({
-            where: {
-                alias: req.params.name
-            }
-        }).then(function (page) {
-            res.redirect('/admin/blog/pages/' + page.id);
-        }).catch(function (err) {
-            res.backend.render('_404');
-        })
-    };
-    // todo: not yet check data when user update successfully or unsuccessfully
-    controller.pageUpdate = function (req, res) {
-        let back_link = '/admin/blog/pages/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_page_list']) {
-            back_link = '/admin' + search_params[route + '_page_list'];
-        }
-
-        // Add buttons
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req, 'page_create'));
-        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
-        toolbar = toolbar.render();
-
-        let data = req.body;
-        // check data title and alias
-        data.title = data.title.trim();
-        if (data.alias == null || data.alias == '')
-            data.alias = slug(data.title).toLowerCase();
-        if (!data.published) data.published = 0;
-        data.modified_date = data.modified_date_gmt = Date.now();
-
-        app.models.post.find({
-            include: [app.models.user],
-            where: {
-                id: req.params.cid
-            }
-        }).then(function (page) {
-            page.updateAttributes(data).then(function () {
-                res.locals.viewButton = page.alias;
-                req.messages = req.flash.success(__('m_blog_backend_page_flash_update_success'));
-                res.backend.render('page/new', {
-                    title: __('m_blog_backend_page_render_update'),
-                    page: page,
-                    toolbar: toolbar
-                });
-            }).catch(function (error) {
-                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                res.redirect(back_link);
-            });
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
-        });
-    };
-
-    controller.link_menu_page = function (req, res) {
+    /**
+     * Return data to create frontend menu (used in menu module)
+     */
+    controller.linkMenuPage = function (req, res) {
         let page = req.query.page;
         let searchText = req.query.searchStr;
 

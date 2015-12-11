@@ -3,8 +3,6 @@
 let slug = require('slug');
 let _ = require('arrowjs')._;
 let Promise = require('arrowjs').Promise;
-
-let route = 'blog';
 let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
@@ -13,11 +11,30 @@ module.exports = function (controller, component, app) {
     let isAllow = ArrowHelper.isAllow;
     let baseRoute = '/admin/blog/posts/';
 
-    function convertCategoriesStringToArray(str) {
+    function convertCategoriesToArray(str) {
         str = str.split(':');
         str.shift();
         str.pop(str.length - 1);
         return str;
+    }
+
+    function getErrorMsg(err, oldData, newData) {
+        logger.error(err);
+
+        let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
+
+        if (err.name == ArrowHelper.UNIQUE_ERROR) {
+            for (let i in err.errors) {
+                if (oldData && oldData._previousDataValues)
+                    newData[err.errors[i].path] = oldData._previousDataValues[err.errors[i].path];
+                else
+                    newData[err.errors[i].path] = '';
+            }
+
+            errorMsg = 'A post with the alias provided already exists';
+        }
+
+        return errorMsg;
     }
 
     controller.postList = function (req, res) {
@@ -104,10 +121,14 @@ module.exports = function (controller, component, app) {
             }
         ];
 
+        // Check permissions view all posts
+        let customCondition = " AND type='post'";
+        if (req.permissions.indexOf('post_index_all') == -1) customCondition += " AND created_by = " + req.user.id;
+
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: baseRoute + 'page/$page/sort',
             limit: itemOfPage,
-            customCondition: "AND type='post'",
+            customCondition: customCondition,
             backLink: 'post_back_link'
         });
 
@@ -136,6 +157,7 @@ module.exports = function (controller, component, app) {
                 toolbar: toolbar
             });
         }).catch(function (err) {
+            logger.error(err);
             req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
 
             // Render view if has error
@@ -159,10 +181,10 @@ module.exports = function (controller, component, app) {
                 type: 'post'
             },
             order: 'name ASC'
-        }).then(function (results) {
+        }).then(function (categories) {
             res.backend.render('post/new', {
                 title: __('m_blog_backend_post_render_create'),
-                categories: results,
+                categories: categories,
                 toolbar: toolbar.render()
             });
         }).catch(function (err) {
@@ -174,10 +196,10 @@ module.exports = function (controller, component, app) {
     controller.postSave = function (req, res, next) {
         let data = req.body;
         data.title = data.title.trim();
-        data.created_by = req.user.id;
-        if (!data.alias) data.alias = slug(data.title.toLowerCase());
+        data.alias = data.alias || slug(data.title.toLowerCase());
         data.type = 'post';
-        if (!data.published) data.published = 0;
+        data.created_by = req.user.id;
+        data.published = data.published || 0;
         if (data.published == 1) data.published_at = Date.now();
 
         let post_id = 0;
@@ -190,7 +212,7 @@ module.exports = function (controller, component, app) {
             let categories = post.categories;
 
             if (categories) {
-                convertCategoriesStringToArray(categories);
+                categories = convertCategoriesToArray(categories);
 
                 // Update count of categories
                 return Promise.map(categories, function (id) {
@@ -208,53 +230,47 @@ module.exports = function (controller, component, app) {
             req.flash.success(__('m_blog_backend_post_flash_create_success'));
             res.redirect(baseRoute + post_id);
         }).catch(function (err) {
-            logger.error(err);
-
-            let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
-
-            if (err.name == 'SequelizeUniqueConstraintError') {
-                for (let i in err.errors) {
-                    if (oldPost && oldPost._previousDataValues)
-                        data[err.errors[i].path] = oldPost._previousDataValues[err.errors[i].path];
-                    else
-                        data[err.errors[i].path] = '';
-                }
-
-                errorMsg = 'A post with the alias provided already exists';
-            }
-
-            req.flash.error(errorMsg);
-
-            res.locals.category = data;
+            req.flash.error(getErrorMsg(err, oldPost, data));
+            res.locals.post = data;
             next();
         });
     };
 
     controller.postView = function (req, res) {
+        let post = req.post;
+
+        // Recheck permissions to prevent access by url
+        if (req.permissions.indexOf('post_index_all') == -1 && post.created_by != req.user.id) {
+            req.flash.error("You do not have permission to access");
+            return res.redirect('/admin/403');
+        }
+
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton('post_back_link');
         toolbar.addSaveButton(isAllow(req, 'post_create'));
         toolbar.addDeleteButton(isAllow(req, 'post_delete'));
 
+        // Find all categories
         app.feature.category.actions.findAll({
             where: {
                 type: 'post'
             },
             order: 'id ASC'
-        }).then(function (results) {
+        }).then(function (categories) {
             // Add preview button
-            toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', baseRoute + 'preview/' + req.post.id,
+            toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', baseRoute + 'preview/' + post.id,
                 {
                     icon: '<i class="fa fa-eye"></i>',
                     buttonClass: 'btn btn-info',
                     target: '_blank'
                 });
 
+            // Render view
             res.backend.render('post/new', {
                 title: __('m_blog_backend_post_render_update'),
-                categories: results[0],
-                post: req.post,
+                categories: categories,
+                post: post,
                 toolbar: toolbar.render()
             });
         }).catch(function (err) {
@@ -265,134 +281,95 @@ module.exports = function (controller, component, app) {
     };
 
     controller.postUpdate = function (req, res, next) {
-        // Add button
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('post_back_link');
+        let post = req.post;
+
+        // Check permissions
+        if (req.permissions.indexOf('post_edit_all') == -1 && post.created_by != req.user.id) {
+            req.flash.error("You do not have permission to update this post");
+            return res.redirect(baseRoute + post.id);
+        }
 
         let data = req.body;
         data.title = data.title.trim();
-        if (!data.alias) data.alias = slug(data.title.toLowerCase());
+        data.alias = data.alias || slug(data.title.toLowerCase());
         data.categories = data.categories || '';
         data.author_visible = (data.author_visible != null);
-        if (!data.published) data.published = 0;
-
-        let post = req.post;
-
-        let categories = post.categories;
-        if (categories)
-            convertCategoriesStringToArray(categories);
-        else
-            categories = [];
-
-        let newCategories = data.categories;
-        if (newCategories)
-            convertCategoriesStringToArray(newCategories);
-        else
-            newCategories = [];
-
-        // Update count for category
-        let decreaseCount = [],
-            increaseCount = [];
-
-        if (Array.isArray(categories) && Array.isArray(newCategories)) {
-            decreaseCount = categories.filter(function (current) {
-                return newCategories.filter(function (current_b) {
-                        return current_b == current
-                    }).length == 0
-            });
-            increaseCount = newCategories.filter(function (current) {
-                return categories.filter(function (current_a) {
-                        return current_a == current
-                    }).length == 0
-            });
-        }
-
+        data.published = data.published || 0;
         if (data.published != post.published && data.published == 1) data.published_at = Date.now();
 
-        return post.updateAttributes(data).then(function (result) {
-            return Promise.all([
-                Promise.map(decreaseCount, function (id) {
-                    return app.feature.category.actions.findById(id)
-                        .then(function (category) {
-                            if (category) {
-                                let count = +category.count - 1;
-                                return app.feature.category.actions.updateAttributes(category, {
-                                    count: count
-                                });
-                            }
-                        });
-                }),
-                Promise.map(increaseCount, function (id) {
-                    return app.feature.category.actions.findById(id)
-                        .then(function (category) {
-                            if (category) {
-                                let count = +category.count + 1;
-                                return app.feature.category.actions.updateAttributes(category, {
-                                    count: count
-                                });
-                            }
-                        });
-                })
-            ])
+        // Get categories need update count
+        let categories = post.categories ? convertCategoriesToArray(post.categories) : [];
+        let newCategories = data.categories ? convertCategoriesToArray(data.categories) : [];
+        let needUpdate = _.xor(categories, newCategories);
+
+        // Update post
+        return post.updateAttributes(data).then(function () {
+            // Update categories
+            return Promise.map(needUpdate, function (id) {
+                let updateCountQuery = `UPDATE arr_category
+                                        SET count = (
+                                                SELECT count(id)
+                                                FROM arr_post
+                                                WHERE categories LIKE '%:${id}:%' AND type = 'post' AND published = 1
+                                            )
+                                        WHERE id = ${id}`;
+                return app.models.rawQuery(updateCountQuery);
+            });
         }).then(function () {
             req.flash.success(__('m_blog_backend_post_flash_update_success'));
-            res.redirect(baseRoute + req.params.cid);
+            res.redirect(baseRoute + req.params.postId);
         }).catch(function (err) {
-            logger.error(err);
-
-            let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
-
-            if (err.name == 'SequelizeUniqueConstraintError') {
-                for (let i in err.errors) {
-                    if (oldPost && oldPost._previousDataValues)
-                        data[err.errors[i].path] = oldPost._previousDataValues[err.errors[i].path];
-                    else
-                        data[err.errors[i].path] = '';
-                }
-
-                errorMsg = 'A post with the alias provided already exists';
-            }
-
-            req.flash.error(errorMsg);
-
-            res.locals.category = data;
+            req.flash.error(getErrorMsg(err, post, data));
+            res.locals.post = data;
             next();
         });
     };
 
+    controller.postPreview = function (req, res) {
+        if (req.post) {
+            // Render frontend view
+            res.frontend.render('post', {
+                post: req.post
+            });
+        } else {
+            // Redirect to 404 if post not exist
+            res.frontend.render('_404');
+        }
+    };
+
     controller.postDelete = function (req, res) {
+        let ids = req.body.ids.split(',');
+        let categoryAction = app.feature.category.actions;
+
         app.models.post.findAll({
             where: {
                 id: {
-                    $in: req.body.ids.split(',')
+                    $in: ids
                 }
             }
         }).then(function (posts) {
-            Promise.map(posts, function (post) {
-                let categories = post.categories;
-                if (categories != null && categories != '') {
-                    categories = categories.split(':');
-                    categories.shift();
-                    categories.pop(categories.length - 1);
-                    if (categories.length > 0) {
-                        categories.forEach(function (id) {
-                            app.feature.category.actions.findById(id).then(function () {
-                                let count = +cat.count - 1;
-                                cat.updateAttributes({
-                                    count: count
-                                });
-                            })
-                        });
+            // Decrease count of categories
+            return Promise.map(posts, function (post) {
+                let categories = post.categories ? convertCategoriesToArray(post.categories) : [];
+                if (categories.length > 0) {
+                    return Promise.map(categories, function (id) {
+                        return categoryAction.findById(id).then(function (category) {
+                            let count = +category.count - 1;
+                            return categoryAction.update(category, {count: count});
+                        })
+                    });
+                } else {
+                    return null;
+                }
+            });
+        }).then(function () {
+            // Delete post
+            return app.models.post.destroy({
+                where: {
+                    id: {
+                        'in': ids
                     }
                 }
-
-                return app.models.post.destroy({
-                    where: {
-                        id: post.id
-                    }
-                }).catch(function (err) {
-                    req.flash.error('Post id: ' + post.id + ' | ' + err.name + ' : ' + err.message);
-                });
             });
         }).then(function () {
             req.flash.success(__('m_blog_backend_post_flash_delete_success'));
@@ -411,42 +388,10 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.hasAuthorization = function (req, res, next) {
-        return next((req.post.created_by !== req.user.id));
-    };
-
-    controller.postPreview = function (req, res) {
-        let postId = req.params.postId;
-
-        app.models.post.find({
-            where: {
-                id: postId,
-                type: 'post'
-            },
-            raw: true
-        }).then(function (post) {
-            if (post) {
-                // Render view
-                res.frontend.render('post', {
-                    post: post
-                });
-            } else {
-                // Redirect to 404 if post not exist
-                res.frontend.render('_404');
-            }
-        });
-    };
-
-    /*
-     * function to display all post which is choosed by user when create menus
-     * return : json object contain
-     totalRows: totalRows //number of posts
-     totalPage: totalPage //number of page to display
-     items: items //posts to display
-     title_column: 'title',//title of column to display
-     link_template: '/admin/blog/{id}/{alias}' //link of post add to menu
-     * */
-    controller.link_menu_post = function (req, res) {
+    /**
+     * Return data to create frontend menu (used in menu module)
+     */
+    controller.linkMenuPost = function (req, res) {
         let page = req.query.page;
         let searchText = req.query.searchStr;
 
