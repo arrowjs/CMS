@@ -157,6 +157,8 @@ module.exports = function (controller, component, app) {
                 name: req.body.title,
                 status: req.body.status,
                 permissions: JSON.stringify(permissions)
+            }).then(function () {
+                return app.feature.menu.actions.resetBackendMenu();
             });
         }).then(function () {
             req.flash.success(__('m_roles_backend_controllers_index_update_flash_success'));
