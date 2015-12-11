@@ -138,11 +138,17 @@ module.exports = function (controller, component, app) {
         }).then(function (results) {
             let totalPage = Math.ceil(results.count / itemOfPage);
 
+            // Replace title of no-title page
+            let items = results.rows;
+            items.map(function (item) {
+                if (!item.dataValues.title) item.dataValues.title = '(no title)';
+            });
+
             // Render view
             res.backend.render('page/index', {
                 title: __('m_blog_backend_page_render_title'),
                 totalPage: totalPage,
-                items: results.rows,
+                items: items,
                 currentPage: page,
                 toolbar: toolbar
             });
@@ -163,7 +169,7 @@ module.exports = function (controller, component, app) {
 
     controller.pageCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('post_back_link');
+        toolbar.addBackButton(req, 'post_back_link');
         toolbar.addSaveButton(isAllow(req, 'post_create'));
 
         res.backend.render('page/new', {
@@ -179,7 +185,10 @@ module.exports = function (controller, component, app) {
         data.type = 'page';
         data.created_by = req.user.id;
         data.published = data.published || 0;
-        if (data.published == 1) data.published_at = Date.now();
+        if (data.published == 1) {
+            if (!data.title) data.title = '(no title)';
+            data.published_at = Date.now();
+        }
 
         let oldPage;
 
@@ -198,14 +207,14 @@ module.exports = function (controller, component, app) {
         let page = req.post;
 
         // Recheck permissions to prevent access by url
-        if (req.permissions.indexOf('page_index_all') == -1 && page.created_by != req.user.id){
+        if (req.permissions.indexOf('page_index_all') == -1 && page.created_by != req.user.id) {
             req.flash.error("You do not have permission to access");
             return res.redirect('/admin/403');
         }
 
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('page_back_link');
+        toolbar.addBackButton(req, 'page_back_link');
         toolbar.addSaveButton(isAllow(req, 'page_create'));
         toolbar.addDeleteButton(isAllow(req, 'page_delete'));
 
@@ -229,7 +238,7 @@ module.exports = function (controller, component, app) {
         let page = req.post;
 
         // Check permissions
-        if (req.permissions.indexOf('page_edit_all') == -1 && page.created_by != req.user.id){
+        if (req.permissions.indexOf('page_edit_all') == -1 && page.created_by != req.user.id) {
             req.flash.error("You do not have permission to update this page");
             return res.redirect(baseRoute + page.id);
         }
@@ -238,7 +247,10 @@ module.exports = function (controller, component, app) {
         data.title = data.title.trim();
         data.alias = data.alias || slug(data.title.toLowerCase());
         data.published = data.published || 0;
-        if (data.published != page.published && data.published == 1) data.published_at = Date.now();
+        if (data.published) {
+            if (!data.title) data.title = '(no title)';
+            if (data.published != post.published) data.published_at = Date.now();
+        }
 
         page.updateAttributes(data).then(function () {
             req.flash.success(__('m_blog_backend_page_flash_update_success'));

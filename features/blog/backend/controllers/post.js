@@ -148,11 +148,17 @@ module.exports = function (controller, component, app) {
         }).then(function (results) {
             let totalPage = Math.ceil(results.count / itemOfPage);
 
+            // Replace title of no-title post
+            let items = results.rows;
+            items.map(function (item) {
+                if (!item.dataValues.title) item.dataValues.title = '(no title)';
+            });
+
             // Render view
             res.backend.render('post/index', {
                 title: __('m_blog_backend_post_render_title'),
                 totalPage: totalPage,
-                items: results.rows,
+                items: items,
                 currentPage: page,
                 toolbar: toolbar
             });
@@ -173,7 +179,7 @@ module.exports = function (controller, component, app) {
 
     controller.postCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('post_back_link');
+        toolbar.addBackButton(req, 'post_back_link');
         toolbar.addSaveButton(isAllow(req, 'post_create'));
 
         app.feature.category.actions.findAll({
@@ -197,10 +203,14 @@ module.exports = function (controller, component, app) {
         let data = req.body;
         data.title = data.title.trim();
         data.alias = data.alias || slug(data.title.toLowerCase());
+        data.alias = data.alias || Date.now().toString();
         data.type = 'post';
         data.created_by = req.user.id;
         data.published = data.published || 0;
-        if (data.published == 1) data.published_at = Date.now();
+        if (data.published == 1) {
+            if (!data.title) data.title = '(no title)';
+            data.published_at = Date.now();
+        }
 
         let post_id = 0;
         let oldPost;
@@ -247,7 +257,7 @@ module.exports = function (controller, component, app) {
 
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('post_back_link');
+        toolbar.addBackButton(req, 'post_back_link');
         toolbar.addSaveButton(isAllow(req, 'post_create'));
         toolbar.addDeleteButton(isAllow(req, 'post_delete'));
 
@@ -292,10 +302,14 @@ module.exports = function (controller, component, app) {
         let data = req.body;
         data.title = data.title.trim();
         data.alias = data.alias || slug(data.title.toLowerCase());
+        data.alias = data.alias || Date.now().toString();
         data.categories = data.categories || '';
         data.author_visible = (data.author_visible != null);
         data.published = data.published || 0;
-        if (data.published != post.published && data.published == 1) data.published_at = Date.now();
+        if (data.published) {
+            if (!data.title) data.title = '(no title)';
+            if (data.published != post.published) data.published_at = Date.now();
+        }
 
         // Get categories need update count
         let categories = post.categories ? convertCategoriesToArray(post.categories) : [];
@@ -334,6 +348,51 @@ module.exports = function (controller, component, app) {
         } else {
             // Redirect to 404 if post not exist
             res.frontend.render('_404');
+        }
+    };
+
+    controller.postAutosave = function (req, res) {
+        let post = req.post;
+
+        // Check permissions
+        if (req.permissions.indexOf('post_edit_all') == -1 && post.created_by != req.user.id) {
+            let data = req.body;
+            data.title = data.title.trim();
+            data.alias = data.alias || slug(data.title.toLowerCase());
+            data.alias = data.alias || Date.now().toString();
+            data.categories = data.categories || '';
+            data.author_visible = (data.author_visible != null);
+            data.published = data.published || 0;
+            if (data.published) {
+                if (!data.title) data.title = '(no title)';
+                if (data.published != post.published) data.published_at = Date.now();
+            }
+
+            // Get categories need update count
+            let categories = post.categories ? convertCategoriesToArray(post.categories) : [];
+            let newCategories = data.categories ? convertCategoriesToArray(data.categories) : [];
+            let needUpdate = _.xor(categories, newCategories);
+
+            // Update post
+            return post.updateAttributes(data).then(function () {
+                // Update categories
+                return Promise.map(needUpdate, function (id) {
+                    let updateCountQuery = `UPDATE arr_category
+                                        SET count = (
+                                                SELECT count(id)
+                                                FROM arr_post
+                                                WHERE categories LIKE '%:${id}:%' AND type = 'post' AND published = 1
+                                            )
+                                        WHERE id = ${id}`;
+                    return app.models.rawQuery(updateCountQuery);
+                });
+            }).then(function () {
+
+            }).catch(function (err) {
+
+            });
+        } else {
+
         }
     };
 

@@ -10,17 +10,15 @@ module.exports = function (sequelize, DataTypes) {
         },
         title: {
             type: DataTypes.STRING,
-            allowNull: false,
             validate: {
                 len: {
-                    args: [1, 255],
-                    msg: 'Title cannot empty or too long'
+                    args: [0, 255],
+                    msg: 'Title cannot too long'
                 }
             }
         },
         alias: {
             type: DataTypes.STRING,
-            unique: true,
             validate: {
                 len: {
                     args: [1, 255],
@@ -102,6 +100,12 @@ module.exports = function (sequelize, DataTypes) {
             }
         }
     }, {
+        indexes: [
+            {
+                unique: true,
+                fields: ['alias', 'type']
+            }
+        ],
         tableName: 'arr_post',
         createdAt: 'created_at',
         updatedAt: 'modified_at'

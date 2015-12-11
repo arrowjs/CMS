@@ -77,6 +77,13 @@ module.exports = function (component, application) {
                 permissions: ["post_index_all", "post_index"]
             }
         },
+        "/blog/posts/autosave/:postId([0-9]+)": {
+            post: {
+                handler: controller.postAutosave,
+                authenticate: true,
+                permissions: ["post_edit_all", "post_edit"]
+            }
+        },
         // Post category
         "/blog/categories": {
             get: {
