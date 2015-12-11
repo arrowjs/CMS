@@ -1,0 +1,85 @@
+{% extends '_layout.twig' %}
+
+{% block cssExtends %}
+    <link href="/backend/adminLTE/assets/plugins/select2/select2.css" rel="stylesheet">
+    <style>
+        .arr-select2 {
+            padding: 0;
+        }
+
+        .arr-select2 .select2-choice {
+            height: 32px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <a href="/admin/plugins" class="btn btn-default" style="margin-bottom: 10px;"><i class="fa fa-angle-left"></i>
+        {{ __('back') }}</a>
+
+    <button type="submit" form="setting-form" class="btn btn-success" style="margin-bottom: 10px;">
+        <i class="fa fa-save"></i> {{ __('save') }}
+    </button>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-solid box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">{{ __('options') }}</h3>
+                </div>
+                <div class="box-body">
+                    <form method="post" id="setting-form" action= {{ "/admin/plugins/" + plugin.name }}>
+                        {{ getPluginSetting(plugin.name, plugin ) | async | safe}}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box box-solid box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">{{ plugin.name }}</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr>
+                            <th>{{ __('all_table_column_name') }}</th>
+                            <td>{{ plugin.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ __('all_table_column_alias') }}</th>
+                            <td>{{ plugin.alias }}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ __('all_table_column_author') }}</th>
+                            <td>{{ plugin.author }}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ __('all_table_column_version') }}</th>
+                            <td>{{ plugin.version }}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ __('all_table_column_desc') }}</th>
+                            <td>{{ plugin.description }}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ __('all_table_column_active') }}</th>
+                            <td>{{ plugin.active }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    <script src="/backend/adminLTE/assets/plugins/select2/select2.min.js"></script>
+    <script>
+        $(function () {
+            var select2 = $('.arr-select2');
+            select2.select2();
+        })
+    </script>
+{% endblock %}

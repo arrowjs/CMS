@@ -1,17 +1,24 @@
 'use strict';
 
 let slug = require('slug');
-let _ = require('arrowjs')._;//lodash
-let promise = require('arrowjs').Promise;
+let _ = require('arrowjs')._;
+let Promise = require('arrowjs').Promise;
 
 let route = 'blog';
-let edit_view = 'post/new';
 let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let isAllow = ArrowHelper.isAllow;
+    let baseRoute = '/admin/blog/posts/';
+
+    function convertCategoriesStringToArray(str) {
+        str = str.split(':');
+        str.shift();
+        str.pop(str.length - 1);
+        return str;
+    }
 
     controller.postList = function (req, res) {
         // Get current page and default sorting
@@ -19,9 +26,9 @@ module.exports = function (controller, component, app) {
 
         // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addRefreshButton('/admin/blog/posts');
+        toolbar.addRefreshButton(baseRoute);
         toolbar.addSearchButton('true');
-        toolbar.addCreateButton(isAllow(req, 'post_create'), '/admin/blog/posts/create');
+        toolbar.addCreateButton(isAllow(req, 'post_create'), baseRoute + 'create');
         toolbar.addDeleteButton(isAllow(req, 'post_delete'));
         toolbar = toolbar.render();
 
@@ -37,7 +44,7 @@ module.exports = function (controller, component, app) {
                 column: 'title',
                 width: '25%',
                 header: __('all_table_column_title'),
-                link: '/admin/blog/posts/{id}',
+                link: baseRoute + '{id}',
                 filter: {
                     data_type: 'string'
                 }
@@ -98,10 +105,10 @@ module.exports = function (controller, component, app) {
         ];
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/blog/posts/page/$page/sort',
+            rootLink: baseRoute + 'page/$page/sort',
             limit: itemOfPage,
             customCondition: "AND type='post'",
-            backLink: 'post_backend_back_link'
+            backLink: 'post_back_link'
         });
 
         // Find all posts
@@ -128,8 +135,8 @@ module.exports = function (controller, component, app) {
                 currentPage: page,
                 toolbar: toolbar
             });
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+        }).catch(function (err) {
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
 
             // Render view if has error
             res.backend.render('post/index', {
@@ -140,51 +147,216 @@ module.exports = function (controller, component, app) {
                 toolbar: toolbar
             });
         });
-
     };
-    // get data to display post detail
-    controller.postView = function (req, res) {
-        // Add button
+
+    controller.postCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('post_backend_back_link');
+        toolbar.addBackButton('post_back_link');
+        toolbar.addSaveButton(isAllow(req, 'post_create'));
+
+        app.feature.category.actions.findAll({
+            where: {
+                type: 'post'
+            },
+            order: 'name ASC'
+        }).then(function (results) {
+            res.backend.render('post/new', {
+                title: __('m_blog_backend_post_render_create'),
+                categories: results,
+                toolbar: toolbar.render()
+            });
+        }).catch(function (err) {
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            res.redirect(baseRoute);
+        });
+    };
+
+    controller.postSave = function (req, res, next) {
+        let data = req.body;
+        data.title = data.title.trim();
+        data.created_by = req.user.id;
+        if (!data.alias) data.alias = slug(data.title.toLowerCase());
+        data.type = 'post';
+        if (!data.published) data.published = 0;
+        if (data.published == 1) data.published_at = Date.now();
+
+        let post_id = 0;
+        let oldPost;
+
+        app.models.post.create(data).then(function (post) {
+            post_id = post.id;
+            oldPost = post;
+
+            let categories = post.categories;
+
+            if (categories) {
+                convertCategoriesStringToArray(categories);
+
+                // Update count of categories
+                return Promise.map(categories, function (id) {
+                    return app.feature.category.actions.findById(id).then(function (category) {
+                        if (category) {
+                            let count = +category.count + 1;
+                            return app.feature.category.actions.update(category, {
+                                count: count
+                            });
+                        }
+                    });
+                });
+            }
+        }).then(function () {
+            req.flash.success(__('m_blog_backend_post_flash_create_success'));
+            res.redirect(baseRoute + post_id);
+        }).catch(function (err) {
+            logger.error(err);
+
+            let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
+
+            if (err.name == 'SequelizeUniqueConstraintError') {
+                for (let i in err.errors) {
+                    if (oldPost && oldPost._previousDataValues)
+                        data[err.errors[i].path] = oldPost._previousDataValues[err.errors[i].path];
+                    else
+                        data[err.errors[i].path] = '';
+                }
+
+                errorMsg = 'A post with the alias provided already exists';
+            }
+
+            req.flash.error(errorMsg);
+
+            res.locals.category = data;
+            next();
+        });
+    };
+
+    controller.postView = function (req, res) {
+        // Add buttons
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton('post_back_link');
         toolbar.addSaveButton(isAllow(req, 'post_create'));
         toolbar.addDeleteButton(isAllow(req, 'post_delete'));
 
-        //todo: don't call another models in promise
-        promise.all([
-            app.feature.category.actions.findAll({order:'id asc'}),
-            app.models.post.find({
-                include: [app.models.user],
-                where: {
-                    id: req.params.cid,
-                    type: 'post'
-                }
-            })
-        ]).then(function (results) {
-            let data;
-            if (req['post']) {
-                data = req.post;
-            } else {
-                data = results[1];
-                data.full_text = data.full_text.replace(/&lt/g, "&amp;lt");
-            }
+        app.feature.category.actions.findAll({
+            where: {
+                type: 'post'
+            },
+            order: 'id ASC'
+        }).then(function (results) {
             // Add preview button
-            toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', '/admin/blog/posts/preview/' + results[1].id,
+            toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', baseRoute + 'preview/' + req.post.id,
                 {
                     icon: '<i class="fa fa-eye"></i>',
                     buttonClass: 'btn btn-info',
                     target: '_blank'
                 });
 
-            res.backend.render(edit_view, {
+            res.backend.render('post/new', {
                 title: __('m_blog_backend_post_render_update'),
                 categories: results[0],
-                post: data,
+                post: req.post,
                 toolbar: toolbar.render()
             });
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
+        }).catch(function (err) {
+            logger.error(err);
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            res.redirect(baseRoute);
+        });
+    };
+
+    controller.postUpdate = function (req, res, next) {
+        // Add button
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton('post_back_link');
+
+        let data = req.body;
+        data.title = data.title.trim();
+        if (!data.alias) data.alias = slug(data.title.toLowerCase());
+        data.categories = data.categories || '';
+        data.author_visible = (data.author_visible != null);
+        if (!data.published) data.published = 0;
+
+        let post = req.post;
+
+        let categories = post.categories;
+        if (categories)
+            convertCategoriesStringToArray(categories);
+        else
+            categories = [];
+
+        let newCategories = data.categories;
+        if (newCategories)
+            convertCategoriesStringToArray(newCategories);
+        else
+            newCategories = [];
+
+        // Update count for category
+        let decreaseCount = [],
+            increaseCount = [];
+
+        if (Array.isArray(categories) && Array.isArray(newCategories)) {
+            decreaseCount = categories.filter(function (current) {
+                return newCategories.filter(function (current_b) {
+                        return current_b == current
+                    }).length == 0
+            });
+            increaseCount = newCategories.filter(function (current) {
+                return categories.filter(function (current_a) {
+                        return current_a == current
+                    }).length == 0
+            });
+        }
+
+        if (data.published != post.published && data.published == 1) data.published_at = Date.now();
+
+        return post.updateAttributes(data).then(function (result) {
+            return Promise.all([
+                Promise.map(decreaseCount, function (id) {
+                    return app.feature.category.actions.findById(id)
+                        .then(function (category) {
+                            if (category) {
+                                let count = +category.count - 1;
+                                return app.feature.category.actions.updateAttributes(category, {
+                                    count: count
+                                });
+                            }
+                        });
+                }),
+                Promise.map(increaseCount, function (id) {
+                    return app.feature.category.actions.findById(id)
+                        .then(function (category) {
+                            if (category) {
+                                let count = +category.count + 1;
+                                return app.feature.category.actions.updateAttributes(category, {
+                                    count: count
+                                });
+                            }
+                        });
+                })
+            ])
+        }).then(function () {
+            req.flash.success(__('m_blog_backend_post_flash_update_success'));
+            res.redirect(baseRoute + req.params.cid);
+        }).catch(function (err) {
+            logger.error(err);
+
+            let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
+
+            if (err.name == 'SequelizeUniqueConstraintError') {
+                for (let i in err.errors) {
+                    if (oldPost && oldPost._previousDataValues)
+                        data[err.errors[i].path] = oldPost._previousDataValues[err.errors[i].path];
+                    else
+                        data[err.errors[i].path] = '';
+                }
+
+                errorMsg = 'A post with the alias provided already exists';
+            }
+
+            req.flash.error(errorMsg);
+
+            res.locals.category = data;
+            next();
         });
     };
 
@@ -196,21 +368,19 @@ module.exports = function (controller, component, app) {
                 }
             }
         }).then(function (posts) {
-            promise.map(posts, function (post) {
-                let tag = post.categories;
-                if (tag != null && tag != '') {
-                    tag = tag.split(':');
-                    tag.shift();
-                    tag.pop(tag.length - 1);
-                    if (tag.length > 0) {
-                        tag.forEach(function (id) {
-                            app.feature.category.actions.findById(id, function (err,cat) {
-                                if(!err){
-                                    let count = +cat.count - 1;
-                                    cat.updateAttributes({
-                                        count: count
-                                    });
-                                }
+            Promise.map(posts, function (post) {
+                let categories = post.categories;
+                if (categories != null && categories != '') {
+                    categories = categories.split(':');
+                    categories.shift();
+                    categories.pop(categories.length - 1);
+                    if (categories.length > 0) {
+                        categories.forEach(function (id) {
+                            app.feature.category.actions.findById(id).then(function () {
+                                let count = +cat.count - 1;
+                                cat.updateAttributes({
+                                    count: count
+                                });
                             })
                         });
                     }
@@ -228,187 +398,9 @@ module.exports = function (controller, component, app) {
             req.flash.success(__('m_blog_backend_post_flash_delete_success'));
             res.sendStatus(200);
         }).catch(function (err) {
-            logger.error('postDelete error : ', err);
-        });
-    };
-    //update post after form submited
-    controller.postUpdate = function (req, res, next) {
-
-        // Add button
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('post_backend_back_link');
-
-        // Get data in req.body and update
-        let data = req.body;
-        data.title = data.title.trim();
-        if (data.alias == null || data.alias == '')
-            data.alias = slug(data.title).toLowerCase();
-        data.categories = data.categories || "";
-        data.author_visible = (data.author_visible != null);
-        if (!data.published) data.published = 0;
-
-        app.models.post.findById(req.params.cid)
-            .then(function (post) {
-                let tag = post.categories;
-                if (tag != null && tag != '') {
-                    tag = tag.split(':');
-                    tag.shift();
-                    tag.pop(tag.length - 1);
-                } else tag = [];
-
-                let newtag = data.categories;
-                if (newtag != null && newtag != '') {
-                    newtag = newtag.split(':');
-                    newtag.shift();
-                    newtag.pop(newtag.length - 1);
-                } else newtag = [];
-
-                // Update count for category
-                let onlyInA = [],
-                    onlyInB = [];
-
-                if (Array.isArray(tag) && Array.isArray(newtag)) {
-                    onlyInA = tag.filter(function (current) {
-                        return newtag.filter(function (current_b) {
-                                return current_b == current
-                            }).length == 0
-                    });
-                    onlyInB = newtag.filter(function (current) {
-                        return tag.filter(function (current_a) {
-                                return current_a == current
-                            }).length == 0
-                    });
-
-                }
-
-                if (data.published != post.published && data.published == 1) data.published_at = Date.now();
-
-                // update data
-                return post.updateAttributes(data)
-                    .then(function (result) {
-                        return promise.all([
-                            promise.map(onlyInA, function (id) {
-                                return app.feature.category.actions.findById(id)
-                                .then(function (category) {
-                                        if(category){
-                                            let count = +category.count - 1;
-                                            return app.feature.category.actions.updateAttributes(category,{
-                                                count: count
-                                            });
-                                        }
-                                });
-                            }),
-                            promise.map(onlyInB, function (id) {
-                                return app.feature.category.actions.findById(id)
-                                    .then(function (category) {
-                                        if(category){
-                                            let count = +category.count + 1;
-                                            return app.feature.category.actions.updateAttributes(category,{
-                                                count: count
-                                            });
-                                        }
-                                    });
-                            })
-                        ])
-                    })
-            }).then(function () {
-                req.flash.success(__('m_blog_backend_post_flash_update_success'));
-                if (req['post'])
-                    delete req.post;
-                next();
-            }).catch(function (err) {
-                let messageError = '';
-                if (err.name == 'SequelizeValidationError') {
-                    err.errors.map(function (e) {
-                        if (e)
-                            messageError += e.message + '<br />';
-                    })
-                } else if (err.name == 'SequelizeUniqueConstraintError') {
-                    messageError = "Alias was duplicated";
-                } else {
-                    messageError = err.message;
-                }
-                req.flash.error(messageError);
-                res.locals.post = data;
-                next();
-            });
-    };
-
-    controller.postCreate = function (req, res) {
-
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('post_backend_back_link');
-        toolbar.addSaveButton(isAllow(req, 'post_create'));
-        toolbar = toolbar.render();
-
-
-        app.models.category.findAll({
-            order: "id asc"
-        }).then(function (results) {
-            res.backend.render(edit_view, {
-                title: __('m_blog_backend_post_render_create'),
-                categories: results,
-                toolbar: toolbar
-            });
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
-        });
-    };
-
-    controller.postSave = function (req, res, next) {
-        let data = req.body;
-        data.title = data.title.trim();
-        data.created_by = req.user.id;
-        if (data.alias == null || data.alias == '')
-            data.alias = slug(data.title).toLowerCase();
-        data.type = 'post';
-        if (!data.published) data.published = 0;
-        if (data.published == 1) data.published_at = Date.now();
-
-        let post_id = 0;
-
-        app.models.post.create(data).then(function (post) {
-            post_id = post.id;
-            let tag = post.categories;
-
-            if (tag != null && tag != '') {
-                tag = tag.split(':');
-                tag.shift();
-                tag.pop(tag.length - 1);
-
-                return promise.map(tag, function (id) {
-                    return app.feature.category.actions.findById(id)
-                        .then(function (category) {
-                            if(category){
-                                let count = +category.count + 1;
-                                return app.feature.category.actions.updateAttributes(category,{
-                                    count: count
-                                });
-                            }
-                        });
-                }).catch(function (err) {
-                    logger.error(err);
-                });
-            }
-        }).then(function () {
-            req.flash.success(__('m_blog_backend_post_flash_create_success'));
-            res.redirect('/admin/blog/posts/' + post_id);
-        }).catch(function (err) {
-            let messageError = '';
-            if (err.name == 'SequelizeValidationError') {
-                err.errors.map(function (e) {
-                    if (e)
-                        messageError += e.message + '<br />';
-                })
-            } else if (err.name == 'SequelizeUniqueConstraintError') {
-                messageError = "Alias was duplicated";
-            } else {
-                messageError = err.message;
-            }
-            req.flash.error(messageError);
-            res.locals.post = data;
-            next();
+            logger.error(err);
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            res.sendStatus(200);
         });
     };
 
@@ -459,7 +451,7 @@ module.exports = function (controller, component, app) {
         let searchText = req.query.searchStr;
 
         let conditions = "type='post' AND published = 1";
-        if (searchText != '') conditions += " AND title ilike '%" + searchText + "%'";
+        if (searchText != '') conditions += " AND title like '%" + searchText.toLowerCase() + "%'";
 
         // Find all posts with page and search keyword
         app.models.post.findAndCount({

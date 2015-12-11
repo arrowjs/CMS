@@ -1,0 +1,76 @@
+<style>
+    .check-keyword ul li {
+        margin-bottom: 10px;
+    }
+
+    .analysis-list li {
+        list-style: none;
+    }
+
+    .analysis-list li .good {
+        color: #3c763d;
+    }
+
+    .analysis-list li .bad {
+        color: #FFB848;
+    }
+</style>
+
+<div class="box box-noborder">
+    <!-- /.box-header -->
+    <div class="box-body">
+        <ul class="nav nav-pills">
+            <li class="active">
+                <a href="#tab_general" data-toggle="tab">General</a>
+            </li>
+            <li>
+                <a id="seo_analysis" href="#tab_analysis" data-toggle="tab">Analysis</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <!-- BEGIN GENERAL TAB -->
+            <div class="tab-pane fade active in" id="tab_general">
+                <div class="form-group">
+                    <label data-toggle="tooltip" data-placement="top"
+                           title="The SEO title defaults to what is generated based on this sites title">SEO
+                        title: </label>
+                    <input name="meta_title" id="meta_title" class="form-control" value="" type="text"/>
+
+                    <p class="help-block">You should keep your titles under 55 characters</p>
+                </div>
+                <div class="form-group">
+                    <label data-toggle="tooltip" data-placement="top"
+                           title="Pick the main keyword or keyphrase that this post is about.">Keyword:</label>
+                    <input name="meta_keywords" id="meta_keywords" class="form-control" value="" type="text"/>
+
+                    <p class="help-block">Enter a focus keyword</p>
+
+                    <div class="check-keyword" style="display: none;">
+                        Your focus keyword was found in:
+                        <ul>
+                            <li>Page title: <span class="label" id="count-in-title"></span></li>
+                            <li>Content: <span class="label" id="count-in-content"></span></li>
+                            <li>Meta description: <span class="label" id="count-in-description"></span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label data-toggle="tooltip" data-placement="top"
+                           title="The meta description is often shown as the black text under the title in a search result. For this to work it has to contain the keyword that was searched for.">Meta
+                        description:</label>
+                            <textarea name="meta_description" id="meta_description" class="form-control"
+                                      rows="3"></textarea>
+
+                    <p class="help-block" id="counter">It is best to keep meta descriptions between 150 and 160
+                        characters. Now: <span style="color: #FF8722"></span> characters.</p>
+                </div>
+                <input type="hidden" name="seo_info" value="{{ seo_info }}"/>
+            </div>
+            <!-- END GENERAL TAB -->
+            <!-- BEGIN ANALYSIS TAB -->
+            <div class="tab-pane fade" id="tab_analysis"></div>
+            <!-- END ANALYSIS TAB -->
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>

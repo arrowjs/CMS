@@ -98,11 +98,13 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             logger.error(err);
 
+            let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
+
             if (err.name == 'SequelizeUniqueConstraintError') {
-                req.flash.error('A category with the name provided already exists');
-            } else {
-                req.flash.error(err.name + ': ' + err.message);
+                errorMsg = 'A category with the name provided already exists';
             }
+
+            req.flash.error(errorMsg);
 
             res.redirect(baseRoute);
         });
@@ -128,18 +130,20 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             logger.error(err);
 
+            let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
+
             if (err.name == 'SequelizeUniqueConstraintError') {
                 for (let i in err.errors) {
                     data[err.errors[i].path] = '';
                 }
 
                 if (err.fields.name)
-                    req.flash.error('A category with the name provided already exists');
+                    errorMsg = 'A category with the name provided already exists';
                 else
-                    req.flash.error('A category with the alias provided already exists');
-            } else {
-                req.flash.error(err.name + ': ' + err.message);
+                    errorMsg = 'A category with the alias provided already exists';
             }
+
+            req.flash.error(errorMsg);
 
             res.locals.category = data;
             next();
@@ -159,7 +163,7 @@ module.exports = function (controller, component, app) {
             });
         }).catch(function (err) {
             logger.error(err);
-            req.flash.error(err.name + ': ' + err.message);
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
             res.redirect(baseRoute);
         })
     };
@@ -182,6 +186,8 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             logger.error(err);
 
+            let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
+
             if (err.name == 'SequelizeUniqueConstraintError') {
                 for (let i in err.errors) {
                     if (oldCategory && oldCategory._previousDataValues)
@@ -191,12 +197,12 @@ module.exports = function (controller, component, app) {
                 }
 
                 if (err.fields.name)
-                    req.flash.error('A category with the name provided already exists');
+                    errorMsg = 'A category with the name provided already exists';
                 else
-                    req.flash.error('A category with the alias provided already exists');
-            } else {
-                req.flash.error(err.name + ': ' + err.message);
+                    errorMsg = 'A category with the alias provided already exists';
             }
+
+            req.flash.error(errorMsg);
 
             res.locals.category = data;
             next();
@@ -241,7 +247,7 @@ module.exports = function (controller, component, app) {
             res.sendStatus(200);
         }).catch(function (err) {
             logger.error(err);
-            req.flash.error(err.name + ': ' + err.message);
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
             res.sendStatus(200);
         })
     };
