@@ -69,7 +69,9 @@
                 </div>
             </form>
         </div>
-        {{ getPluginExtend() | async | safe }}
+        {% if page.id %}
+            {{ getPluginExtension("page_" + page.id) | async | safe }}
+        {% endif %}
     </div>
 {% endblock %}
 

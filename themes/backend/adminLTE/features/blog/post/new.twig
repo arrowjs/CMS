@@ -86,6 +86,9 @@
                 </div>
             </form>
         </div>
+        {% if post.id %}
+            {{ getPluginExtension("post_" + post.id) | async | safe }}
+        {% endif %}
     </div>
 {% endblock %}
 

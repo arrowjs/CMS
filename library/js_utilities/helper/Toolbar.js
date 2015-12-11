@@ -89,7 +89,7 @@ class Toolbar {
         let button = '';
 
         if (permission)
-            button = `<a class="pull-right" data-toggle="modal" onclick="openDeleteConfirmModal()">
+            button = `<a class="pull-right" data-toggle="modal" onclick="openDeleteConfirmModal() id="deleteForm"">
                         <button class="btn btn-danger">
                             <i class="fa fa-remove"></i> Delete
                         </button>

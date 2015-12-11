@@ -280,13 +280,13 @@ module.exports = function (controller, component, app) {
                 app.models.user.create(data).then(function (user) {
                     req.flash.success(__('m_users_backend_controllers_index_add_flash_success'));
                     res.locals.title = __('m_users_backend_controllers_index_list');
-                    res.redirect(back_link);
+                    res.redirect(req.originalUrl);
                 }).catch(function (error) {
                     if (error.name == 'SequelizeUniqueConstraintError') {
                         res.locals.title = __('m_users_backend_controllers_index_update');
                         res.locals.toolbar = toolbar;
                         req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
-                        res.redirect(back_link);
+                        res.redirect(req.originalUrl);
                     } else {
                         req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
                         res.backend.render(edit_template, {
