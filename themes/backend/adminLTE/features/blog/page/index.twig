@@ -8,7 +8,7 @@
             <div class="box box-solid box-primary">
                 <div class="box-body table-responsive ">
                     {% include 'basic_table/_table.twig' %}
-                    {{ paginateLinks(totalPage, currentPage,'/admin/blog/pages/page/{page}/sort/'+currentColumn+'/'+currentOrder)|safe }}
+                    {{ paginateLinks(totalPage, currentPage,'/admin/blog/pages/page/{page}/sort/'+currentColumn+'/'+currentOrder+queryString)|safe }}
                 </div>
             </div>
         </div>
