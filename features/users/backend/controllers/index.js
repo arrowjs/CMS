@@ -127,7 +127,8 @@ module.exports = function (controller, component, app) {
                 title: __('m_users_backend_controllers_index_list'),
                 items: results.rows,
                 totalPage: totalPage,
-                toolbar: toolbar
+                toolbar: toolbar,
+                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
             });
         }).catch(function (error) {
             _log.error(error);

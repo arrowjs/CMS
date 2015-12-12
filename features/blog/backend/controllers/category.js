@@ -75,7 +75,8 @@ module.exports = function (controller, component, app) {
                 totalPage: totalPage,
                 currentPage: page,
                 items: results.rows,
-                baseRoute: baseRoute
+                baseRoute: baseRoute,
+                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
             });
         }).catch(function (err) {
             logger.error(err);
@@ -86,7 +87,8 @@ module.exports = function (controller, component, app) {
                 title: __('m_category_backend_category_render_title'),
                 totalPage: 1,
                 items: null,
-                currentPage: page
+                currentPage: page,
+                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
             });
         });
     };

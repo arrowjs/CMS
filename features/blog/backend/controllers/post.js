@@ -160,7 +160,8 @@ module.exports = function (controller, component, app) {
                 totalPage: totalPage,
                 items: items,
                 currentPage: page,
-                toolbar: toolbar
+                toolbar: toolbar,
+                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
             });
         }).catch(function (err) {
             logger.error(err);
@@ -172,7 +173,8 @@ module.exports = function (controller, component, app) {
                 totalPage: 1,
                 items: null,
                 currentPage: page,
-                toolbar: toolbar
+                toolbar: toolbar,
+                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
             });
         });
     };

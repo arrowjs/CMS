@@ -10,7 +10,7 @@
                     {% include 'basic_table/_table.twig' %}
 
                     <div class="dataTables_paginate col-md-12">
-                        {{ paginateLinks(totalPage, currentPage, '/admin/users/page/{page}/sort/' + currentColumn + '/' + currentOrder) | safe }}
+                        {{ paginateLinks(totalPage, currentPage, '/admin/users/page/{page}/sort/' + currentColumn + '/' + currentOrder+queryString) | safe }}
                     </div>
                 </div>
             </div>
