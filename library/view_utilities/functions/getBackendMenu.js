@@ -8,16 +8,11 @@ module.exports = {
 
     async: true,
 
-    /**
-     * Get sidebar by name
-     *
-     * @param sidebarName - Name of sidebar
-     * @param callback - Content of sidebar
-     */
-    handler: function (current_url,currPermission, callback) {
+    handler: function (currentUrl, currPermission, callback) {
         let app = this;
-        let permissions =  currPermission || app.permissions;
+        let permissions = currPermission || app.permissions;
         let feature_data = app.featureManager.getAttribute();
+
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus")).then(function (data) {
             let menus;
             if (data) {
@@ -59,7 +54,6 @@ module.exports = {
             let html = '<section class="sidebar"><ul class="sidebar-menu">';
             let sortGroups = sortMenus(menus);
 
-
             for (let i in sortGroups) {
                 let group = menus[sortGroups[i].menu];
 
@@ -76,10 +70,10 @@ module.exports = {
                     let subMenu = group.modules[moduleName];
                     let icon = subMenu.icon || 'fa fa-circle-o text-danger';
 
-                    let menu_class = active_menu(current_url, moduleName.replace('-', '_'));
+                    let menu_class = active_menu(currentUrl, moduleName.replace('-', '_'));
 
-                    //only display this menu if user exits greater than one permission
-                    if (permissions.feature.hasOwnProperty(moduleName)){
+                    // Only display this menu if user exits greater than one permission
+                    if (permissions.feature.hasOwnProperty(moduleName)) {
                         html += `<li class="treeview ${menu_class}"><a href="{{link}}"><i class="${icon}"></i> <span> ${subMenu.title} </span>`;
                         if (subMenu.menus.length > 1) {
                             html = html.replace('{{link}}', '#');
@@ -90,14 +84,14 @@ module.exports = {
                                 let mn = subMenu.menus[z];
 
                                 let flag = false;
-                                for(let t in permissions.feature[moduleName]){
-                                    if(permissions.feature[moduleName][t].name === mn.permission)
+                                for (let t in permissions.feature[moduleName]) {
+                                    if (permissions.feature[moduleName][t].name === mn.permission)
                                         flag = true;
                                 }
                                 if (flag || !app.arrowSettings.role) {
-                                    menu_class = active_menu(current_url, mn.link.replace('/', ''), "active", 3);
+                                    menu_class = active_menu(currentUrl, mn.link.replace('/', ''), "active", 3);
                                     html += `<li class="treeview ${menu_class}">
-                                <a href="${'/'+app.getConfig("admin_prefix")+'/' + (moduleName + mn.link)}">
+                                <a href="${'/' + app.getConfig("admin_prefix") + '/' + (moduleName + mn.link)}">
                                 <i class="fa fa-circle-o"></i> <span> ${mn.title}</span>
                                 </a>`;
                                 }
@@ -105,9 +99,9 @@ module.exports = {
                             html += '</ul></li>';
                         } else {
                             if (typeof subMenu.menus.length == 'number') {
-                                html = html.replace('{{link}}', '/'+app.getConfig("admin_prefix")+'/'+ subMenu.menus[0].link);
+                                html = html.replace('{{link}}', '/' + app.getConfig("admin_prefix") + '/' + subMenu.menus[0].link);
                             } else {
-                                html = html.replace('{{link}}', '/'+app.getConfig("admin_prefix")+'/'+ moduleName);
+                                html = html.replace('{{link}}', '/' + app.getConfig("admin_prefix") + '/' + moduleName);
                             }
                             html += '</a></li>';
                         }
@@ -119,7 +113,6 @@ module.exports = {
             app.redisClient.setAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"), JSON.stringify(menus)).then(function () {
                 callback(null, html)
             });
-
         }).catch(function (err) {
             callback(err)
         });

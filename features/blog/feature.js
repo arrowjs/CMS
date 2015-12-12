@@ -8,70 +8,26 @@ module.exports = {
     permissions: [
         // Post
         {
-            name: 'post_index',
-            title: 'View Own Post'
+            name: 'post_manage',
+            title: 'Manage own posts'
         },
         {
-            name: 'post_index_all',
-            title: __('m_blog_backend_module_post_index')
-        },
-        {
-            name: 'post_create',
-            title: __('m_blog_backend_module_post_create')
-        },
-        {
-            name: 'post_edit',
-            title: __('m_blog_backend_module_post_edit')
-        },
-        {
-            name: 'post_edit_all',
-            title: __('m_blog_backend_module_post_edit_all')
-        },
-        {
-            name: 'post_delete',
-            title: __('m_blog_backend_module_post_delete')
-        },
-        // Category
-        {
-            name: 'category_index',
-            title: __('m_category_backend_module_category_index')
-        },
-        {
-            name: 'category_create',
-            title: __('m_category_backend_module_category_create')
-        },
-        {
-            name: 'category_edit',
-            title: __('m_category_backend_module_category_edit')
-        },
-        {
-            name: 'category_delete',
-            title: __('m_category_backend_module_category_delete')
+            name: 'post_manage_all',
+            title: 'Manage all posts'
         },
         // Page
         {
-            name: 'page_index',
-            title: 'View Own Post'
+            name: 'page_manage',
+            title: 'Manage own pages'
         },
         {
-            name: 'page_index_all',
-            title: __('m_blog_backend_module_page_index')
+            name: 'page_manage_all',
+            title: 'Manage all pages'
         },
+        // Category
         {
-            name: 'page_create',
-            title: __('m_blog_backend_module_page_create')
-        },
-        {
-            name: 'page_edit',
-            title: __('m_blog_backend_module_page_edit')
-        },
-        {
-            name: 'page_edit_all',
-            title: __('m_blog_backend_module_page_edit_all')
-        },
-        {
-            name: 'page_delete',
-            title: __('m_blog_backend_module_page_delete')
+            name: 'category_manage',
+            title: 'Manage categories'
         }
     ],
     backend_menu: {
@@ -79,17 +35,17 @@ module.exports = {
         icon: 'fa fa-newspaper-o',
         menus: [
             {
-                permission: 'post_index',
+                permission: "post_manage",
                 title: __('m_blog_backend_module_menu_backend_menu_post_index'),
                 link: '/posts/page/1'
             },
             {
-                permission: 'page_index',
+                permission: 'page_manage',
                 title: __('m_blog_backend_module_menu_backend_menu_page_index'),
                 link: '/pages/page/1'
             },
             {
-                permission: 'category_index',
+                permission: 'category_manage',
                 title: "Categories",
                 link: '/categories/page/1'
             }

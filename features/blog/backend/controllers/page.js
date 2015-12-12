@@ -8,6 +8,7 @@ module.exports = function (controller, component, app) {
     let isAllow = ArrowHelper.isAllow;
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let baseRoute = '/admin/blog/pages/';
+    let allPermissions = 'page_manage_all';
 
     function getErrorMsg(err, oldData, newData) {
         logger.error(err);
@@ -114,7 +115,7 @@ module.exports = function (controller, component, app) {
 
         // Check permissions view all pages
         let customCondition = " AND type='page'";
-        if (req.permissions.indexOf('page_index_all') == -1) customCondition += " AND created_by = " + req.user.id;
+        if (req.permissions.indexOf(allPermissions) == -1) customCondition += " AND created_by = " + req.user.id;
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: baseRoute + 'page/$page/sort',
@@ -207,7 +208,7 @@ module.exports = function (controller, component, app) {
         let page = req.post;
 
         // Recheck permissions to prevent access by url
-        if (req.permissions.indexOf('page_index_all') == -1 && page.created_by != req.user.id) {
+        if (req.permissions.indexOf(allPermissions) == -1 && page.created_by != req.user.id) {
             req.flash.error("You do not have permission to access");
             return res.redirect('/admin/403');
         }

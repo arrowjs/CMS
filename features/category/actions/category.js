@@ -1,7 +1,6 @@
 'use strict';
 
 let slug = require('slug');
-let log = require('arrowjs').logger;
 
 module.exports = function (action, component, app) {
 

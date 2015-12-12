@@ -85,6 +85,8 @@
                         </div>
                     </div>
                 </div>
+
+                <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}"/>
             </form>
         </div>
         {% if post.id %}
@@ -97,6 +99,98 @@
     {% include '_editorScript.twig' %}
 
     <script>
+        var modal = '<div class="modal fade" id="feature" tabindex="-1" aria-hidden="true">' +
+                '<div class="modal-dialog"><div class="row">' +
+                '<div class="modal-content col-md-12 col-sm-12">' +
+                '<div class=row><div class="modal-header col-md-12 col-sm-12">' +
+                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>' +
+                '<h4 class="modal-title">' + '{{ __("m_blog_backend_views_form_popup_choose_image") }}' + '</h4></div>' +
+                '<div class="modal-body col-md-12 col-sm-12" id="feature-body"></div>' +
+                '<div class="modal-footer col-md-12 col-sm-12">' +
+                '<button type="button" class="btn default" data-dismiss="modal">' + '{{ __("cancel") }}' + '</button> ' +
+                '<button type="button" class="btn btn-danger" onclick="return selectFeature()">' + '{{ __("choose") }}' + '</button>' +
+                '</div></div></div></div></div></div>';
+        var body = $('body');
+
+        $(function () {
+            body.append(modal);
+
+            /* BEGIN init ckeditor */
+            CKEDITOR.replace('full_text', {
+                height: 300
+            });
+            CKEDITOR.replace('intro_text', {
+                height: 100,
+                toolbar: [
+                    {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline']}
+                ]
+            });
+            /* END init ckeditor */
+
+            /* BEGIN model feature script */
+            body.on('hidden.bs.modal', '#feature', function () {
+                $(this).removeData('bs.modal');
+                $('#feature .modal-footer').css('display', 'block');
+            });
+
+            $(document).on('click', '#selectFileman', function () {
+                openCustomRoxy2();
+            });
+
+            $(document).on('click', 'input[name="optionsRadios"]', function () {
+                if ($(this).is(':checked')) {
+                    $('#previewSelect').attr('src', $(this).val());
+                }
+            });
+            /* END model feature script */
+
+            /* BEGIN init select2 */
+            var select2 = $('#id_category');
+            select2.select2({
+                placeholder: "{{ __('m_blog_backend_views_form_category_placeholder' ) }}",
+                templateSelection: function (option) {
+                    var text = $(option.element).text().trim();
+                    text = text.replace(/^[—]+/, '');
+                    return text;
+                }
+            });
+
+            {% if post.categories %}
+            var cat_id = '{{ post.categories }}';
+            cat_id = cat_id.split(':');
+            cat_id.shift();
+            cat_id.pop(cat_id[cat_id.length - 1]);
+            select2.val(cat_id).trigger('change');
+            {% endif %}
+
+            $("#edit-form").submit(function () {
+                var form = $('#edit-form');
+                var list_id = $('#id_category').val();
+                if (list_id && list_id != '') {
+                    list_id = ':' + list_id.join(':') + ':';
+                    var cat_id = $("<input>")
+                            .attr("type", "hidden")
+                            .attr("name", "categories").val(list_id);
+                    form.append($(cat_id));
+                }
+            });
+            /* END init select2 */
+
+            // Auto save
+            setInterval(function () {
+                $.ajax({
+                    url: '/admin/blog/posts/autosave',
+                    type: 'POST',
+                    data: $('#edit-form').serialize()
+                }).done(function (result) {
+                    if(result.id){
+                        $('#post_id').val(result.id);
+                    }
+                });
+            }, 5000);
+
+        });
+
         function deleteRecords() {
             var ids = [];
             ids.push({{ post.id }});
@@ -111,19 +205,6 @@
                 }
             });
         }
-
-        var modal = '<div class="modal fade" id="feature" tabindex="-1" aria-hidden="true">' +
-                '<div class="modal-dialog"><div class="row">' +
-                '<div class="modal-content col-md-12 col-sm-12">' +
-                '<div class=row><div class="modal-header col-md-12 col-sm-12">' +
-                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>' +
-                '<h4 class="modal-title">' + '{{ __("m_blog_backend_views_form_popup_choose_image") }}' + '</h4></div>' +
-                '<div class="modal-body col-md-12 col-sm-12" id="feature-body"></div>' +
-                '<div class="modal-footer col-md-12 col-sm-12">' +
-                '<button type="button" class="btn default" data-dismiss="modal">' + '{{ __("cancel") }}' + '</button> ' +
-                '<button type="button" class="btn btn-danger" onclick="return selectFeature()">' + '{{ __("choose") }}' + '</button>' +
-                '</div></div></div></div></div></div>';
-        $('body').append(modal);
 
         function openCustomRoxy2() {
             var filemanFrame = '<iframe src="/fileman/index.html?integration=custom&type=files&txtFieldId=txtSelectedFile" style="width:100%;height:100%" frameborder="0">';
@@ -173,68 +254,5 @@
             $('#previewImage').attr('src', feature);
             $('#feature').modal('hide');
         }
-
-        $(function () {
-            /* BEGIN init ckeditor */
-            CKEDITOR.replace('full_text', {
-                height: 300
-            });
-            CKEDITOR.replace('intro_text', {
-                height: 100,
-                toolbar: [
-                    {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline']}
-                ]
-            });
-            /* END init ckeditor */
-
-            /* BEGIN model feature script */
-            $('body').on('hidden.bs.modal', '#feature', function () {
-                $(this).removeData('bs.modal');
-                $('#feature .modal-footer').css('display', 'block');
-            });
-
-            $(document).on('click', '#selectFileman', function () {
-                openCustomRoxy2();
-            });
-
-            $(document).on('click', 'input[name="optionsRadios"]', function () {
-                if ($(this).is(':checked')) {
-                    $('#previewSelect').attr('src', $(this).val());
-                }
-            });
-            /* END model feature script */
-
-            /* BEGIN init select2 */
-            var select2 = $('#id_category');
-            select2.select2({
-                placeholder: "{{ __('m_blog_backend_views_form_category_placeholder' ) }}",
-                templateSelection: function (option) {
-                    var text = $(option.element).text().trim();
-                    text = text.replace(/^[—]+/, '');
-                    return text;
-                }
-            });
-
-            {% if post.categories %}
-            var cat_id = '{{ post.categories }}';
-            cat_id = cat_id.split(':');
-            cat_id.shift();
-            cat_id.pop(cat_id[cat_id.length - 1]);
-            select2.val(cat_id).trigger('change');
-            {% endif %}
-
-            $("#edit-form").submit(function () {
-                var form = $('#edit-form');
-                var list_id = $('#id_category').val();
-                if (list_id && list_id != '') {
-                    list_id = ':' + list_id.join(':') + ':';
-                    var cat_id = $("<input>")
-                            .attr("type", "hidden")
-                            .attr("name", "categories").val(list_id);
-                    form.append($(cat_id));
-                }
-            });
-            /* END init select2 */
-        });
     </script>
 {% endblock %}
