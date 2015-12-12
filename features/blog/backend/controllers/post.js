@@ -95,8 +95,8 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
         toolbar.addSearchButton('true');
-        toolbar.addCreateButton(isAllow(req, 'post_manage'), baseRoute + 'create');
-        toolbar.addDeleteButton(isAllow(req, 'post_manage'));
+        toolbar.addCreateButton(isAllow(req, allPermissions), baseRoute + 'create');
+        toolbar.addDeleteButton(isAllow(req, allPermissions));
         toolbar = toolbar.render();
 
         // Config columns
@@ -211,7 +211,7 @@ module.exports = function (controller, component, app) {
                 items: items,
                 currentPage: page,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         }).catch(function (err) {
             logger.error(err);
@@ -224,7 +224,7 @@ module.exports = function (controller, component, app) {
                 items: null,
                 currentPage: page,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         });
     };
@@ -232,7 +232,7 @@ module.exports = function (controller, component, app) {
     controller.postCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(isAllow(req, 'post_manage'));
+        toolbar.addSaveButton(isAllow(req, allPermissions));
 
         app.feature.category.actions.findAll({
             where: {
@@ -286,8 +286,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(isAllow(req, 'post_manage'));
-        toolbar.addDeleteButton(isAllow(req, 'post_manage'));
+        toolbar.addSaveButton(isAllow(req, allPermissions));
+        toolbar.addDeleteButton(isAllow(req, allPermissions));
 
         // Find all categories
         app.feature.category.actions.findAll({
@@ -297,7 +297,7 @@ module.exports = function (controller, component, app) {
             order: 'id ASC'
         }).then(function (categories) {
             // Add preview button
-            toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', baseRoute + 'preview/' + post.id,
+            toolbar.addGeneralButton(isAllow(req, allPermissions), 'Preview', baseRoute + 'preview/' + post.id,
                 {
                     icon: '<i class="fa fa-eye"></i>',
                     buttonClass: 'btn btn-info',
@@ -380,7 +380,7 @@ module.exports = function (controller, component, app) {
                 return updateCategoryCount(post);
             }).then(function () {
                 if (newPost && newPost.id)
-                    res.jsonp({id: post.id});
+                    res.jsonp({id: newPost.id});
                 else
                     res.jsonp({id: 0});
             }).catch(function (err) {
@@ -425,7 +425,7 @@ module.exports = function (controller, component, app) {
             if (req.permissions.indexOf(allPermissions) == -1 && post.created_by != req.user.id) {
                 return null;
             } else {
-                return app.feature.blog.action.destroy(ids);
+                return app.feature.blog.actions.destroy(ids);
             }
         }).then(function () {
             req.flash.success(__('m_blog_backend_post_flash_delete_success'));

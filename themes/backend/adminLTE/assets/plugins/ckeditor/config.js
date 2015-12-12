@@ -47,8 +47,6 @@ CKEDITOR.editorConfig = function( config ) {
 	};
 
 	config.extraPlugins = 'image2,oembed';
-    config.extraPlugins = 'notification';
-    config.extraPlugins = 'autosave';
 
 	config.htmlEncodeOutput = false;
 	config.entities = false;
