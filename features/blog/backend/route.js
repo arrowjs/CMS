@@ -145,6 +145,13 @@ module.exports = function (component, application) {
                 permissions: pagePermissions
             }
         },
+        "/blog/pages/autosave": {
+            post: {
+                handler: controller.pageAutosave,
+                authenticate: true,
+                permissions: pagePermissions
+            }
+        },
         // Category
         "/blog/categories": {
             get: {

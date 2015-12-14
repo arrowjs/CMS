@@ -1,12 +1,13 @@
 'use strict';
 
-let slug = require('slug');
+let _ = require('arrowjs')._;
+let Promise = require('arrowjs').Promise;
 let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
-    let isAllow = ArrowHelper.isAllow;
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
+    let isAllow = ArrowHelper.isAllow;
     let baseRoute = '/admin/blog/pages/';
     let allPermissions = 'page_manage_all';
 
@@ -37,10 +38,11 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
         toolbar.addSearchButton('true');
-        toolbar.addCreateButton(isAllow(req, 'page_create'), baseRoute + 'create');
-        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
+        toolbar.addCreateButton(isAllow(req, allPermissions), baseRoute + 'create');
+        toolbar.addDeleteButton(isAllow(req, allPermissions));
         toolbar = toolbar.render();
 
+        // Config columns
         let tableStructure = [
             {
                 column: "id",
@@ -53,7 +55,6 @@ module.exports = function (controller, component, app) {
                 width: '25%',
                 header: __('all_table_column_title'),
                 link: baseRoute + '{id}',
-                acl: 'blog.post_edit',
                 filter: {
                     data_type: 'string'
                 }
@@ -72,7 +73,7 @@ module.exports = function (controller, component, app) {
                 header: __('all_table_column_author'),
                 filter: {
                     data_type: 'string',
-                    filter_key: 'created_by'
+                    filter_key: 'user.display_name'
                 }
             },
             {
@@ -124,17 +125,18 @@ module.exports = function (controller, component, app) {
             backLink: 'page_back_link'
         });
 
-        // List pages
-        app.models.post.findAndCountAll({
+        // Find all pages
+        app.feature.blog.actions.findAndCountAll({
+            where: filter.conditions,
             include: [
                 {
-                    model: app.models.user, attributes: ['display_name'],
+                    model: app.models.user,
+                    attributes: ['display_name'],
                     where: ['1 = 1']
                 }
             ],
-            where: filter.conditions,
             order: filter.order,
-            limit: itemOfPage,
+            limit: filter.limit,
             offset: (page - 1) * itemOfPage
         }).then(function (results) {
             let totalPage = Math.ceil(results.count / itemOfPage);
@@ -152,7 +154,7 @@ module.exports = function (controller, component, app) {
                 items: items,
                 currentPage: page,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         }).catch(function (err) {
             logger.error(err);
@@ -165,37 +167,40 @@ module.exports = function (controller, component, app) {
                 items: null,
                 currentPage: page,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         });
     };
 
     controller.pageCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(isAllow(req, 'post_create'));
+        toolbar.addBackButton(req, 'page_back_link');
+        toolbar.addSaveButton(isAllow(req, allPermissions));
 
-        res.backend.render('page/new', {
-            title: __('m_blog_backend_page_render_create'),
-            toolbar: toolbar.render()
+        app.feature.category.actions.findAll({
+            where: {
+                type: 'page'
+            },
+            order: 'name ASC'
+        }).then(function (categories) {
+            res.backend.render('page/new', {
+                title: __('m_blog_backend_page_render_create'),
+                baseRoute: baseRoute,
+                toolbar: toolbar.render()
+            });
+        }).catch(function (err) {
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            res.redirect(baseRoute);
         });
     };
 
     controller.pageSave = function (req, res, next) {
         let data = req.body;
-        data.title = data.title.trim();
-        data.alias = data.alias || slug(data.title.toLowerCase());
-        data.type = 'page';
         data.created_by = req.user.id;
-        data.published = data.published || 0;
-        if (data.published == 1) {
-            if (!data.title) data.title = '(no title)';
-            data.published_at = Date.now();
-        }
-
         let oldPage;
 
-        app.models.post.create(data).then(function (page) {
+        // Create page
+        app.feature.blog.actions.create(data, 'page').then(function (page) {
             oldPage = page;
             req.flash.success(__('m_blog_backend_page_flash_create_success'));
             res.redirect(baseRoute + page.id);
@@ -207,22 +212,22 @@ module.exports = function (controller, component, app) {
     };
 
     controller.pageView = function (req, res) {
-        let page = req.post;
+        let page = req.page;
 
-        // Recheck permissions to prevent access by url
+        // Check permissions
         if (req.permissions.indexOf(allPermissions) == -1 && page.created_by != req.user.id) {
-            req.flash.error("You do not have permission to access");
-            return res.redirect('/admin/403');
+            req.flash.error("You do not have permission to manage this page");
+            return next();
         }
 
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'page_back_link');
-        toolbar.addSaveButton(isAllow(req, 'page_create'));
-        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
+        toolbar.addSaveButton(isAllow(req, allPermissions));
+        toolbar.addDeleteButton(isAllow(req, allPermissions));
 
         // Add preview button
-        toolbar.addGeneralButton(isAllow(req, 'page_index'), 'Preview', baseRoute + 'preview/' + page.id,
+        toolbar.addGeneralButton(isAllow(req, allPermissions), 'Preview', baseRoute + 'preview/' + page.id,
             {
                 icon: '<i class="fa fa-eye"></i>',
                 buttonClass: 'btn btn-info',
@@ -233,31 +238,25 @@ module.exports = function (controller, component, app) {
         res.backend.render('page/new', {
             title: __('m_blog_backend_page_render_update'),
             page: page,
+            baseRoute: baseRoute,
             toolbar: toolbar.render()
         });
     };
 
     controller.pageUpdate = function (req, res, next) {
-        let page = req.post;
+        let page = req.page;
 
         // Check permissions
-        if (req.permissions.indexOf('page_edit_all') == -1 && page.created_by != req.user.id) {
-            req.flash.error("You do not have permission to update this page");
-            return res.redirect(baseRoute + page.id);
+        if (req.permissions.indexOf(allPermissions) == -1 && page.created_by != req.user.id) {
+            req.flash.error("You do not have permission to manage this page");
+            return next();
         }
 
         let data = req.body;
-        data.title = data.title.trim();
-        data.alias = data.alias || slug(data.title.toLowerCase());
-        data.published = data.published || 0;
-        if (data.published) {
-            if (!data.title) data.title = '(no title)';
-            if (data.published != post.published) data.published_at = Date.now();
-        }
 
-        page.updateAttributes(data).then(function () {
+        app.feature.blog.actions.update(page, data).then(function () {
             req.flash.success(__('m_blog_backend_page_flash_update_success'));
-            res.redirect(baseRoute + req.params.postId);
+            res.redirect(baseRoute + page.id);
         }).catch(function (err) {
             req.flash.error(getErrorMsg(err, page, data));
             res.locals.page = data;
@@ -266,24 +265,69 @@ module.exports = function (controller, component, app) {
     };
 
     controller.pagePreview = function (req, res) {
-        if (req.post) {
+        if (req.page) {
             // Render frontend view
             res.frontend.render('page', {
                 page: req.page
             });
         } else {
-            // Redirect to 404 if post not exist
+            // Redirect to 404 if page not exist
             res.frontend.render('_404');
         }
     };
 
+    controller.pageAutosave = function (req, res) {
+        let data = req.body;
+        let author = req.user.id;
+
+        if (data.page_id) {
+            app.feature.blog.actions.findById(data.page_id).then(function (page) {
+                // Check permissions
+                if (req.permissions.indexOf(allPermissions) == -1 && page.created_by != author) {
+                    return res.jsonp({id: 0});
+                }
+
+                app.feature.blog.actions.update(page, data).then(function () {
+                    res.jsonp({id: page.id});
+                }).catch(function (err) {
+                    logger.error(err);
+                    res.jsonp({id: 0});
+                });
+            })
+        } else {
+            data.created_by = author;
+
+            // Create page
+            app.feature.blog.actions.create(data, 'page').then(function (page) {
+                if (page && page.id)
+                    res.jsonp({id: page.id});
+                else
+                    res.jsonp({id: 0});
+            }).catch(function (err) {
+                logger.error(err);
+                res.jsonp({id: 0});
+            })
+        }
+    };
+
     controller.pageDelete = function (req, res) {
-        app.models.post.destroy({
+        let ids = req.body.ids.split(',');
+
+        app.feature.blog.actions.findAll({
             where: {
                 id: {
-                    "in": req.body.ids.split(',')
+                    $in: ids
                 }
             }
+        }).then(function (pages) {
+            return Promise.map(pages, function (page) {
+                // Recheck permissions to prevent user access by ajax
+                if (req.permissions.indexOf(allPermissions) == -1 && page.created_by != req.user.id) {
+                    return null;
+                } else {
+                    return page.destroy();
+                }
+            });
         }).then(function () {
             req.flash.success(__('m_blog_backend_page_flash_delete_success'));
             res.sendStatus(200);
@@ -291,6 +335,13 @@ module.exports = function (controller, component, app) {
             logger.error(err);
             req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
             res.sendStatus(200);
+        });
+    };
+
+    controller.pageRead = function (req, res, next, id) {
+        app.feature.blog.actions.findById(id).then(function (page) {
+            req.page = page;
+            next();
         });
     };
 
@@ -302,10 +353,10 @@ module.exports = function (controller, component, app) {
         let searchText = req.query.searchStr;
 
         let conditions = "type='page' AND published = 1";
-        if (searchText != '') conditions += " AND title ilike '%" + searchText + "%'";
+        if (searchText != '') conditions += " AND title like '%" + searchText.toLowerCase() + "%'";
 
-        // Find all page with page and search keyword
-        app.models.post.findAndCount({
+        // Find all pages with page and search keyword
+        app.feature.blog.findAndCountAll({
             attributes: ['id', 'alias', 'title'],
             where: [conditions],
             limit: itemOfPage,
@@ -322,9 +373,9 @@ module.exports = function (controller, component, app) {
                 totalPage: totalPage,
                 items: items,
                 title_column: 'title',
-                link_template: '/blog/{alias}'
+                link_template: '/{alias}'
             });
         });
-    };
+    }
 
 };

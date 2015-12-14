@@ -1,6 +1,5 @@
 'use strict';
 
-let slug = require('slug');
 let _ = require('arrowjs')._;
 let Promise = require('arrowjs').Promise;
 let logger = require('arrowjs').logger;
@@ -243,6 +242,7 @@ module.exports = function (controller, component, app) {
             res.backend.render('post/new', {
                 title: __('m_blog_backend_post_render_create'),
                 categories: categories,
+                baseRoute: baseRoute,
                 toolbar: toolbar.render()
             });
         }).catch(function (err) {
@@ -309,6 +309,7 @@ module.exports = function (controller, component, app) {
                 title: __('m_blog_backend_post_render_update'),
                 categories: categories,
                 post: post,
+                baseRoute: baseRoute,
                 toolbar: toolbar.render()
             });
         }).catch(function (err) {
@@ -406,26 +407,25 @@ module.exports = function (controller, component, app) {
                 // Recheck permissions to prevent user access by ajax
                 if (req.permissions.indexOf(allPermissions) == -1 && post.created_by != req.user.id) {
                     return null;
-                }
-
-                let categories = post.categories ? convertCategoriesToArray(post.categories) : [];
-                if (categories.length > 0) {
-                    return Promise.map(categories, function (id) {
-                        return categoryAction.findById(id).then(function (category) {
-                            let count = +category.count - 1;
-                            return categoryAction.update(category, {count: count});
-                        })
-                    });
                 } else {
-                    return null;
+                    let categories = post.categories ? convertCategoriesToArray(post.categories) : [];
+                    if (categories.length > 0) {
+                        return Promise.map(categories, function (id) {
+                            return categoryAction.findById(id).then(function (category) {
+                                let count = +category.count - 1;
+                                return categoryAction.update(category, {count: count});
+                            })
+                        });
+                    } else {
+                        return null;
+                    }
                 }
             });
-        }).then(function () {
-            // Delete post
-            if (req.permissions.indexOf(allPermissions) == -1 && post.created_by != req.user.id) {
-                return null;
-            } else {
+        }).then(function (result) {
+            if (result != null) {
                 return app.feature.blog.actions.destroy(ids);
+            } else {
+                return null;
             }
         }).then(function () {
             req.flash.success(__('m_blog_backend_post_flash_delete_success'));
@@ -455,7 +455,7 @@ module.exports = function (controller, component, app) {
         if (searchText != '') conditions += " AND title like '%" + searchText.toLowerCase() + "%'";
 
         // Find all posts with page and search keyword
-        app.models.post.findAndCount({
+        app.feature.blog.findAndCountAll({
             attributes: ['id', 'alias', 'title'],
             where: [conditions],
             limit: itemOfPage,
@@ -476,4 +476,5 @@ module.exports = function (controller, component, app) {
             });
         });
     }
+
 };

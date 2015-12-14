@@ -36,7 +36,7 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
     <header class="main-header">
-        {% include '_header.twig' %}
+        {% include '_header.' + getConfig('viewExtension') %}
     </header>
 
     <!-- Left side column. contains the logo and sidebar -->
@@ -56,7 +56,7 @@
 
         <!-- Main content -->
         <section class="content">
-            {% include '_messages.twig' %}
+            {% include '_messages.' + getConfig('viewExtension') %}
 
             {% block content %}{% endblock %}
         </section>
@@ -66,7 +66,7 @@
     <!-- /.content-wrapper -->
 
     <footer class="main-footer">
-        {% include '_footer.twig' %}
+        {% include '_footer.' + getConfig('viewExtension') %}
     </footer>
 </div>
 <!-- ./wrapper -->
