@@ -394,8 +394,9 @@ module.exports = function (controller, component, app) {
     controller.postDelete = function (req, res) {
         let ids = req.body.ids.split(',');
         let categoryAction = app.feature.category.actions;
+        let blogAction = app.feature.blog.actions;
 
-        app.feature.blog.actions.findAll({
+        blogAction.findAll({
             where: {
                 id: {
                     $in: ids
@@ -423,7 +424,7 @@ module.exports = function (controller, component, app) {
             });
         }).then(function (result) {
             if (result != null) {
-                return app.feature.blog.actions.destroy(ids);
+                return blogAction.destroy(ids);
             } else {
                 return null;
             }

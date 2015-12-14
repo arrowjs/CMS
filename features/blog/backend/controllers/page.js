@@ -312,8 +312,9 @@ module.exports = function (controller, component, app) {
 
     controller.pageDelete = function (req, res) {
         let ids = req.body.ids.split(',');
+        let blogAction = app.feature.blog.actions;
 
-        app.feature.blog.actions.findAll({
+        blogAction.findAll({
             where: {
                 id: {
                     $in: ids
@@ -325,7 +326,7 @@ module.exports = function (controller, component, app) {
                 if (req.permissions.indexOf(allPermissions) == -1 && page.created_by != req.user.id) {
                     return null;
                 } else {
-                    return page.destroy();
+                    return blogAction.destroy([page.id]);
                 }
             });
         }).then(function () {
