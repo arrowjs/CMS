@@ -146,19 +146,18 @@ module.exports = function (controller, component, app) {
                     permissions.feature[k] = [];
                     if (_.isString(v)) {
                         permissions.feature[k].push({name : v});
-                    }
-                    for (let temp of v) {
-                        permissions.feature[k].push({name : temp});
+                    }else{
+                        v.map(function (val) {
+                            permissions.feature[k].push({name : val});
+                        })
                     }
                 }
-            })
+            });
             // Update role
             return role.updateAttributes({
                 name: req.body.title,
                 status: req.body.status,
                 permissions: JSON.stringify(permissions)
-            }).then(function () {
-                return app.feature.menu.actions.resetBackendMenu();
             });
         }).then(function () {
             req.flash.success(__('m_roles_backend_controllers_index_update_flash_success'));
@@ -184,18 +183,20 @@ module.exports = function (controller, component, app) {
     };
 
     controller.save = function (req, res) {
-        let permissions = {feature: {}};
-        for (let k in req.body) {
-            if (req.body.hasOwnProperty(k)) {
-                if (k != 'title' && k != 'status') {
-                    permissions.feature[k] = [];
-                    for (let temp of req.body[k]) {
-                        permissions.feature[k].push({name: temp});
-                    }
+        let permissions = {feature : {}};
+        let data=JSON.parse(JSON.stringify(req.body));
+        _.map(data,function (v,k) {
+            if (k != 'title' && k != 'status') {
+                permissions.feature[k] = [];
+                if (_.isString(v)) {
+                    permissions.feature[k].push({name : v});
+                }else{
+                    v.map(function (val) {
+                        permissions.feature[k].push({name : val});
+                    })
                 }
             }
-        }
-
+        });
         // Create role
         app.models.role.create({
             name: req.body.title,
@@ -203,10 +204,16 @@ module.exports = function (controller, component, app) {
             permissions: JSON.stringify(permissions)
         }).then(function () {
             req.flash.success(__('m_roles_backend_controllers_index_create_save_flash_success'));
-            res.redirect(req.originalUrl);
+            res.redirect('/admin/roles');
         }).catch(function (error) {
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(req.originalUrl);
+            res.backend.render('new', {
+                title: __('m_roles_backend_controllers_index_view_title'),
+                features: app.permissions.feature,
+                role: req.body,
+                permissions: permissions,
+                toolbar: toolbar
+            });
         });
     };
 
