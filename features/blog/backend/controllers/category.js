@@ -50,8 +50,8 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
         toolbar.addSearchButton('true');
-        toolbar.addCreateButton(isAllow(req, 'category_create'), baseRoute + 'create');
-        toolbar.addDeleteButton(isAllow(req, 'category_delete'));
+        toolbar.addCreateButton(isAllow(req, 'category_manage'), baseRoute + 'create');
+        toolbar.addDeleteButton(isAllow(req, 'category_manage'));
         toolbar = toolbar.render();
 
         // Config columns
@@ -115,7 +115,7 @@ module.exports = function (controller, component, app) {
     controller.categoryCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'category_back_link');
-        toolbar.addSaveButton(isAllow(req, 'category_create'));
+        toolbar.addSaveButton(isAllow(req, 'category_manage'));
 
         res.backend.render('category/new', {
             title: 'New category',
@@ -155,7 +155,7 @@ module.exports = function (controller, component, app) {
     controller.categoryView = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'category_back_link');
-        toolbar.addSaveButton(isAllow(req, 'category_create'));
+        toolbar.addSaveButton(isAllow(req, 'category_manage'));
 
         app.feature.category.actions.findById(req.params.categoryId).then(function (category) {
             res.backend.render('category/new', {
@@ -211,7 +211,7 @@ module.exports = function (controller, component, app) {
         })
     };
 
-    controller.categoryDelete = function (req, res, next) {
+    controller.categoryDelete = function (req, res) {
         let listId = req.body.ids.split(',');
 
         Promise.all([

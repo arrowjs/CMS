@@ -1,6 +1,5 @@
 'use strict';
 
-let slug = require('slug');
 let _ = require('arrowjs')._;
 let Promise = require('arrowjs').Promise;
 let logger = require('arrowjs').logger;
@@ -95,8 +94,8 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
         toolbar.addSearchButton('true');
-        toolbar.addCreateButton(isAllow(req, 'post_manage'), baseRoute + 'create');
-        toolbar.addDeleteButton(isAllow(req, 'post_manage'));
+        toolbar.addCreateButton(isAllow(req, allPermissions), baseRoute + 'create');
+        toolbar.addDeleteButton(isAllow(req, allPermissions));
         toolbar = toolbar.render();
 
         // Config columns
@@ -211,7 +210,7 @@ module.exports = function (controller, component, app) {
                 items: items,
                 currentPage: page,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         }).catch(function (err) {
             logger.error(err);
@@ -224,7 +223,7 @@ module.exports = function (controller, component, app) {
                 items: null,
                 currentPage: page,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         });
     };
@@ -232,7 +231,7 @@ module.exports = function (controller, component, app) {
     controller.postCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(isAllow(req, 'post_manage'));
+        toolbar.addSaveButton(isAllow(req, allPermissions));
 
         app.feature.category.actions.findAll({
             where: {
@@ -243,6 +242,7 @@ module.exports = function (controller, component, app) {
             res.backend.render('post/new', {
                 title: __('m_blog_backend_post_render_create'),
                 categories: categories,
+                baseRoute: baseRoute,
                 toolbar: toolbar.render()
             });
         }).catch(function (err) {
@@ -286,8 +286,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(isAllow(req, 'post_manage'));
-        toolbar.addDeleteButton(isAllow(req, 'post_manage'));
+        toolbar.addSaveButton(isAllow(req, allPermissions));
+        toolbar.addDeleteButton(isAllow(req, allPermissions));
 
         // Find all categories
         app.feature.category.actions.findAll({
@@ -297,7 +297,7 @@ module.exports = function (controller, component, app) {
             order: 'id ASC'
         }).then(function (categories) {
             // Add preview button
-            toolbar.addGeneralButton(isAllow(req, 'post_index'), 'Preview', baseRoute + 'preview/' + post.id,
+            toolbar.addGeneralButton(isAllow(req, allPermissions), 'Preview', baseRoute + 'preview/' + post.id,
                 {
                     icon: '<i class="fa fa-eye"></i>',
                     buttonClass: 'btn btn-info',
@@ -309,6 +309,7 @@ module.exports = function (controller, component, app) {
                 title: __('m_blog_backend_post_render_update'),
                 categories: categories,
                 post: post,
+                baseRoute: baseRoute,
                 toolbar: toolbar.render()
             });
         }).catch(function (err) {
@@ -380,7 +381,7 @@ module.exports = function (controller, component, app) {
                 return updateCategoryCount(post);
             }).then(function () {
                 if (newPost && newPost.id)
-                    res.jsonp({id: post.id});
+                    res.jsonp({id: newPost.id});
                 else
                     res.jsonp({id: 0});
             }).catch(function (err) {
@@ -393,8 +394,9 @@ module.exports = function (controller, component, app) {
     controller.postDelete = function (req, res) {
         let ids = req.body.ids.split(',');
         let categoryAction = app.feature.category.actions;
+        let blogAction = app.feature.blog.actions;
 
-        app.feature.blog.actions.findAll({
+        blogAction.findAll({
             where: {
                 id: {
                     $in: ids
@@ -406,26 +408,25 @@ module.exports = function (controller, component, app) {
                 // Recheck permissions to prevent user access by ajax
                 if (req.permissions.indexOf(allPermissions) == -1 && post.created_by != req.user.id) {
                     return null;
-                }
-
-                let categories = post.categories ? convertCategoriesToArray(post.categories) : [];
-                if (categories.length > 0) {
-                    return Promise.map(categories, function (id) {
-                        return categoryAction.findById(id).then(function (category) {
-                            let count = +category.count - 1;
-                            return categoryAction.update(category, {count: count});
-                        })
-                    });
                 } else {
-                    return null;
+                    let categories = post.categories ? convertCategoriesToArray(post.categories) : [];
+                    if (categories.length > 0) {
+                        return Promise.map(categories, function (id) {
+                            return categoryAction.findById(id).then(function (category) {
+                                let count = +category.count - 1;
+                                return categoryAction.update(category, {count: count});
+                            })
+                        });
+                    } else {
+                        return null;
+                    }
                 }
             });
-        }).then(function () {
-            // Delete post
-            if (req.permissions.indexOf(allPermissions) == -1 && post.created_by != req.user.id) {
-                return null;
+        }).then(function (result) {
+            if (result != null) {
+                return blogAction.destroy(ids);
             } else {
-                return app.feature.blog.action.destroy(ids);
+                return null;
             }
         }).then(function () {
             req.flash.success(__('m_blog_backend_post_flash_delete_success'));
@@ -455,7 +456,7 @@ module.exports = function (controller, component, app) {
         if (searchText != '') conditions += " AND title like '%" + searchText.toLowerCase() + "%'";
 
         // Find all posts with page and search keyword
-        app.models.post.findAndCount({
+        app.feature.blog.findAndCountAll({
             attributes: ['id', 'alias', 'title'],
             where: [conditions],
             limit: itemOfPage,
@@ -476,4 +477,5 @@ module.exports = function (controller, component, app) {
             });
         });
     }
+
 };

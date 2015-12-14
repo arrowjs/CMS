@@ -1,4 +1,4 @@
-{% extends '_layout.twig' %}
+{% extends '_layout.' + getConfig('viewExtension') %}
 
 {% block content %}
     <div class="row">
@@ -86,6 +86,7 @@
                     </div>
                 </div>
 
+                <input type="hidden" name="categories" id="categories"/>
                 <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}"/>
             </form>
         </div>
@@ -96,7 +97,7 @@
 {% endblock %}
 
 {% block jsExtends %}
-    {% include '_editorScript.twig' %}
+    {% include '_editorScript.' + getConfig('viewExtension') %}
 
     <script>
         var modal = '<div class="modal fade" id="feature" tabindex="-1" aria-hidden="true">' +
@@ -110,7 +111,8 @@
                 '<button type="button" class="btn default" data-dismiss="modal">' + '{{ __("cancel") }}' + '</button> ' +
                 '<button type="button" class="btn btn-danger" onclick="return selectFeature()">' + '{{ __("choose") }}' + '</button>' +
                 '</div></div></div></div></div></div>';
-        var body = $('body');
+        var body = $('body'), editForm = $('#edit-form');
+        var draftData = editForm.serialize();
 
         $(function () {
             body.append(modal);
@@ -163,46 +165,51 @@
             select2.val(cat_id).trigger('change');
             {% endif %}
 
-            $("#edit-form").submit(function () {
-                var form = $('#edit-form');
-                var list_id = $('#id_category').val();
-                if (list_id && list_id != '') {
-                    list_id = ':' + list_id.join(':') + ':';
-                    var cat_id = $("<input>")
-                            .attr("type", "hidden")
-                            .attr("name", "categories").val(list_id);
-                    form.append($(cat_id));
+            editForm.submit(function () {
+                var listId = $('#id_category').val();
+                if (listId) {
+                    $('#categories').val(':' + listId.join(':') + ':');
                 }
             });
             /* END init select2 */
 
             // Auto save
             setInterval(function () {
-                $.ajax({
-                    url: '/admin/blog/posts/autosave',
-                    type: 'POST',
-                    data: $('#edit-form').serialize()
-                }).done(function (result) {
-                    if(result.id){
-                        $('#post_id').val(result.id);
-                    }
-                });
-            }, 5000);
+                var listId = $('#id_category').val();
+                if (listId) {
+                    $('#categories').val(':' + listId.join(':') + ':');
+                }
+                $('#intro_text').val(CKEDITOR.instances.intro_text.getData());
+                $('#full_text').val(CKEDITOR.instances.full_text.getData());
 
+                // If content was changed, save to database
+                if (editForm.serialize() != draftData) {
+                    draftData = editForm.serialize();
+
+                    $.ajax({
+                        url: '{{ baseRoute }}autosave',
+                        type: 'POST',
+                        data: draftData
+                    }).done(function (result) {
+                        if (result.id) {
+                            $('#post_id').val(result.id);
+                        }
+                    });
+                }
+            }, {{ getConfig('autoSaveDelay') }});
         });
 
         function deleteRecords() {
             var ids = [];
             ids.push({{ post.id }});
             $.ajax({
-                url: '/admin/blog/posts',
+                url: '{{ baseRoute }}',
                 type: 'DELETE',
                 data: {
                     ids: ids.join()
-                },
-                success: function () {
-                    window.location.href = "/admin/blog/posts/page/1";
                 }
+            }).done(function(){
+                window.location.href = '{{ baseRoute }}page/1';
             });
         }
 

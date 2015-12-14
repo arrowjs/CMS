@@ -1,4 +1,4 @@
-{% extends '_layout.twig' %}
+{% extends '_layout.' + getConfig('viewExtension') %}
 
 {% block content %}
     <div class="row">
@@ -7,7 +7,7 @@
 
             <div class="box box-solid box-primary">
                 <div class="box-body table-responsive no-padding">
-                    {% include 'basic_table/_table.twig' %}
+                    {% include 'basic_table/_table.' + getConfig('viewExtension') %}
 
                     <div class="dataTables_paginate col-md-12">
                         {{ paginateLinks(totalPage, currentPage, '/admin/users/page/{page}/sort/' + currentColumn + '/' + currentOrder+queryString) | safe }}

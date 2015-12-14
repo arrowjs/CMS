@@ -1,4 +1,4 @@
-{% extends '_layout.twig' %}
+{% extends '_layout.' + getConfig('viewExtension') %}
 
 {% block cssExtends %}
     <link href="/backend/adminLTE/assets/plugins/select2/select2.css" rel="stylesheet">
