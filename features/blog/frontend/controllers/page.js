@@ -1,8 +1,9 @@
 'use strict';
+
 module.exports = function (controller, component, app) {
 
     controller.pageIndex = function (req, res) {
-        app.models.post.find({
+        app.feature.blog.actions.find({
             include: [
                 {
                     model: app.models.user,
