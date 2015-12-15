@@ -58,6 +58,7 @@ module.exports = function (controller, component, app) {
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: baseRoute + 'page/$page/sort',
             limit: itemOfPage,
+            customCondition: " AND type='post'",
             backLink: 'category_back_link'
         });
 
