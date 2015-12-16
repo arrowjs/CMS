@@ -5,10 +5,8 @@ let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
-    let isAllow = ArrowHelper.isAllow;
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let baseRoute = '/admin/blog/categories/';
-    let permission = 'category_manage';
 
     controller.categoryList = function (req, res) {
         let page = req.params.page || 1;
@@ -117,7 +115,7 @@ module.exports = function (controller, component, app) {
     controller.categoryCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'category_back_link');
-        toolbar.addSaveButton(isAllow(req, permission));
+        toolbar.addSaveButton(true);
 
         res.backend.render('category/new', {
             title: 'New category',
@@ -157,7 +155,7 @@ module.exports = function (controller, component, app) {
     controller.categoryView = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'category_back_link');
-        toolbar.addSaveButton(isAllow(req, permission));
+        toolbar.addSaveButton(true);
 
         app.feature.category.actions.findById(req.params.categoryId).then(function (category) {
             res.backend.render('category/new', {
