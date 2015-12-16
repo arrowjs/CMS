@@ -22,7 +22,7 @@ module.exports = function (sequelize, DataTypes) {
             validate: {
                 len: {
                     args: [1, 255],
-                    msg: 'Title cannot empty or too long'
+                    msg: 'Alias cannot empty or too long'
                 },
                 isSlug: function (value) {
                     if (typeof value !== 'string' || !value.match(/[a-zA-Z0-9-_]/g)) {

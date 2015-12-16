@@ -147,7 +147,7 @@
                         }
                     });
                 }
-            }, {{ getConfig('autoSaveDelay') }});
+            }, {{ getConfig('autoSaveDelay') * 1000 }});
         });
 
         function deleteRecords() {

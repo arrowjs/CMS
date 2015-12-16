@@ -44,6 +44,7 @@ module.exports = function (action, comp, app) {
     action.create = function (data, type) {
         data = optimizeData(data);
         data.type = type;
+
         if (data.published) {
             if (!data.title) data.title = '(no title)';
             data.published_at = Date.now();
@@ -57,6 +58,7 @@ module.exports = function (action, comp, app) {
      */
     action.update = function (post, data) {
         data = optimizeData(data);
+
         if (data.published) {
             if (!data.title) data.title = '(no title)';
             if (data.published != post.published) data.published_at = Date.now();

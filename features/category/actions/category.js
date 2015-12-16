@@ -1,6 +1,7 @@
 'use strict';
 
 let slug = require('slug');
+let Promise = require('arrowjs').Promise;
 
 module.exports = function (action, component, app) {
 
@@ -54,7 +55,7 @@ module.exports = function (action, component, app) {
      * Update category
      */
     action.update = function (category, data) {
-        if(data.name) {
+        if (data.name) {
             data.name = data.name.trim();
             if (!data.alias) data.alias = slug(data.name.toLowerCase());
         }
@@ -75,4 +76,31 @@ module.exports = function (action, component, app) {
         })
     };
 
+    /**
+     * Split string categories from database to array
+     */
+    action.convertToArray = function (str) {
+        str = str.split(':');
+        str.shift();
+        str.pop(str.length - 1);
+        return str;
+    };
+
+    /**
+     * Update count of categories
+     */
+    action.updateCount = function (listCategories, table, column, conditions) {
+        conditions = conditions || '';
+
+        return Promise.map(listCategories, function (id) {
+            let updateCountQuery = `UPDATE arr_category
+                                        SET count = (
+                                                SELECT count(id)
+                                                FROM ${table}
+                                                WHERE ${column} LIKE '%:${id}:%' ${conditions}
+                                            )
+                                        WHERE id = ${id};`;
+            return app.models.rawQuery(updateCountQuery);
+        });
+    };
 };

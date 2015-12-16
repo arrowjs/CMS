@@ -13,5 +13,5 @@ module.exports = {
     long_stack: false,
     port: process.env.PORT || 8000,
     admin_prefix: 'admin',
-    ArrowHelper: "/library/js_utilities/helper/"
+    ArrowHelper: "/library/js_utilities/"
 };

@@ -7,9 +7,9 @@ let logger = require('arrowjs').logger;
 module.exports = function (controller, component, app) {
 
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
-    let isAllow = ArrowHelper.isAllow;
     let baseRoute = '/admin/blog/posts/';
-    let allPermissions = 'post_manage_all';
+    let isAllow = ArrowHelper.isAllow;
+    let permissionManageAll = 'post_manage_all';
 
     function getErrorMsg(err, oldData, newData) {
         logger.error(err);
@@ -30,33 +30,15 @@ module.exports = function (controller, component, app) {
         return errorMsg;
     }
 
-    function convertCategoriesToArray(str) {
-        str = str.split(':');
-        str.shift();
-        str.pop(str.length - 1);
-        return str;
-    }
-
     function updateCategoryCount(post) {
+        let categoryAction = app.feature.category.actions;
+
         if (post.published) {
             let categories = post.categories;
 
             if (categories) {
-                categories = convertCategoriesToArray(categories);
-
-                // Increase count of each category in array
-                return Promise.map(categories, function (id) {
-                    return app.feature.category.actions.findById(id).then(function (category) {
-                        if (category) {
-                            let count = +category.count + 1;
-                            return app.feature.category.actions.update(category, {
-                                count: count
-                            });
-                        } else {
-                            return null;
-                        }
-                    });
-                });
+                categories = categoryAction.convertToArray(categories);
+                categoryAction.updateCount(categories, 'arr_post', 'categories', 'AND type = \'post\' AND published = 1');
             } else {
                 return null;
             }
@@ -66,23 +48,16 @@ module.exports = function (controller, component, app) {
     }
 
     function updatePost(post, data) {
+        let categoryAction = app.feature.category.actions;
+
         // Union categories before and after edit
-        let categories = post.categories ? convertCategoriesToArray(post.categories) : [];
-        let newCategories = data.categories ? convertCategoriesToArray(data.categories) : [];
+        let categories = post.categories ? categoryAction.convertToArray(post.categories) : [];
+        let newCategories = data.categories ? categoryAction.convertToArray(data.categories) : [];
         let needUpdate = _.union(categories, newCategories);
 
         return app.feature.blog.actions.update(post, data).then(function () {
             // Update categories
-            return Promise.map(needUpdate, function (id) {
-                let updateCountQuery = `UPDATE arr_category
-                                        SET count = (
-                                                SELECT count(id)
-                                                FROM arr_post
-                                                WHERE categories LIKE '%:${id}:%' AND type = 'post' AND published = 1
-                                            )
-                                        WHERE id = ${id}`;
-                return app.models.rawQuery(updateCountQuery);
-            });
+            categoryAction.updateCount(needUpdate, 'arr_post', 'categories', 'AND type = \'post\' AND published = 1');
         });
     }
 
@@ -94,8 +69,8 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
         toolbar.addSearchButton('true');
-        toolbar.addCreateButton(isAllow(req, allPermissions), baseRoute + 'create');
-        toolbar.addDeleteButton(isAllow(req, allPermissions));
+        toolbar.addCreateButton(isAllow(req, permissionManageAll), baseRoute + 'create');
+        toolbar.addDeleteButton(isAllow(req, permissionManageAll));
         toolbar = toolbar.render();
 
         // Config columns
@@ -172,7 +147,7 @@ module.exports = function (controller, component, app) {
 
         // Check permissions view all posts
         let customCondition = " AND type='post'";
-        if (req.permissions.indexOf(allPermissions) == -1) customCondition += " AND created_by = " + req.user.id;
+        if (req.permissions.indexOf(permissionManageAll) == -1) customCondition += " AND created_by = " + req.user.id;
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: baseRoute + 'page/$page/sort',
@@ -231,7 +206,7 @@ module.exports = function (controller, component, app) {
     controller.postCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(isAllow(req, allPermissions));
+        toolbar.addSaveButton(isAllow(req, permissionManageAll));
 
         app.feature.category.actions.findAll({
             where: {
@@ -264,7 +239,7 @@ module.exports = function (controller, component, app) {
 
             // Update count of categories if post is published
             return updateCategoryCount(post);
-        }).then(function (a) {
+        }).then(function () {
             req.flash.success(__('m_blog_backend_post_flash_create_success'));
             res.redirect(baseRoute + post_id);
         }).catch(function (err) {
@@ -278,7 +253,7 @@ module.exports = function (controller, component, app) {
         let post = req.post;
 
         // Check permissions
-        if (req.permissions.indexOf(allPermissions) == -1 && post.created_by != req.user.id) {
+        if (req.permissions.indexOf(permissionManageAll) == -1 && post.created_by != req.user.id) {
             req.flash.error("You do not have permission to manage this post");
             return next();
         }
@@ -286,8 +261,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(isAllow(req, allPermissions));
-        toolbar.addDeleteButton(isAllow(req, allPermissions));
+        toolbar.addSaveButton(isAllow(req, permissionManageAll));
+        toolbar.addDeleteButton(isAllow(req, permissionManageAll));
 
         // Find all categories
         app.feature.category.actions.findAll({
@@ -297,7 +272,7 @@ module.exports = function (controller, component, app) {
             order: 'id ASC'
         }).then(function (categories) {
             // Add preview button
-            toolbar.addGeneralButton(isAllow(req, allPermissions), 'Preview', baseRoute + 'preview/' + post.id,
+            toolbar.addGeneralButton(isAllow(req, permissionManageAll), 'Preview', baseRoute + 'preview/' + post.id,
                 {
                     icon: '<i class="fa fa-eye"></i>',
                     buttonClass: 'btn btn-info',
@@ -323,7 +298,7 @@ module.exports = function (controller, component, app) {
         let post = req.post;
 
         // Check permissions
-        if (req.permissions.indexOf(allPermissions) == -1 && post.created_by != req.user.id) {
+        if (req.permissions.indexOf(permissionManageAll) == -1 && post.created_by != req.user.id) {
             req.flash.error("You do not have permission to manage this post");
             return next();
         }
@@ -359,7 +334,7 @@ module.exports = function (controller, component, app) {
         if (data.post_id) {
             app.feature.blog.actions.findById(data.post_id).then(function (post) {
                 // Check permissions
-                if (req.permissions.indexOf(allPermissions) == -1 && post.created_by != author) {
+                if (req.permissions.indexOf(permissionManageAll) == -1 && post.created_by != author) {
                     return res.jsonp({id: 0});
                 }
 
@@ -403,31 +378,22 @@ module.exports = function (controller, component, app) {
                 }
             }
         }).then(function (posts) {
-            // Decrease count of categories
             return Promise.map(posts, function (post) {
                 // Recheck permissions to prevent user access by ajax
-                if (req.permissions.indexOf(allPermissions) == -1 && post.created_by != req.user.id) {
+                if (req.permissions.indexOf(permissionManageAll) == -1 && post.created_by != req.user.id) {
                     return null;
                 } else {
-                    let categories = post.categories ? convertCategoriesToArray(post.categories) : [];
+                    let categories = post.categories ? categoryAction.convertToArray(post.categories) : [];
                     if (categories.length > 0) {
-                        return Promise.map(categories, function (id) {
-                            return categoryAction.findById(id).then(function (category) {
-                                let count = +category.count - 1;
-                                return categoryAction.update(category, {count: count});
-                            })
+                        return blogAction.destroy([post.id]).then(function(){
+                            // Decrease count of categories
+                            return categoryAction.updateCount(categories, 'arr_post', 'categories', 'AND type = \'post\' AND published = 1');
                         });
                     } else {
                         return null;
                     }
                 }
             });
-        }).then(function (result) {
-            if (result != null) {
-                return blogAction.destroy(ids);
-            } else {
-                return null;
-            }
         }).then(function () {
             req.flash.success(__('m_blog_backend_post_flash_delete_success'));
             res.sendStatus(200);
