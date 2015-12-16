@@ -81,9 +81,12 @@ module.exports = function (action, comp, app) {
     };
 
     function optimizeData(data) {
-        data.title = data.title.trim();
-        data.alias = data.alias || slug(data.title.toLowerCase());
-        data.alias = data.alias || Date.now().toString();
+        if (data.title) {
+            data.title = data.title.trim();
+            data.alias = data.alias || slug(data.title.toLowerCase());
+            data.alias = data.alias || Date.now().toString();
+        }
+
         data.author_visible = (data.author_visible != null);
         data.categories = data.categories || '';
         data.published = data.published || 0;

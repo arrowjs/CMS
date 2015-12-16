@@ -213,11 +213,12 @@ module.exports = function (controller, component, app) {
 
     controller.categoryDelete = function (req, res) {
         let listId = req.body.ids.split(',');
+        let blogAction = app.feature.blog.actions;
 
         Promise.all([
             // Update posts have categories was deleted
             Promise.map(listId, function (id) {
-                return app.models.post.findAndCountAll({
+                return blogAction.findAndCountAll({
                     where: {
                         categories: {
                             $like: '%:' + id + ':%'
@@ -233,9 +234,10 @@ module.exports = function (controller, component, app) {
                             if (oldCategory != (':' + id + ':'))
                                 newCategory = oldCategory.replace(':' + id + ':', ':');
 
-                            return post.updateAttributes({
-                                categories: newCategory
-                            });
+                            return blogAction.update(post, {categories: newCategory});
+                            //return post.updateAttributes({
+                            //    categories: newCategory
+                            //});
                         });
                     } else {
                         return null;
