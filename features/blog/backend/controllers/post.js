@@ -38,7 +38,7 @@ module.exports = function (controller, component, app) {
 
             if (categories) {
                 categories = categoryAction.convertToArray(categories);
-                categoryAction.updateCount(categories, 'arr_post', 'categories', 'AND type = \'post\' AND published = 1');
+                return categoryAction.updateCount(categories, 'arr_post', 'categories', 'AND type = \'post\' AND published = 1');
             } else {
                 return null;
             }
@@ -57,7 +57,7 @@ module.exports = function (controller, component, app) {
 
         return app.feature.blog.actions.update(post, data).then(function () {
             // Update categories
-            categoryAction.updateCount(needUpdate, 'arr_post', 'categories', 'AND type = \'post\' AND published = 1');
+            return categoryAction.updateCount(needUpdate, 'arr_post', 'categories', 'AND type = \'post\' AND published = 1');
         });
     }
 
@@ -385,15 +385,15 @@ module.exports = function (controller, component, app) {
                 if (req.permissions.indexOf(permissionManageAll) == -1 && post.created_by != req.user.id) {
                     return null;
                 } else {
-                    let categories = post.categories ? categoryAction.convertToArray(post.categories) : [];
-                    if (categories.length > 0) {
-                        return blogAction.destroy([post.id]).then(function(){
+                    return blogAction.destroy([post.id]).then(function () {
+                        let categories = post.categories ? categoryAction.convertToArray(post.categories) : [];
+                        if (categories.length > 0) {
                             // Decrease count of categories
                             return categoryAction.updateCount(categories, 'arr_post', 'categories', 'AND type = \'post\' AND published = 1');
-                        });
-                    } else {
-                        return null;
-                    }
+                        } else {
+                            return null;
+                        }
+                    });
                 }
             });
         }).then(function () {
@@ -408,7 +408,7 @@ module.exports = function (controller, component, app) {
 
     controller.postRead = function (req, res, next, id) {
         app.feature.blog.actions.findById(id).then(function (post) {
-            req.post = post;
+            req.post = req.page = post;
             next();
         });
     };

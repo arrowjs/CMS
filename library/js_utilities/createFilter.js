@@ -7,7 +7,7 @@ exports.createFilter = function (req, res, columns, options) {
     let customCondition;
     let limit;
     let current_column = req.params.sort || columns[0].column || "id";
-    let order = req.params.order || 'asc';
+    let order = req.params.order || 'DESC';
     let page = req.params.page || 1;
 
     if (options) {

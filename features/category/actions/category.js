@@ -90,8 +90,6 @@ module.exports = function (action, component, app) {
      * Update count of categories
      */
     action.updateCount = function (listCategories, table, column, conditions) {
-        conditions = conditions || '';
-
         return Promise.map(listCategories, function (id) {
             let updateCountQuery = `UPDATE arr_category
                                         SET count = (

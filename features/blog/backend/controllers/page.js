@@ -205,7 +205,7 @@ module.exports = function (controller, component, app) {
         app.feature.blog.actions.create(data, 'page').then(function (page) {
             oldPage = page;
             req.flash.success(__('m_blog_backend_page_flash_create_success'));
-            res.redirect(baseRoute + page.id);
+            res.redirect(baseRoute + page.dataValues.id);
         }).catch(function (err) {
             req.flash.error(getErrorMsg(err, oldPage, data));
             res.locals.page = data;
@@ -338,13 +338,6 @@ module.exports = function (controller, component, app) {
             logger.error(err);
             req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
             res.sendStatus(200);
-        });
-    };
-
-    controller.pageRead = function (req, res, next, id) {
-        app.feature.blog.actions.findById(id).then(function (page) {
-            req.page = page;
-            next();
         });
     };
 
