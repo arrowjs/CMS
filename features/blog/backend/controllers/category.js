@@ -8,6 +8,7 @@ module.exports = function (controller, component, app) {
     let isAllow = ArrowHelper.isAllow;
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let baseRoute = '/admin/blog/categories/';
+    let permission = 'category_manage';
 
     controller.categoryList = function (req, res) {
         let page = req.params.page || 1;
@@ -50,8 +51,8 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
         toolbar.addSearchButton('true');
-        toolbar.addCreateButton(isAllow(req, 'category_manage'), baseRoute + 'create');
-        toolbar.addDeleteButton(isAllow(req, 'category_manage'));
+        toolbar.addCreateButton(true, baseRoute + 'create');
+        toolbar.addDeleteButton(true);
         toolbar = toolbar.render();
 
         // Config columns
@@ -77,7 +78,7 @@ module.exports = function (controller, component, app) {
                 currentPage: page,
                 items: results.rows,
                 baseRoute: baseRoute,
-                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         }).catch(function (err) {
             logger.error(err);
@@ -89,7 +90,7 @@ module.exports = function (controller, component, app) {
                 totalPage: 1,
                 items: null,
                 currentPage: page,
-                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         });
     };
@@ -116,7 +117,7 @@ module.exports = function (controller, component, app) {
     controller.categoryCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'category_back_link');
-        toolbar.addSaveButton(isAllow(req, 'category_manage'));
+        toolbar.addSaveButton(isAllow(req, permission));
 
         res.backend.render('category/new', {
             title: 'New category',
@@ -156,7 +157,7 @@ module.exports = function (controller, component, app) {
     controller.categoryView = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'category_back_link');
-        toolbar.addSaveButton(isAllow(req, 'category_manage'));
+        toolbar.addSaveButton(isAllow(req, permission));
 
         app.feature.category.actions.findById(req.params.categoryId).then(function (category) {
             res.backend.render('category/new', {

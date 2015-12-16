@@ -36,7 +36,7 @@ module.exports = function (action, component, app) {
      * Count categories
      */
     action.count = function () {
-        return app.models.category.count()
+        return app.models.category.count();
     };
 
     /**
