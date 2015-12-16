@@ -154,7 +154,8 @@ module.exports = function (controller, component, app) {
                 items: items,
                 currentPage: page,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop()),
+                baseRoute: baseRoute
             });
         }).catch(function (err) {
             logger.error(err);
@@ -167,7 +168,8 @@ module.exports = function (controller, component, app) {
                 items: null,
                 currentPage: page,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop()),
+                baseRoute: baseRoute
             });
         });
     };

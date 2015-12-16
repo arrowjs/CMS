@@ -185,7 +185,8 @@ module.exports = function (controller, component, app) {
                 items: items,
                 currentPage: page,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop()),
+                baseRoute: baseRoute
             });
         }).catch(function (err) {
             logger.error(err);
@@ -198,7 +199,8 @@ module.exports = function (controller, component, app) {
                 items: null,
                 currentPage: page,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop()),
+                baseRoute: baseRoute
             });
         });
     };
@@ -269,7 +271,7 @@ module.exports = function (controller, component, app) {
             where: {
                 type: 'post'
             },
-            order: 'id ASC'
+            order: 'name ASC'
         }).then(function (categories) {
             // Add preview button
             toolbar.addGeneralButton(isAllow(req, permissionManageAll), 'Preview', baseRoute + 'preview/' + post.id,

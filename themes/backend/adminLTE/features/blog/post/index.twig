@@ -23,14 +23,14 @@
                 ids.push($(this).val());
             });
             $.ajax({
-                url: '/admin/blog/posts',
+                url: '{{ baseRoute }}',
                 type: 'DELETE',
                 data: {
                     ids: ids.join()
                 },
                 success: function (result) {
                     // Do something with the result
-                    window.location.href = "/admin/blog/posts/page/1";
+                    window.location.href = '{{ baseRoute }}';
                 }
             });
         }
