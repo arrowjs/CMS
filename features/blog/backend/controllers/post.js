@@ -410,6 +410,9 @@ module.exports = function (controller, component, app) {
         app.feature.blog.actions.findById(id).then(function (post) {
             req.post = req.page = post;
             next();
+        }).catch(function (err) {
+            logger.error(err);
+            next();
         });
     };
 
