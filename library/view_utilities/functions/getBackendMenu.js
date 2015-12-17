@@ -14,6 +14,7 @@ module.exports = {
         let feature_data = app.featureManager.getAttribute();
 
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus")).then(function (data) {
+            console.log('getBackendMenu : ',JSON.stringify(data,null,2));
             let menus;
             if (data) {
                 menus = JSON.parse(data)
@@ -26,27 +27,30 @@ module.exports = {
                     modules: {}
                 };
 
-                // System group
-                menus.systems = {
-                    title: 'MAIN NAVIGATION',
-                    sort: 2,
-                    modules: {}
-                };
+                //// System group
+                //menus.systems = {
+                //    title: 'MAIN NAVIGATION',
+                //    sort: 2,
+                //    modules: {}
+                //};
 
                 // Sorting menu
                 menus.sorting = {};
                 menus.sorting.default = [];
-                menus.sorting.systems = [];
+                //menus.sorting.systems = [];
 
                 Object.keys(feature_data).map(function (feature_name) {
                     if (feature_data[feature_name].backend_menu) {
-                        if (feature_data[feature_name].system) {
-                            menus.sorting.systems.push(feature_name);
-                            menus.systems.modules[feature_name] = feature_data[feature_name].backend_menu;
-                        } else if (feature_data[feature_name].active) {
-                            menus.sorting.defaults.push(feature_name);
-                            menus.defaults.modules[feature_name] = feature_data[feature_name].backend_menu;
-                        }
+                        menus.sorting.default.push(feature_name);
+                        menus.default.modules[feature_name] = feature_data[feature_name].backend_menu;
+
+                        //if (feature_data[feature_name].system) {
+                        //    menus.sorting.systems.push(feature_name);
+                        //    menus.systems.modules[feature_name] = feature_data[feature_name].backend_menu;
+                        //} else if (feature_data[feature_name].active) {
+                        //    menus.sorting.defaults.push(feature_name);
+                        //    menus.defaults.modules[feature_name] = feature_data[feature_name].backend_menu;
+                        //}
                     }
                 });
             }
@@ -56,7 +60,7 @@ module.exports = {
 
             for (let i in sortGroups) {
                 let group = menus[sortGroups[i].menu];
-
+                console.log(group);
                 if (!group.title) continue;
 
                 if (JSON.stringify(group.modules) === '{}') continue;
