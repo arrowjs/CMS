@@ -35,19 +35,19 @@ module.exports = {
         icon: 'fa fa-newspaper-o',
         menus: [
             {
-                permission: "post_manage",
+                permission: ['post_manage', 'post_manage_all'],
                 title: __('m_blog_backend_module_menu_backend_menu_post_index'),
-                link: '/posts/page/1'
+                link: '/posts'
             },
             {
-                permission: 'page_manage',
+                permission: ['page_manage', 'page_manage_all'],
                 title: __('m_blog_backend_module_menu_backend_menu_page_index'),
-                link: '/pages/page/1'
+                link: '/pages'
             },
             {
-                permission: 'category_manage',
+                permission: ['category_manage', 'category_manage_all'],
                 title: "Categories",
-                link: '/categories/page/1'
+                link: '/categories'
             }
         ]
     },
