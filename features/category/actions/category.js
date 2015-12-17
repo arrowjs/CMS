@@ -80,16 +80,22 @@ module.exports = function (action, component, app) {
      * Split string categories from database to array
      */
     action.convertToArray = function (str) {
-        str = str.split(':');
-        str.shift();
-        str.pop(str.length - 1);
-        return str;
+        if (typeof str == 'string') {
+            str = str.split(':');
+            str.shift();
+            str.pop(str.length - 1);
+            return str;
+        } else {
+            return [];
+        }
     };
 
     /**
      * Update count of categories
      */
     action.updateCount = function (listCategories, table, column, conditions) {
+        conditions = conditions || '';
+
         return Promise.map(listCategories, function (id) {
             let updateCountQuery = `UPDATE arr_category
                                         SET count = (

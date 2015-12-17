@@ -44,14 +44,16 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="id_category">{{ __('m_blog_backend_views_form_category') }}</label>
+                                    <label for="id_categories">{{ __('m_blog_backend_views_form_category') }}</label>
 
-                                    <select multiple="multiple" name="id_category" id="id_category"
+                                    <select multiple="multiple" name="id_categories" id="id_categories"
                                             class="form-control">
                                         {% for cat in categories %}
                                             <option value="{{ cat.id }}">{{ cat.name }}</option>
                                         {% endfor %}
                                     </select>
+
+                                    <input type="hidden" name="categories" id="categories"/>
                                 </div>
 
                                 <div class="form-group">
@@ -86,7 +88,6 @@
                     </div>
                 </div>
 
-                <input type="hidden" name="categories" id="categories"/>
                 <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}"/>
             </form>
         </div>
@@ -147,7 +148,7 @@
             /* END model feature script */
 
             /* BEGIN init select2 */
-            var select2 = $('#id_category');
+            var select2 = $('#id_categories');
             select2.select2({
                 placeholder: "{{ __('m_blog_backend_views_form_category_placeholder' ) }}",
                 templateSelection: function (option) {
@@ -166,7 +167,7 @@
             {% endif %}
 
             editForm.submit(function () {
-                var listId = $('#id_category').val();
+                var listId = $('#id_categories').val();
                 if (listId) {
                     $('#categories').val(':' + listId.join(':') + ':');
                 }
@@ -175,7 +176,7 @@
 
             // Auto save
             setInterval(function () {
-                var listId = $('#id_category').val();
+                var listId = $('#id_categories').val();
                 if (listId) {
                     $('#categories').val(':' + listId.join(':') + ':');
                 }
