@@ -5,121 +5,76 @@ let log = require('arrowjs').logger;
 
 module.exports = {
     name: "getBackendMenu",
-
     async: true,
-
     handler: function (currentUrl, currPermission, callback) {
         let app = this;
         let permissions = currPermission || app.permissions;
         let feature_data = app.featureManager.getAttribute();
-
-        app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus")).then(function (data) {
-            console.log('getBackendMenu : ',JSON.stringify(data,null,2));
-            let menus;
-            if (data) {
-                menus = JSON.parse(data)
-            } else {
-                menus = {};
-
-                menus.default = {
-                    title: 'Main Navigation',
-                    sort: 1,
-                    modules: {}
-                };
-
-                //// System group
-                //menus.systems = {
-                //    title: 'MAIN NAVIGATION',
-                //    sort: 2,
-                //    modules: {}
-                //};
-
-                // Sorting menu
-                menus.sorting = {};
-                menus.sorting.default = [];
-                //menus.sorting.systems = [];
-
-                Object.keys(feature_data).map(function (feature_name) {
-                    if (feature_data[feature_name].backend_menu) {
-                        menus.sorting.default.push(feature_name);
-                        menus.default.modules[feature_name] = feature_data[feature_name].backend_menu;
-
-                        //if (feature_data[feature_name].system) {
-                        //    menus.sorting.systems.push(feature_name);
-                        //    menus.systems.modules[feature_name] = feature_data[feature_name].backend_menu;
-                        //} else if (feature_data[feature_name].active) {
-                        //    menus.sorting.defaults.push(feature_name);
-                        //    menus.defaults.modules[feature_name] = feature_data[feature_name].backend_menu;
-                        //}
+        app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"))
+            .then(function (menu) {
+                let htmlMenu = '<section class="sidebar">' +
+                    '<ul class="sidebar-menu">';
+                if(menu){
+                    menu = JSON.parse(menu);
+                }else{
+                    menu = {};
+                    menu.sorting = [];
+                    menu.default = {
+                        title: "MAIN NAVIGATION",
+                        features: {}
                     }
-                });
-            }
 
-            let html = '<section class="sidebar"><ul class="sidebar-menu">';
-            let sortGroups = sortMenus(menus);
-
-            for (let i in sortGroups) {
-                let group = menus[sortGroups[i].menu];
-                console.log(group);
-                if (!group.title) continue;
-
-                if (JSON.stringify(group.modules) === '{}') continue;
-                html += `<li class="header">${group.title}</li>`;
-
-                let sortModules = menus.sorting[sortGroups[i].menu];
-
-                for (let y in sortModules) {
-                    let moduleName = sortModules[y];
-
-                    let subMenu = group.modules[moduleName];
-                    let icon = subMenu.icon || 'fa fa-circle-o text-danger';
-
-                    let menu_class = active_menu(currentUrl, moduleName.replace('-', '_'));
-
-                    // Only display this menu if user exits greater than one permission
-                    if (permissions.feature.hasOwnProperty(moduleName)) {
-                        html += `<li class="treeview ${menu_class}"><a href="{{link}}"><i class="${icon}"></i> <span> ${subMenu.title} </span>`;
-                        if (subMenu.menus.length > 1) {
-                            html = html.replace('{{link}}', '#');
-                            html += '<i class="fa fa-angle-left pull-right"></i></a>';
-                            html += '<ul class="treeview-menu">';
-
-                            for (let z in subMenu.menus) {
-                                let mn = subMenu.menus[z];
-
-                                let flag = false;
-                                for (let t in permissions.feature[moduleName]) {
-                                    if (permissions.feature[moduleName][t].name === mn.permission)
-                                        flag = true;
-                                }
-                                if (flag || !app.arrowSettings.role) {
-                                    menu_class = active_menu(currentUrl, mn.link.replace('/', ''), "active", 3);
-                                    html += `<li class="treeview ${menu_class}">
-                                <a href="${'/' + app.getConfig("admin_prefix") + '/' + (moduleName + mn.link)}">
-                                <i class="fa fa-circle-o"></i> <span> ${mn.title}</span>
-                                </a>`;
-                                }
-                            }
-                            html += '</ul></li>';
-                        } else {
-                            if (typeof subMenu.menus.length == 'number') {
-                                html = html.replace('{{link}}', '/' + app.getConfig("admin_prefix") + '/' + subMenu.menus[0].link);
-                            } else {
-                                html = html.replace('{{link}}', '/' + app.getConfig("admin_prefix") + '/' + moduleName);
-                            }
-                            html += '</a></li>';
+                    _.map(feature_data, function (val,key) {
+                        if(_.has(val,'backend_menu')){
+                            menu.sorting.push(key);
+                            menu.default.features[key] = val.backend_menu;
                         }
-                    }
+                    })
                 }
-            }
-            html += '</ul></section>';
+                htmlMenu += '<li class="header">'+menu.default.title+'</li>';
+                _.map(menu.sorting, function (key) {
+                    //Display all features have key 'backend_menus' in feature.js
+                    if( _.has(menu.default.features,key) && _.has(menu.default.features[key],'menus') && !_.isUndefined(permissions["feature"][key]) ){
+                        htmlMenu += '<li class="treeview">';
+                        //Display item menu of features
+                        if ( _.isArray(menu.default.features[key]['menus']) ){
+                            htmlMenu +=     '<a href="#">';
+                            htmlMenu +=         '<i class="'+menu.default.features[key].icon+'"></i> <span>'+ menu.default.features[key].title +'</span> <i class="fa fa-angle-left pull-right"></i>';
+                            htmlMenu +=     '</a>';
+                            htmlMenu += '<ul class="treeview-menu" style="display: none;">';
+                            _.map(menu.default.features[key]['menus'], function (val) {
+                                //Check permission of user to display
+                                if (isDisplay(val.permission,permissions["feature"][key])){
+                                    htmlMenu +=     '<li>';
+                                    htmlMenu +=          '<a href="/'+app.getConfig("admin_prefix")+'/'+key+val.link+'">';
+                                    htmlMenu +=              '<i class="fa fa-circle-o"></i> '+val.title;
+                                    htmlMenu +=          '</a>';
+                                    htmlMenu +=      '</li>';
+                                }
+                            });
+                            htmlMenu += '</ul>';
+                            //Display menu parent without items
+                        }else if( _.isObject(menu.default.features[key]['menus']) ){
+                            htmlMenu +=     '<a href="/'+app.getConfig("admin_prefix")+'/'+key+menu.default.features[key]['menus']['link']+'">';
+                            htmlMenu +=         '<i class="'+menu.default.features[key].icon+'"></i> <span>'+ menu.default.features[key].title +'</span> <i class="fa fa-angle-left pull-right"></i>';
+                            htmlMenu +=     '</a>';
+                        }
+                        htmlMenu += '</li>';
 
-            app.redisClient.setAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"), JSON.stringify(menus)).then(function () {
-                callback(null, html)
+                    }
+                })
+                htmlMenu += '</ul>' +
+                    '   </section>';
+                //set menu json variables to redis
+                app.redisClient.setAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"), JSON.stringify(menu)).then(function () {
+                    //return htmlMenu to display on sidebar
+                    callback(null, htmlMenu)
+                });
+
+            })
+            .catch(function (err) {
+                callback(err);
             });
-        }).catch(function (err) {
-            callback(err)
-        });
     }
 };
 
@@ -149,7 +104,21 @@ function sortMenus(menus) {
 
     return sortable;
 };
-
+/*
+ * Check permissions of user with permissions of feature
+ * return true if user has leatest one permistion else return false
+ * @permistions :  permissions(permissions of feature) of user
+ * @permissionsOfFeature: all permissions of feature is defined in feature.js (in backend_menus)
+ * */
+function isDisplay(permissions,permissionsOfFeature) {
+    let result = false;
+    if (!_.isArray(permissions)) permissions = [permissions];
+    _.map(permissions, function (val) {
+        if (_.findIndex(permissionsOfFeature,'name',val) > -1 )
+            result = true;
+    })
+    return result;
+}
 
 /**
  * Add active class to current menu
