@@ -74,30 +74,18 @@
                     <div class="col-md-12">
                         <div class="row">
                             {% if menus %}
-                                {% if menus.sorting.default.length > 0 %}
+                                {% if menus.sorting.length > 0 %}
                                     <ul id="sortable">
                                         <span class="sort-box-title">
-                                            {{ __('m_menus_backend_views_admin_sort_main_default') }}
+                                            {{ menus.default.title }}
                                         </span>
-                                        {% for d in menus.sorting.default %}
+                                        {% for d in menus.sorting %}
                                             <li id="d-{{ d }}" class="ui-state-default">
-                                                <span>{{ menus.default.modules[d]['title'] }}</span>
+                                                <span>{{ menus.default.features[d]['title'] }}</span>
                                             </li>
                                         {% endfor %}
                                     </ul>
                                 {% endif %}
-
-                                <ul id="sortable2">
-                                    <span class="sort-box-title">
-                                        {{ __('m_menus_backend_views_admin_sort_main_systems') }}
-                                    </span>
-
-                                    {% for s in menus.sorting.systems %}
-                                        <li id="s-{{ s }}" class="ui-state-default">
-                                            <span>{{ menus.systems.modules[s]['title'] }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
                             {% endif %}
                         </div>
                     </div>
@@ -121,25 +109,13 @@
                 }
             });
             sort.disableSelection();
-
-            var sort2 = $("#sortable2");
-            var data2 = '';
-            sort2.sortable({
-                placeholder: "ui-sortable-placeholder",
-                cancel: ".sort-box-title",
-                stop: function (event, ui) {
-                    data2 = sort2.sortable('serialize', {expression: /(.+)[-](.+)/});
-                }
-            });
-            sort2.disableSelection();
-
             $(document).on('click', '#saveForm', function () {
                 clearTimeout();
-                if (data != '' || data2 != '')
+                if (data != '')
                     $.ajax({
                         url: '/admin/menu/sort-admin-menu',
                         type: 'POST',
-                        data: data + '&' + data2,
+                        data: data,
                         success: function () {
                             $('.alert-tag').html('<div class="alert alert-success alert-dismissable">' +
                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' +
