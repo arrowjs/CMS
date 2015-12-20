@@ -220,7 +220,7 @@ module.exports = function (controller, component, app) {
         // Check permissions
         if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != req.user.id) {
             req.flash.error("You do not have permission to manage this page");
-            return next();
+            return res.redirect(baseRoute);
         }
 
         // Add buttons
@@ -252,7 +252,7 @@ module.exports = function (controller, component, app) {
         // Check permissions
         if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != req.user.id) {
             req.flash.error("You do not have permission to manage this page");
-            return next();
+            return res.redirect(baseRoute);
         }
 
         let data = req.body;
