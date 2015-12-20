@@ -82,11 +82,13 @@ module.exports = function (action, comp, app) {
 
     function optimizeData(data) {
         if (data.title) {
+            // Trim title, slug alias
             data.title = data.title.trim();
             data.alias = data.alias || slug(data.title.toLowerCase());
-            data.alias = data.alias || Date.now().toString();
         }
 
+        // Set default values
+        data.alias = data.alias || Date.now().toString();
         data.author_visible = (data.author_visible != null);
         data.categories = data.categories || '';
         data.published = data.published || 0;

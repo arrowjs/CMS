@@ -9,7 +9,7 @@ module.exports = function (controller, component, app) {
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let isAllow = ArrowHelper.isAllow;
     let baseRoute = '/admin/blog/pages/';
-    let allPermissions = 'page_manage_all';
+    let permissionManageAll = 'page_manage_all';
 
     function getErrorMsg(err, oldData, newData) {
         logger.error(err);
@@ -38,8 +38,8 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
         toolbar.addSearchButton('true');
-        toolbar.addCreateButton(isAllow(req, allPermissions), baseRoute + 'create');
-        toolbar.addDeleteButton(isAllow(req, allPermissions));
+        toolbar.addCreateButton(true, baseRoute + 'create');
+        toolbar.addDeleteButton(true);
         toolbar = toolbar.render();
 
         // Config columns
@@ -114,9 +114,9 @@ module.exports = function (controller, component, app) {
             }
         ];
 
-        // Check permissions view all pages
+        // Check permissions view all pages: If user does not have permission manage all, only show own pages
         let customCondition = " AND type='page'";
-        if (req.permissions.indexOf(allPermissions) == -1) customCondition += " AND created_by = " + req.user.id;
+        if (req.permissions.indexOf(permissionManageAll) == -1) customCondition += " AND created_by = " + req.user.id;
 
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: baseRoute + 'page/$page/sort',
@@ -144,7 +144,7 @@ module.exports = function (controller, component, app) {
             // Replace title of no-title page
             let items = results.rows;
             items.map(function (item) {
-                if (!item.dataValues.title) item.dataValues.title = '(no title)';
+                if (!item.title) item.title = '(no title)';
             });
 
             // Render view
@@ -177,35 +177,37 @@ module.exports = function (controller, component, app) {
     controller.pageCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'page_back_link');
-        toolbar.addSaveButton(isAllow(req, allPermissions));
+        toolbar.addSaveButton(true);
 
-        app.feature.category.actions.findAll({
-            where: {
-                type: 'page'
-            },
-            order: 'name ASC'
-        }).then(function (categories) {
-            res.backend.render('page/new', {
-                title: __('m_blog_backend_page_render_create'),
-                baseRoute: baseRoute,
-                toolbar: toolbar.render()
-            });
-        }).catch(function (err) {
-            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
-            res.redirect(baseRoute);
+        res.backend.render('page/new', {
+            title: __('m_blog_backend_page_render_create'),
+            baseRoute: baseRoute,
+            toolbar: toolbar.render()
         });
     };
 
     controller.pageSave = function (req, res, next) {
         let data = req.body;
+        let blogAction = app.feature.blog.actions;
+
+        // Delete draft page
+        let resolve = Promise.resolve();
+        if (data.page_id && data.page_id > 0) {
+            resolve = resolve.then(function () {
+                return blogAction.destroy([data.page_id]);
+            });
+        }
+
         data.created_by = req.user.id;
         let oldPage;
 
-        // Create page
-        app.feature.blog.actions.create(data, 'page').then(function (page) {
+        resolve.then(function () {
+            // Create page
+            return blogAction.create(data, 'page');
+        }).then(function (page) {
             oldPage = page;
             req.flash.success(__('m_blog_backend_page_flash_create_success'));
-            res.redirect(baseRoute + page.dataValues.id);
+            res.redirect(baseRoute + page.id);
         }).catch(function (err) {
             req.flash.error(getErrorMsg(err, oldPage, data));
             res.locals.page = data;
@@ -217,7 +219,7 @@ module.exports = function (controller, component, app) {
         let page = req.page;
 
         // Check permissions
-        if (req.permissions.indexOf(allPermissions) == -1 && page.created_by != req.user.id) {
+        if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != req.user.id) {
             req.flash.error("You do not have permission to manage this page");
             return next();
         }
@@ -225,11 +227,11 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'page_back_link');
-        toolbar.addSaveButton(isAllow(req, allPermissions));
-        toolbar.addDeleteButton(isAllow(req, allPermissions));
+        toolbar.addSaveButton(true);
+        toolbar.addDeleteButton(true);
 
         // Add preview button
-        toolbar.addGeneralButton(isAllow(req, allPermissions), 'Preview', baseRoute + 'preview/' + page.id,
+        toolbar.addGeneralButton(true, 'Preview', baseRoute + 'preview/' + page.id,
             {
                 icon: '<i class="fa fa-eye"></i>',
                 buttonClass: 'btn btn-info',
@@ -249,13 +251,14 @@ module.exports = function (controller, component, app) {
         let page = req.page;
 
         // Check permissions
-        if (req.permissions.indexOf(allPermissions) == -1 && page.created_by != req.user.id) {
+        if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != req.user.id) {
             req.flash.error("You do not have permission to manage this page");
             return next();
         }
 
         let data = req.body;
 
+        // Update page
         app.feature.blog.actions.update(page, data).then(function () {
             req.flash.success(__('m_blog_backend_page_flash_update_success'));
             res.redirect(baseRoute + page.id);
@@ -268,6 +271,12 @@ module.exports = function (controller, component, app) {
 
     controller.pagePreview = function (req, res) {
         if (req.page) {
+            // Check permissions
+            if (req.permissions.indexOf(permissionManageAll) == -1 && req.page.created_by != req.user.id) {
+                req.flash.error("You do not have permission to view this page");
+                return res.redirect(baseRoute);
+            }
+
             // Render frontend view
             res.frontend.render('page', {
                 page: req.page
@@ -284,11 +293,12 @@ module.exports = function (controller, component, app) {
 
         if (data.page_id) {
             app.feature.blog.actions.findById(data.page_id).then(function (page) {
-                // Check permissions
-                if (req.permissions.indexOf(allPermissions) == -1 && page.created_by != author) {
+                // Recheck permissions to prevent user access by ajax
+                if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != author) {
                     return res.jsonp({id: 0});
                 }
 
+                // Update page
                 app.feature.blog.actions.update(page, data).then(function () {
                     res.jsonp({id: page.id});
                 }).catch(function (err) {
@@ -316,6 +326,7 @@ module.exports = function (controller, component, app) {
         let ids = req.body.ids.split(',');
         let blogAction = app.feature.blog.actions;
 
+        // Find page need to delete
         blogAction.findAll({
             where: {
                 id: {
@@ -325,7 +336,7 @@ module.exports = function (controller, component, app) {
         }).then(function (pages) {
             return Promise.map(pages, function (page) {
                 // Recheck permissions to prevent user access by ajax
-                if (req.permissions.indexOf(allPermissions) == -1 && page.created_by != req.user.id) {
+                if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != req.user.id) {
                     return null;
                 } else {
                     return blogAction.destroy([page.id]);

@@ -68,9 +68,9 @@ module.exports = function (controller, component, app) {
         // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
-        toolbar.addSearchButton('true');
-        toolbar.addCreateButton(isAllow(req, permissionManageAll), baseRoute + 'create');
-        toolbar.addDeleteButton(isAllow(req, permissionManageAll));
+        toolbar.addSearchButton(true);
+        toolbar.addCreateButton(true, baseRoute + 'create');
+        toolbar.addDeleteButton(true);
         toolbar = toolbar.render();
 
         // Config columns
@@ -145,7 +145,7 @@ module.exports = function (controller, component, app) {
             }
         ];
 
-        // Check permissions view all posts
+        // Check permissions view all posts: If user does not have permission manage all, only show own posts
         let customCondition = " AND type='post'";
         if (req.permissions.indexOf(permissionManageAll) == -1) customCondition += " AND created_by = " + req.user.id;
 
@@ -175,7 +175,7 @@ module.exports = function (controller, component, app) {
             // Replace title of no-title post
             let items = results.rows;
             items.map(function (item) {
-                if (!item.dataValues.title) item.dataValues.title = '(no title)';
+                if (!item.title) item.title = '(no title)';
             });
 
             // Render view
@@ -208,7 +208,7 @@ module.exports = function (controller, component, app) {
     controller.postCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(isAllow(req, permissionManageAll));
+        toolbar.addSaveButton(true);
 
         app.feature.category.actions.findAll({
             where: {
@@ -230,12 +230,24 @@ module.exports = function (controller, component, app) {
 
     controller.postSave = function (req, res, next) {
         let data = req.body;
+        let blogAction = app.feature.blog.actions;
+
+        // Delete draft post
+        let resolve = Promise.resolve();
+        if (data.post_id && data.post_id > 0) {
+            resolve = resolve.then(function () {
+                return blogAction.destroy([data.post_id]);
+            });
+        }
+
         data.created_by = req.user.id;
         let post_id = 0;
         let oldPost;
 
-        // Create post
-        app.feature.blog.actions.create(data, 'post').then(function (post) {
+        resolve.then(function () {
+            // Create post
+            return blogAction.create(data, 'post');
+        }).then(function (post) {
             post_id = post.id;
             oldPost = post;
 
@@ -263,8 +275,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(isAllow(req, permissionManageAll));
-        toolbar.addDeleteButton(isAllow(req, permissionManageAll));
+        toolbar.addSaveButton(true);
+        toolbar.addDeleteButton(true);
 
         // Find all categories
         app.feature.category.actions.findAll({
@@ -274,7 +286,7 @@ module.exports = function (controller, component, app) {
             order: 'name ASC'
         }).then(function (categories) {
             // Add preview button
-            toolbar.addGeneralButton(isAllow(req, permissionManageAll), 'Preview', baseRoute + 'preview/' + post.id,
+            toolbar.addGeneralButton(true, 'Preview', baseRoute + 'preview/' + post.id,
                 {
                     icon: '<i class="fa fa-eye"></i>',
                     buttonClass: 'btn btn-info',
@@ -302,11 +314,12 @@ module.exports = function (controller, component, app) {
         // Check permissions
         if (req.permissions.indexOf(permissionManageAll) == -1 && post.created_by != req.user.id) {
             req.flash.error("You do not have permission to manage this post");
-            return next();
+            return res.redirect(baseRoute);
         }
 
         let data = req.body;
 
+        // Update post
         updatePost(post, data).then(function () {
             req.flash.success(__('m_blog_backend_post_flash_update_success'));
             res.redirect(baseRoute + req.params.postId);
@@ -319,6 +332,12 @@ module.exports = function (controller, component, app) {
 
     controller.postPreview = function (req, res) {
         if (req.post) {
+            // Check permissions
+            if (req.permissions.indexOf(permissionManageAll) == -1 && req.post.created_by != req.user.id) {
+                req.flash.error("You do not have permission to view this post");
+                return res.redirect(baseRoute);
+            }
+
             // Render frontend view
             res.frontend.render('post', {
                 post: req.post
@@ -335,11 +354,12 @@ module.exports = function (controller, component, app) {
 
         if (data.post_id) {
             app.feature.blog.actions.findById(data.post_id).then(function (post) {
-                // Check permissions
+                // Recheck permissions to prevent user access by ajax
                 if (req.permissions.indexOf(permissionManageAll) == -1 && post.created_by != author) {
                     return res.jsonp({id: 0});
                 }
 
+                // Update post
                 updatePost(post, data).then(function () {
                     res.jsonp({id: post.id});
                 }).catch(function (err) {
@@ -373,6 +393,7 @@ module.exports = function (controller, component, app) {
         let categoryAction = app.feature.category.actions;
         let blogAction = app.feature.blog.actions;
 
+        // Find posts need to delete
         blogAction.findAll({
             where: {
                 id: {
