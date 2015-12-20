@@ -8,7 +8,6 @@ module.exports = function (controller, component, app) {
 
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let baseRoute = '/admin/blog/posts/';
-    let isAllow = ArrowHelper.isAllow;
     let permissionManageAll = 'post_manage_all';
 
     function getErrorMsg(err, oldData, newData) {
