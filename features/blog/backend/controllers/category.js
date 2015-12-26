@@ -37,12 +37,18 @@ module.exports = function (controller, component, app) {
             },
             {
                 column: 'description',
-                header: 'Description'
+                header: 'Description',
+                filter: {
+                    data_type: 'string'
+                }
             },
             {
                 column: 'count',
                 header: 'Count',
-                width: '10%'
+                width: '10%',
+                filter: {
+                    data_type: 'number'
+                }
             }
         ];
 
@@ -235,9 +241,6 @@ module.exports = function (controller, component, app) {
                                 newCategory = oldCategory.replace(':' + id + ':', ':');
 
                             return blogAction.update(post, {categories: newCategory});
-                            //return post.updateAttributes({
-                            //    categories: newCategory
-                            //});
                         });
                     } else {
                         return null;
