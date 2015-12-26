@@ -138,7 +138,7 @@ module.exports = function (component, application) {
                 permissions: pagePermissions
             }
         },
-        "/blog/page/preview/:postId([0-9]+)": {
+        "/blog/pages/preview/:postId([0-9]+)": {
             get: {
                 handler: controller.pagePreview,
                 authenticate: true,
