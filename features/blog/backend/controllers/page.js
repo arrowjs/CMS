@@ -187,26 +187,40 @@ module.exports = function (controller, component, app) {
 
     controller.pageSave = function (req, res, next) {
         let data = req.body;
+        let author = req.user.id;
         let blogAction = app.feature.blog.actions;
-
-        // Delete draft page
+        let page_id = 0;
+        let oldPage;
         let resolve = Promise.resolve();
+
+
         if (data.page_id && data.page_id > 0) {
+            page_id = data.page_id;
+
+            // Update draft page
             resolve = resolve.then(function () {
-                return blogAction.destroy([data.page_id]);
+                data.modified_by = author;
+
+                return blogAction.findById(page_id).then(function (page) {
+                    return blogAction.update(page, data);
+                });
+            });
+        } else {
+            // Create page
+            resolve = resolve.then(function () {
+                data.created_by = author;
+
+                return blogAction.create(data, 'page').then(function (page) {
+                    page_id = post.id;
+                    oldPage = page;
+                    return null;
+                });
             });
         }
 
-        data.created_by = req.user.id;
-        let oldPage;
-
         resolve.then(function () {
-            // Create page
-            return blogAction.create(data, 'page');
-        }).then(function (page) {
-            oldPage = page;
             req.flash.success(__('m_blog_backend_page_flash_create_success'));
-            res.redirect(baseRoute + page.id);
+            res.redirect(baseRoute + page_id);
         }).catch(function (err) {
             req.flash.error(getErrorMsg(err, oldPage, data));
             res.locals.page = data;
@@ -248,14 +262,16 @@ module.exports = function (controller, component, app) {
 
     controller.pageUpdate = function (req, res, next) {
         let page = req.page;
+        let author = req.user.id;
 
         // Check permissions
-        if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != req.user.id) {
+        if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != author) {
             req.flash.error("You do not have permission to manage this page");
             return res.redirect(baseRoute);
         }
 
         let data = req.body;
+        data.modified_by = author;
 
         // Update page
         app.feature.blog.actions.update(page, data).then(function () {
@@ -296,6 +312,8 @@ module.exports = function (controller, component, app) {
                 if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != author) {
                     return res.jsonp({id: 0});
                 }
+
+                data.modified_by = author;
 
                 // Update page
                 app.feature.blog.actions.update(page, data).then(function () {

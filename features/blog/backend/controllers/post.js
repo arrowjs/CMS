@@ -229,30 +229,40 @@ module.exports = function (controller, component, app) {
 
     controller.postSave = function (req, res, next) {
         let data = req.body;
+        let author = req.user.id;
         let blogAction = app.feature.blog.actions;
-
-        // Delete draft post
+        let post_id = 0;
+        let oldPost;
         let resolve = Promise.resolve();
+
         if (data.post_id && data.post_id > 0) {
+            post_id = data.post_id;
+
+            // Update draft post
             resolve = resolve.then(function () {
-                return blogAction.destroy([data.post_id]);
+                data.modified_by = author;
+
+                return blogAction.findById(post_id).then(function (post) {
+                    return updatePost(post, data);
+                });
+
+            });
+        } else {
+            // Create post
+            resolve = resolve.then(function () {
+                data.created_by = author;
+
+                return blogAction.create(data, 'post').then(function (post) {
+                    post_id = post.id;
+                    oldPost = post;
+
+                    // Update count of categories if post is published
+                    return updateCategoryCount(post);
+                });
             });
         }
 
-        data.created_by = req.user.id;
-        let post_id = 0;
-        let oldPost;
-
         resolve.then(function () {
-            // Create post
-            return blogAction.create(data, 'post');
-        }).then(function (post) {
-            post_id = post.id;
-            oldPost = post;
-
-            // Update count of categories if post is published
-            return updateCategoryCount(post);
-        }).then(function () {
             req.flash.success(__('m_blog_backend_post_flash_create_success'));
             res.redirect(baseRoute + post_id);
         }).catch(function (err) {
@@ -309,14 +319,16 @@ module.exports = function (controller, component, app) {
 
     controller.postUpdate = function (req, res, next) {
         let post = req.post;
+        let author = req.user.id;
 
         // Check permissions
-        if (req.permissions.indexOf(permissionManageAll) == -1 && post.created_by != req.user.id) {
+        if (req.permissions.indexOf(permissionManageAll) == -1 && post.created_by != author) {
             req.flash.error("You do not have permission to manage this post");
             return res.redirect(baseRoute);
         }
 
         let data = req.body;
+        data.modified_by = author;
 
         // Update post
         updatePost(post, data).then(function () {
@@ -357,6 +369,8 @@ module.exports = function (controller, component, app) {
                 if (req.permissions.indexOf(permissionManageAll) == -1 && post.created_by != author) {
                     return res.jsonp({id: 0});
                 }
+
+                data.modified_by = author;
 
                 // Update post
                 updatePost(post, data).then(function () {
