@@ -422,7 +422,7 @@ module.exports = function (controller, component, app) {
                     return blogAction.destroy([post.id]).then(function () {
                         let categories = post.categories ? categoryAction.convertToArray(post.categories) : [];
                         if (categories.length > 0) {
-                            // Decrease count of categories
+                            // Update count of categories
                             return categoryAction.updateCount(categories, 'arr_post', 'categories', 'AND type = \'post\' AND published = 1');
                         } else {
                             return null;

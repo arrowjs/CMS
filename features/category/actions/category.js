@@ -7,6 +7,7 @@ module.exports = function (action, component, app) {
 
     /**
      * Find category by ID
+     * @param id {integer} - Id of category
      */
     action.findById = function (id) {
         return app.models.category.findById(id);
@@ -14,6 +15,7 @@ module.exports = function (action, component, app) {
 
     /**
      * Find category with conditions
+     * @param conditions {object} - Conditions used in query
      */
     action.find = function (conditions) {
         return app.models.category.find(conditions);
@@ -21,6 +23,7 @@ module.exports = function (action, component, app) {
 
     /**
      * Find all categories with conditions
+     * @param conditions {object} - Conditions used in query
      */
     action.findAll = function (conditions) {
         return app.models.category.findAll(conditions);
@@ -28,6 +31,7 @@ module.exports = function (action, component, app) {
 
     /**
      * Find and count all categories with conditions
+     * @param conditions {object} - Conditions used in query
      */
     action.findAndCountAll = function (conditions) {
         return app.models.category.findAndCountAll(conditions);
@@ -42,6 +46,8 @@ module.exports = function (action, component, app) {
 
     /**
      * Create new category
+     * @param data {object} - Data of new category
+     * @param type {string} - Type of category
      */
     action.create = function (data, type) {
         data.type = type;
@@ -53,6 +59,8 @@ module.exports = function (action, component, app) {
 
     /**
      * Update category
+     * @param category {object} - Category need to update
+     * @param data {object} - New data
      */
     action.update = function (category, data) {
         if (data.name) {
@@ -65,6 +73,7 @@ module.exports = function (action, component, app) {
 
     /**
      * Delete categories by ids
+     * @param ids {array} - Array ids of categories
      */
     action.destroy = function (ids) {
         return app.models.category.destroy({
@@ -78,6 +87,7 @@ module.exports = function (action, component, app) {
 
     /**
      * Split string categories from database to array
+     * @param str {string} - String to convert. Example ':1:2:3:'
      */
     action.convertToArray = function (str) {
         if (typeof str == 'string') {
@@ -92,6 +102,10 @@ module.exports = function (action, component, app) {
 
     /**
      * Update count of categories
+     * @param: listCategories {array} - List ids of categories need to update
+     * @param: table {string} - Name of table need to count
+     * @param: column {string} - Name of column used to store categories
+     * @param: conditions {string} - More conditions if needed
      */
     action.updateCount = function (listCategories, table, column, conditions) {
         conditions = conditions || '';

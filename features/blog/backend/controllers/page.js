@@ -193,7 +193,6 @@ module.exports = function (controller, component, app) {
         let oldPage;
         let resolve = Promise.resolve();
 
-
         if (data.page_id && data.page_id > 0) {
             page_id = data.page_id;
 

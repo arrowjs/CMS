@@ -5,6 +5,7 @@ let slug = require('slug');
 module.exports = function (action, comp, app) {
     /**
      * Find post by ID
+     * @param id {integer} - Id of post
      */
     action.findById = function (id) {
         return app.models.post.findById(id);
@@ -12,6 +13,7 @@ module.exports = function (action, comp, app) {
 
     /**
      * Find post with conditions
+     * @param conditions {object} - Conditions used in query
      */
     action.find = function (conditions) {
         return app.models.post.find(conditions);
@@ -19,6 +21,7 @@ module.exports = function (action, comp, app) {
 
     /**
      * Find all posts with conditions
+     * @param conditions {object} - Conditions used in query
      */
     action.findAll = function (conditions) {
         return app.models.post.findAll(conditions);
@@ -26,6 +29,7 @@ module.exports = function (action, comp, app) {
 
     /**
      * Find and count all posts with conditions
+     * @param conditions {object} - Conditions used in query
      */
     action.findAndCountAll = function (conditions) {
         return app.models.post.findAndCountAll(conditions);
@@ -40,6 +44,8 @@ module.exports = function (action, comp, app) {
 
     /**
      * Create new post
+     * @param data {object} - Data of new post
+     * @param type {string} - Type of post
      */
     action.create = function (data, type) {
         data = optimizeData(data);
@@ -55,6 +61,8 @@ module.exports = function (action, comp, app) {
 
     /**
      * Update post
+     * @param post {object} - Post need to update
+     * @param data {object} - New data
      */
     action.update = function (post, data) {
         data = optimizeData(data);
@@ -69,6 +77,7 @@ module.exports = function (action, comp, app) {
 
     /**
      * Delete posts by ids
+     * @param ids {array} - Array ids of posts
      */
     action.destroy = function (ids) {
         return app.models.post.destroy({

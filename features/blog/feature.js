@@ -15,6 +15,7 @@ module.exports = {
             name: 'post_manage_all',
             title: 'Manage all posts'
         },
+        //todo: add publish permission
         // Page
         {
             name: 'page_manage',
