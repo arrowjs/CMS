@@ -254,7 +254,7 @@
                                 <div class="box-tools" style="width: 100%;">
                                     <button type="button" class="btn btn-box-tool"
                                             style="width: 100%; text-align: right;"
-                                            onclick="collapseBox(this); loadModuleDetail(this,'{{ module.list }}' ,'{{ module.route }}', 1, '', {{ module.search }});">
+                                            onclick="collapseBox(this); loadModuleDetail(this ,'{{ module.route }}', 1, '', {{ module.search }}, '{{ module.list }}');">
                                         <i class="fa fa-plus arr-collapse-icon"></i>
                                     </button>
                                 </div>
@@ -346,7 +346,8 @@
 
         var btnLoadModule = {};
 
-        function loadModuleDetail(button,listLink , route, page, search, useSearch) {
+        function loadModuleDetail(button, route, page, search, useSearch,listLink) {
+            button = btnLoadModule;
             $.ajax({
                 url: '/admin' + route + '?page=' + page + '&searchStr=' + search
             }).done(function (result) {
@@ -384,9 +385,7 @@
                         }
                     }
                 }
-
-                btnLoadModule = button;
-                module_detail_view += getPagination(total_pages, page, route, search, useSearch);
+                module_detail_view += getPagination(total_pages, page, route, search, useSearch,listLink);
 
                 module_detail_view += '</div><div class="form-group btn-add-menu-wrapper">' ;
                 if (listLink)
@@ -394,7 +393,6 @@
                 module_detail_view += '<button type="button" class="btn btn-primary btn-add-menu" ' +
                         'onclick="return addNewMenu(this);">' +
                         '{{ __('m_menus_backend_views_new_btn_add_menu') }}&nbsp;<i class="fa fa-arrow-circle-right"></i></button></div>';
-
                 $(button).parent().parent('.box-header').next('.box-body').html(module_detail_view);
 
                 // Remove call ajax after first call
@@ -402,7 +400,7 @@
             });
         }
 
-        function getPagination(total_pages, current_page, route, search, useSearch) {
+        function getPagination(total_pages, current_page, route, search, useSearch,listLink) {
             var pagination = '';
 
             if (total_pages > 1) {
@@ -420,7 +418,7 @@
                 pagination += '<ul class="pagination pagination-sm no-margin">';
 
                 if (current_page > 1) {
-                    pagination += '<li><a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + 1 + ', \'' + search + '\', ' + useSearch + ')">«</a></li>';
+                    pagination += '<li><a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + 1 + ', \'' + search + '\', ' + useSearch + ', \'' + listLink + '\')">«</a></li>';
                 }
 
                 for (var page_index = start_index; page_index <= total_pages; page_index++) {
@@ -433,11 +431,11 @@
                     } else {
                         pagination += '<li>';
                     }
-                    pagination += '<a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + page_index + ', \'' + search + '\', ' + useSearch + ')">' + page_index + '</a></li>';
+                    pagination += '<a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + page_index + ', \'' + search + '\', ' + useSearch + ', \'' + listLink + '\')">' + page_index + '</a></li>';
                 }
 
                 if (current_page < total_pages) {
-                    pagination += '<li><a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + total_pages + ', \'' + search + '\', ' + useSearch + ')">»</a></li>';
+                    pagination += '<li><a href="javascript:void(0)" onclick="loadModuleDetail(btnLoadModule, \'' + route + '\', ' + total_pages + ', \'' + search + '\', ' + useSearch + ', \'' + listLink +'\')">»</a></li>';
                 }
 
                 pagination += '</ul><div class="row"></div>';

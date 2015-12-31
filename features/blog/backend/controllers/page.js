@@ -379,7 +379,7 @@ module.exports = function (controller, component, app) {
         if (searchText != '') conditions += " AND title like '%" + searchText.toLowerCase() + "%'";
 
         // Find all pages with page and search keyword
-        app.feature.blog.findAndCountAll({
+        app.feature.blog.actions.findAndCountAll({
             attributes: ['id', 'alias', 'title'],
             where: [conditions],
             limit: itemOfPage,
