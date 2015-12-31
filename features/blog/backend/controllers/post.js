@@ -6,7 +6,7 @@ let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
-    let itemOfPage = app.getConfig('pagination').numberItem || 10;
+    let itemOfPage = 2;
     let baseRoute = '/admin/blog/posts/';
     let permissionManageAll = 'post_manage_all';
 
@@ -461,7 +461,7 @@ module.exports = function (controller, component, app) {
         if (searchText != '') conditions += " AND title like '%" + searchText.toLowerCase() + "%'";
 
         // Find all posts with page and search keyword
-        app.feature.blog.findAndCountAll({
+        app.feature.blog.actions.findAndCountAll({
             attributes: ['id', 'alias', 'title'],
             where: [conditions],
             limit: itemOfPage,
