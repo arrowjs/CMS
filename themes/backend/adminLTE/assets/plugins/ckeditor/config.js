@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
 CKEDITOR.editorConfig = function( config ) {
 	// Define changes to default configuration here.
-	// For the complete reference:
+	// For complete reference see:
 	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
-	config.skin = 'office2013';
+
 	// The toolbar groups arrangement, optimized for two toolbar rows.
 	config.toolbarGroups = [
 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
@@ -26,13 +26,32 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'about' }
 	];
 
-	// Remove some buttons, provided by the standard plugins, which we don't
-	// need to have in the Standard(s) toolbar.
-	config.removeButtons = 'Underline,Subscript,Superscript';
+	// Remove some buttons provided by the standard plugins, which are
+	// not needed in the Standard(s) toolbar.
+	//config.removeButtons = 'Subscript,Superscript';
 
-	// Se the most common block elements.
+	// Set the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';
 
-	// Make dialogs simpler.
-	config.removeDialogTabs = 'image:advanced;link:advanced';
+	// Simplify the dialog windows.
+	config.removeDialogTabs = 'image:advanced;link:advanced;link:upload;image:upload';
+
+	/**
+	 * custom config
+	 */
+	config.codeSnippet_theme = 'monokai';
+
+	config.codemirror_theme = 'monokai';
+	config.codemirror = {
+		lineNumbers: false
+	};
+
+	config.extraPlugins = 'image2,oembed';
+
+	config.htmlEncodeOutput = false;
+	config.entities = false;
+	config.extraAllowedContent = 'iframe;*(*);*[style]{*};';
+
+	config.filebrowserBrowseUrl = '/fileman/index.html';
+	config.filebrowserImageBrowseUrl = '/fileman/index.html?type=image';
 };

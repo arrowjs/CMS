@@ -1,10 +1,11 @@
-{% extends '_layout.twig' %}
+{% extends '_layout.' + getConfig('viewExtension') %}
 
 {% block content %}
     <div class="row">
         <div class="col-md-12">
             <form id="edit-form" method="post">
                 {{ toolbar | safe }}
+
                 <div class="box box-primary">
                     <div class="box-body">
                         <div class="row">
@@ -13,7 +14,7 @@
                                     <label for="title">{{ __('all_table_column_title') }} <span
                                                 class="required">*</span></label>
                                     <input type="text" class="form-control" name="title" id="title"
-                                           value="{{ page.title }}" autocomplete="off" required="required"/>
+                                           value="{{ page.title }}" autocomplete="off"/>
                                 </div>
 
                                 <div class="form-group">
@@ -67,31 +68,20 @@
                         </div>
                     </div>
                 </div>
+
+                <input type="hidden" name="page_id" id="page_id" value="{{ page.id }}"/>
             </form>
         </div>
+        {% if page.id %}
+            {{ getPluginExtension("page_" + page.id) | async | safe }}
+        {% endif %}
     </div>
 {% endblock %}
 
 {% block jsExtends %}
-    {% include '_editorScript.twig' %}
+    {% include '_editorScript.' + getConfig('viewExtension') %}
 
     <script>
-        function deleteRecords() {
-            var ids = [];
-            ids.push({{ page.id }});
-            $.ajax({
-                url: '/admin/blog/pages',
-                type: 'DELETE',
-                data: {
-                    ids: ids.join()
-                },
-                success: function (result) {
-                    // Do something with the result
-                    window.location.href = "/admin/blog/pages/page/1";
-                }
-            });
-        }
-
         var modal = '<div class="modal fade" id="feature" tabindex="-1" aria-hidden="true">' +
                 '<div class="modal-dialog"><div class="row">' +
                 '<div class="modal-content col-md-12 col-sm-12">' +
@@ -103,7 +93,76 @@
                 '<button type="button" class="btn default" data-dismiss="modal">' + '{{ __("cancel") }}' + '</button> ' +
                 '<button type="button" class="btn btn-danger" onclick="return selectFeature()">' + '{{ __("choose") }}' + '</button>' +
                 '</div></div></div></div></div></div>';
-        $('body').append(modal);
+        var body = $('body'), editForm = $('#edit-form');
+        var draftData = editForm.serialize();
+
+        $(function () {
+            body.append(modal);
+
+            /* BEGIN init ckeditor */
+            CKEDITOR.replace('full_text', {
+                height: 300
+            });
+            CKEDITOR.replace('intro_text', {
+                height: 100,
+                toolbar: [
+                    {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline']}
+                ]
+            });
+            /* END init ckeditor */
+
+            /* BEGIN model feature script */
+            body.on('hidden.bs.modal', '#feature', function () {
+                $(this).removeData('bs.modal');
+                $('#feature .modal-footer').css('display', 'block');
+            });
+
+            $(document).on('click', '#selectFileman', function () {
+                openCustomRoxy2();
+            });
+
+            $(document).on('click', 'input[name="optionsRadios"]', function () {
+                if ($(this).is(':checked')) {
+                    $('#previewSelect').attr('src', $(this).val());
+                }
+            });
+            /* END model feature script */
+
+            // Auto save
+            setInterval(function () {
+                $('#intro_text').val(CKEDITOR.instances.intro_text.getData());
+                $('#full_text').val(CKEDITOR.instances.full_text.getData());
+
+                // If content was changed, save to database
+                if (editForm.serialize() != draftData) {
+                    draftData = editForm.serialize();
+
+                    $.ajax({
+                        url: '{{ baseRoute }}autosave',
+                        type: 'POST',
+                        data: draftData
+                    }).done(function (result) {
+                        if (result.id) {
+                            $('#page_id').val(result.id);
+                        }
+                    });
+                }
+            }, {{ getConfig('autoSaveDelay') * 1000 }});
+        });
+
+        function deleteRecords() {
+            var ids = [];
+            ids.push({{ page.id }});
+            $.ajax({
+                url: '{{ baseRoute }}',
+                type: 'DELETE',
+                data: {
+                    ids: ids.join()
+                }
+            }).done(function () {
+                window.location.href = '{{ baseRoute }}page/1';
+            });
+        }
 
         function openCustomRoxy2() {
             var filemanFrame = '<iframe src="/fileman/index.html?integration=custom&type=files&txtFieldId=txtSelectedFile" ' +
@@ -138,8 +197,8 @@
                         '</button></div><div class="row">';
                 list.forEach(function (l) {
                     html += '<div class="col-md-3 col-sm-3 ft-item">' +
-                            '<label><input type="radio" name="optionsRadios" value="' + l + '" checked>' +
-                            '<img class="img img-thumbnail" src="' + l + '"></label></div>';
+                    '<label><input type="radio" name="optionsRadios" value="' + l + '" checked>' +
+                    '<img class="img img-thumbnail" src="' + l + '"></label></div>';
                 });
                 html += '</div>';
                 $('#feature-list').html(html);
@@ -154,36 +213,5 @@
             $('#previewImage').attr('src', feature);
             $('#feature').modal('hide');
         }
-
-        $(function () {
-            /* BEGIN init ckeditor */
-            CKEDITOR.replace('full_text', {
-                height: 300
-            });
-            CKEDITOR.replace('intro_text', {
-                height: 100,
-                toolbar: [
-                    {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline']}
-                ]
-            });
-            /* END init ckeditor */
-
-            /* BEGIN model feature script */
-            $('body').on('hidden.bs.modal', '#feature', function () {
-                $(this).removeData('bs.modal');
-                $('#feature .modal-footer').css('display', 'block');
-            });
-
-            $(document).on('click', '#selectFileman', function () {
-                openCustomRoxy2();
-            });
-
-            $(document).on('click', 'input[name="optionsRadios"]', function () {
-                if ($(this).is(':checked')) {
-                    $('#previewSelect').attr('src', $(this).val());
-                }
-            });
-            /* END model feature script */
-        });
     </script>
 {% endblock %}

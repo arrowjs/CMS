@@ -1,4 +1,7 @@
 {% extends '_layout.' + getConfig('viewExtension') %}
+{% block headExtends %}
+    {{ getPlugin("post_"+ post.id,"head-tag") | async | safe }}
+{% endblock %}
 
 {% block content %}
     <div class="breadcrumbs">
@@ -54,20 +57,20 @@
                         <div class="col-lg-10 col-sm-10">
 
                             {% if post.image %}
-                            <div class="blog-img gs">
-                                <img src="{{ post.image }}" alt=""/>
-                            </div>
+                                <div class="blog-img gs">
+                                    <img src="{{ post.image }}" alt=""/>
+                                </div>
                             {% endif %}
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-2 col-sm-2 text-right">
-                            {%  if categories != '' %}
+                            {% if categories != '' %}
                                 <div class="author">
                                     Categories
                                 </div>
                                 <ul class="list-unstyled">
-                                    {%  for category in categories %}
+                                    {% for category in categories %}
                                         <li>
                                             <a href="/blog/posts/categories/{{ category.alias }}/{{ category.id }}">
                                                 <em>

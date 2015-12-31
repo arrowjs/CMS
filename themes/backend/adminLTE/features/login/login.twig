@@ -33,7 +33,7 @@
 
     <div class="login-box-body">
         <p class="login-box-msg">Login to Administrator site</p>
-        {% include '_messages.twig' %}
+        {% include '_messages.' + getConfig('viewExtension') %}
 
         <form method="post">
             <div class="form-group has-feedback">

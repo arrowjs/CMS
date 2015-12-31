@@ -1,10 +1,11 @@
-{% extends '_layout.twig' %}
+{% extends '_layout.' + getConfig('viewExtension') %}
 
 {% block content %}
     <div class="row">
         <div class="col-md-12">
             <form id="edit-form" method="post">
                 {{ toolbar | safe }}
+
                 <div class="box box-primary">
                     <div class="box-body">
                         <div class="row">
@@ -13,7 +14,7 @@
                                     <label for="title">{{ __('all_table_column_title') }} <span
                                                 class="required">*</span></label>
                                     <input type="text" class="form-control" name="title" id="title"
-                                           value="{{ post.title }}" autocomplete="off" required="required"/>
+                                           value="{{ post.title }}" autocomplete="off"/>
                                 </div>
 
                                 <div class="form-group">
@@ -43,14 +44,16 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="id_category">{{ __('m_blog_backend_views_form_category') }}</label>
+                                    <label for="id_categories">{{ __('m_blog_backend_views_form_category') }}</label>
 
-                                    <select multiple="multiple" name="id_category" id="id_category"
+                                    <select multiple="multiple" name="id_categories" id="id_categories"
                                             class="form-control">
                                         {% for cat in categories %}
                                             <option value="{{ cat.id }}">{{ cat.name }}</option>
                                         {% endfor %}
                                     </select>
+
+                                    <input type="hidden" name="categories" id="categories"/>
                                 </div>
 
                                 <div class="form-group">
@@ -84,30 +87,20 @@
                         </div>
                     </div>
                 </div>
+
+                <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}"/>
             </form>
         </div>
+        {% if post.id %}
+            {{ getPluginExtension("post_" + post.id) | async | safe }}
+        {% endif %}
     </div>
 {% endblock %}
 
 {% block jsExtends %}
-    {% include '_editorScript.twig' %}
+    {% include '_editorScript.' + getConfig('viewExtension') %}
 
     <script>
-        function deleteRecords() {
-            var ids = [];
-            ids.push({{ post.id }});
-            $.ajax({
-                url: '/admin/blog/posts',
-                type: 'DELETE',
-                data: {
-                    ids: ids.join()
-                },
-                success: function () {
-                    window.location.href = "/admin/blog/posts/page/1";
-                }
-            });
-        }
-
         var modal = '<div class="modal fade" id="feature" tabindex="-1" aria-hidden="true">' +
                 '<div class="modal-dialog"><div class="row">' +
                 '<div class="modal-content col-md-12 col-sm-12">' +
@@ -119,7 +112,107 @@
                 '<button type="button" class="btn default" data-dismiss="modal">' + '{{ __("cancel") }}' + '</button> ' +
                 '<button type="button" class="btn btn-danger" onclick="return selectFeature()">' + '{{ __("choose") }}' + '</button>' +
                 '</div></div></div></div></div></div>';
-        $('body').append(modal);
+        var body = $('body'), editForm = $('#edit-form');
+        var draftData = editForm.serialize();
+
+        $(function () {
+            body.append(modal);
+
+            /* BEGIN init ckeditor */
+            CKEDITOR.replace('full_text', {
+                height: 300
+            });
+            CKEDITOR.replace('intro_text', {
+                height: 100,
+                toolbar: [
+                    {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline']}
+                ]
+            });
+            /* END init ckeditor */
+
+            /* BEGIN model feature script */
+            body.on('hidden.bs.modal', '#feature', function () {
+                $(this).removeData('bs.modal');
+                $('#feature .modal-footer').css('display', 'block');
+            });
+
+            $(document).on('click', '#selectFileman', function () {
+                openCustomRoxy2();
+            });
+
+            $(document).on('click', 'input[name="optionsRadios"]', function () {
+                if ($(this).is(':checked')) {
+                    $('#previewSelect').attr('src', $(this).val());
+                }
+            });
+            /* END model feature script */
+
+            /* BEGIN init select2 */
+            var select2 = $('#id_categories');
+            select2.select2({
+                placeholder: "{{ __('m_blog_backend_views_form_category_placeholder' ) }}",
+                templateSelection: function (option) {
+                    var text = $(option.element).text().trim();
+                    text = text.replace(/^[—]+/, '');
+                    return text;
+                }
+            });
+
+            {% if post.categories %}
+            var cat_id = '{{ post.categories }}';
+            cat_id = cat_id.split(':');
+            cat_id.shift();
+            cat_id.pop(cat_id[cat_id.length - 1]);
+            select2.val(cat_id).trigger('change');
+            {% endif %}
+
+            editForm.submit(function () {
+                var listId = $('#id_categories').val();
+                if (listId) {
+                    $('#categories').val(':' + listId.join(':') + ':');
+                }
+            });
+            /* END init select2 */
+
+            // Auto save
+            setInterval(function () {
+                var listId = $('#id_categories').val();
+                if (listId) {
+                    $('#categories').val(':' + listId.join(':') + ':');
+                }
+                $('#intro_text').val(CKEDITOR.instances.intro_text.getData());
+                $('#full_text').val(CKEDITOR.instances.full_text.getData());
+
+                // If content was changed, save to database
+                if (editForm.serialize() != draftData) {
+                    draftData = editForm.serialize();
+
+                    $.ajax({
+                        url: '{{ baseRoute }}autosave',
+                        type: 'POST',
+                        data: draftData
+                    }).done(function (result) {
+                        if (result.id) {
+                            $('#post_id').val(result.id);
+                        }
+                    });
+                }
+            }, {{ getConfig('autoSaveDelay') * 1000 }});
+        });
+
+        function deleteRecords() {
+            var ids = [];
+            ids.push({{ post.id }});
+            $.ajax({
+                url: '{{ baseRoute }}',
+                type: 'DELETE',
+                data: {
+                    ids: ids.join()
+                }
+            }).done(function(){
+                window.location.href = '{{ baseRoute }}page/1';
+            });
+        }
 
         function openCustomRoxy2() {
             var filemanFrame = '<iframe src="/fileman/index.html?integration=custom&type=files&txtFieldId=txtSelectedFile" style="width:100%;height:100%" frameborder="0">';
@@ -153,8 +246,8 @@
                         '</button></div><div class="row">';
                 list.forEach(function (l) {
                     html += '<div class="col-md-3 col-sm-3 ft-item">' +
-                            '<label><input type="radio" name="optionsRadios" value="' + l + '" checked>' +
-                            '<img class="img img-thumbnail" src="' + l + '"></label></div>';
+                    '<label><input type="radio" name="optionsRadios" value="' + l + '" checked>' +
+                    '<img class="img img-thumbnail" src="' + l + '"></label></div>';
                 });
                 html += '</div>';
                 $('#feature-list').html(html);
@@ -169,68 +262,5 @@
             $('#previewImage').attr('src', feature);
             $('#feature').modal('hide');
         }
-
-        $(function () {
-            /* BEGIN init ckeditor */
-            CKEDITOR.replace('full_text', {
-                height: 300
-            });
-            CKEDITOR.replace('intro_text', {
-                height: 100,
-                toolbar: [
-                    {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline']}
-                ]
-            });
-            /* END init ckeditor */
-
-            /* BEGIN model feature script */
-            $('body').on('hidden.bs.modal', '#feature', function () {
-                $(this).removeData('bs.modal');
-                $('#feature .modal-footer').css('display', 'block');
-            });
-
-            $(document).on('click', '#selectFileman', function () {
-                openCustomRoxy2();
-            });
-
-            $(document).on('click', 'input[name="optionsRadios"]', function () {
-                if ($(this).is(':checked')) {
-                    $('#previewSelect').attr('src', $(this).val());
-                }
-            });
-            /* END model feature script */
-
-            /* BEGIN init select2 */
-            var select2 = $('#id_category');
-            select2.select2({
-                placeholder: "{{ __('m_blog_backend_views_form_category_placeholder' ) }}",
-                templateSelection: function (option) {
-                    var text = $(option.element).text().trim();
-                    text = text.replace(/^[—]+/, '');
-                    return text;
-                }
-            });
-
-            {% if post.categories %}
-            var cat_id = '{{ post.categories }}';
-            cat_id = cat_id.split(':');
-            cat_id.shift();
-            cat_id.pop(cat_id[cat_id.length - 1]);
-            select2.val(cat_id).trigger('change');
-            {% endif %}
-
-            $("#edit-form").submit(function () {
-                var form = $('#edit-form');
-                var list_id = $('#id_category').val();
-                if (list_id && list_id != '') {
-                    list_id = ':' + list_id.join(':') + ':';
-                    var cat_id = $("<input>")
-                            .attr("type", "hidden")
-                            .attr("name", "categories").val(list_id);
-                    form.append($(cat_id));
-                }
-            });
-            /* END init select2 */
-        });
     </script>
 {% endblock %}

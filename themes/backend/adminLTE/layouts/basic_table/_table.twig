@@ -1,9 +1,9 @@
 <table class="table table-striped table-bordered table-hover" id="datatable_orders">
     <thead>
-        {% include 'basic_table/_header.twig' %}
-        {% include 'basic_table/_filter.twig' %}
+        {% include 'basic_table/_header.' + getConfig('viewExtension') %}
+        {% include 'basic_table/_filter.' + getConfig('viewExtension') %}
     </thead>
     <tbody>
-        {% include 'basic_table/_body.twig' %}
+        {% include 'basic_table/_body.' + getConfig('viewExtension') %}
     </tbody>
 </table>
