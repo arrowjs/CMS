@@ -105,7 +105,7 @@ module.exports = function (controller, component, app) {
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: '/admin/users/$page',
             limit: itemOfPage,
-            backLink : 'user_back_link'
+            backLink: 'user_back_link'
         });
 
         // List users
@@ -128,7 +128,7 @@ module.exports = function (controller, component, app) {
                 items: results.rows,
                 totalPage: totalPage,
                 toolbar: toolbar,
-                queryString: (req.url.indexOf('?') == -1)?'':('?'+req.url.split('?').pop())
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         }).catch(function (error) {
             _log.error(error);
@@ -142,18 +142,14 @@ module.exports = function (controller, component, app) {
     };
 
     controller.view = function (req, res) {
-
-
-        //add button on view
+        // Add button
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton('user_back_link');
         toolbar.addSaveButton(isAllow(req, 'index'));
         toolbar = toolbar.render();
 
         // Get user by session and list roles
-
-        app.feature.roles.actions.findAll()
-            .then(function (roles) {
+        app.feature.roles.actions.findAll().then(function (roles) {
             res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_update'),
                 roles: roles,
@@ -181,6 +177,7 @@ module.exports = function (controller, component, app) {
         //Get user by id
         app.models.user.findById(req.params.uid).then(function (user) {
             edit_user = user;
+
             return new Promise(function (fulfill, reject) {
                 if (data.base64 && data.base64 != '' && data.base64 != user.user_image_url) {
                     let fileName = folder_upload + slug(user.user_login).toLowerCase() + '.png';
@@ -219,7 +216,7 @@ module.exports = function (controller, component, app) {
                 return res.redirect('/' + adminPrefix + '/users/' + req.params.uid);
             });
         }).catch(function (error) {
-            if (error.name == 'SequelizeUniqueConstraintError') {
+            if (error.name == ArrowHelper.UNIQUE_ERROR) {
                 req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
                 return next();
             } else {
@@ -230,14 +227,13 @@ module.exports = function (controller, component, app) {
     };
 
     controller.create = function (req, res) {
-
-        //add button on view
+        // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton('user_back_link');
         toolbar.addSaveButton(isAllow(req, 'index'));
         toolbar = toolbar.render();
 
-        //Get list roles
+        // Get list roles
         app.feature.roles.actions.findAll({
             order: "id asc"
         }).then(function (roles) {
@@ -258,13 +254,15 @@ module.exports = function (controller, component, app) {
     };
 
     controller.save = function (req, res, next) {
-        //add button on view
+        // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton('user_back_link');
         toolbar.addSaveButton(isAllow(req, 'create'));
         toolbar = toolbar.render();
+
         // Get form data
         var data = req.body;
+
         return new Promise(function (fulfill, reject) {
             if (data.base64 && data.base64 != '') {
                 let fileName = folder_upload + slug(data.user_login).toLowerCase() + '.png';
@@ -341,7 +339,7 @@ module.exports = function (controller, component, app) {
     controller.profile = function (req, res) {
         let role_ids = [];
 
-        //add button on view
+        // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton('user_back_link');
         toolbar.addSaveButton(isAllow(req, 'create'));
@@ -372,7 +370,6 @@ module.exports = function (controller, component, app) {
                 role_ids: null
             });
         })
-
     };
 
     /**
@@ -390,7 +387,7 @@ module.exports = function (controller, component, app) {
      * Change pass view
      */
     controller.changePass = function (req, res) {
-        //add button on view
+        // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton('user_back_link');
         toolbar = toolbar.render();
