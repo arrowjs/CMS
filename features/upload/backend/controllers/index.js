@@ -6,29 +6,18 @@ let fs = require('fs'),
     formidable = require('formidable'),
     path = require('path');
 
-let rootPath = '/fileman/uploads';
 let standardPath = __base + 'upload';
 var spawn = require('child_process').spawn;
 
-function checkFileExist(fileName, index, extension) {
-    return new Promise(function (fulfill, reject) {
-        fs.access(fileName + '(' + index + ')' + extension, function (err) {
-            if (!err) {
-                fulfill(checkFileExist(fileName, parseInt(index) + 1, extension));
-            } else {
-                fulfill(fileName + '(' + index + ')' + extension);
-            }
-        });
-    });
-}
+module.exports = function (controller, component, app) {
+    let rootPath = app.getConfig('uploadPath');
 
-
-module.exports = function (controller, component, application) {
     controller.dirtree = function (req, res) {
         let results = [];
         getDirectories(rootPath, results);
         res.jsonp(results);
     };
+
     controller.createdir = function (req, res) {
         let dir = req.body.d;
         let name = req.body.n;
@@ -41,6 +30,7 @@ module.exports = function (controller, component, application) {
             }
         });
     };
+
     controller.deletedir = function (req, res) {
         let dir = req.body.d;
 
@@ -52,6 +42,7 @@ module.exports = function (controller, component, application) {
             }
         });
     };
+
     controller.movedir = function (req, res) {
         res.jsonp({"res": "error", "msg": __('m_upload_backend_controllers_index_delete_error_integrated')});
     };
@@ -59,6 +50,7 @@ module.exports = function (controller, component, application) {
     controller.copydir = function (req, res) {
         res.jsonp({"res": "error", "msg": __('m_upload_backend_controllers_index_delete_error_integrated')});
     };
+
     controller.renamedir = function (req, res) {
         let d = req.body.d;
         let n = req.body.n;
@@ -162,6 +154,7 @@ module.exports = function (controller, component, application) {
             res.jsonp({"res": "ok", "msg": ""});
         }
     };
+
     controller.copyfile = function (req, res) {
         res.jsonp({"res": "error", "msg": __('m_upload_backend_controllers_index_delete_error_integrated')});
     };
@@ -185,6 +178,7 @@ module.exports = function (controller, component, application) {
         }
         res.jsonp({"res": "ok", "msg": ""});
     };
+
     controller.thumb = function (req, res) {
         let filePath = req.query.f;
         let width = req.body.width;
@@ -224,6 +218,17 @@ module.exports = function (controller, component, application) {
     };
 };
 
+function checkFileExist(fileName, index, extension) {
+    return new Promise(function (fulfill, reject) {
+        fs.access(fileName + '(' + index + ')' + extension, function (err) {
+            if (!err) {
+                fulfill(checkFileExist(fileName, parseInt(index) + 1, extension));
+            } else {
+                fulfill(fileName + '(' + index + ')' + extension);
+            }
+        });
+    });
+}
 
 function getFileName(path) {
     return path.replace(/^.*[\\\/]/, '');

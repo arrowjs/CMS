@@ -6,7 +6,7 @@ let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
-    let itemOfPage = 2;
+    let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let baseRoute = '/admin/blog/posts/';
     let permissionManageAll = 'post_manage_all';
 

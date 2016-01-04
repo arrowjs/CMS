@@ -76,7 +76,7 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         user_image_url: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.TEXT,
             defaultValue: '/img/noImage.png'
         },
         salt: {
