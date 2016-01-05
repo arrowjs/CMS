@@ -12,6 +12,12 @@ module.exports = {
             system: true,
             active: true
         },
+        action: {
+            path: {
+                folder: 'actions',
+                file: '*.js'
+            }
+        },
         controller: [
             {
                 path: {
@@ -95,6 +101,40 @@ module.exports = {
         },
         extend: {
             getLayouts: getLayouts
+        }
+    },
+    plugin : {
+        path: {
+            folder: "/plugins",
+            file: "plugin.js"
+        },
+        model : {
+            path: {
+                folder: 'models',
+                file: '*.js'
+            }
+        },
+        action: {
+            path: {
+                folder: 'actions',
+                file: '*.js'
+            }
+        },
+        route: {
+            path: {
+                file: 'route.js'
+            }
+        },
+        controller: {
+            path: {
+                folder: 'controllers',
+                file: '*.js'
+            }
+        },
+        view: {
+            path: {
+                folder: "views"
+            }
         }
     }
 };

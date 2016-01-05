@@ -1,5 +1,7 @@
 {% extends '_layout.' + getConfig('viewExtension') %}
-
+{% block headExtends %}
+    {{ getPlugin("page_"+ item.id,"head-tag") | async | safe }}
+{% endblock %}
 
 {% block content %}
 

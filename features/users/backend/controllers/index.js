@@ -6,8 +6,8 @@ let fs = require('fs');
 
 let path = require('path');
 let slug = require('slug');
-let writeFileAsync = promise.promisify(require('fs').writeFile);
-let readdirAsync = promise.promisify(require('fs').readdir);
+let writeFileAsync = promise.promisify(fs.writeFile);
+let readdirAsync = promise.promisify(fs.readdir);
 let formidable = require('formidable');
 promise.promisifyAll(formidable);
 
@@ -104,7 +104,8 @@ module.exports = function (controller, component, app) {
         // Config columns
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
             rootLink: '/admin/users/$page',
-            limit: itemOfPage
+            limit: itemOfPage,
+            backLink: 'user_back_link'
         });
 
         // List users
@@ -126,7 +127,8 @@ module.exports = function (controller, component, app) {
                 title: __('m_users_backend_controllers_index_list'),
                 items: results.rows,
                 totalPage: totalPage,
-                toolbar: toolbar
+                toolbar: toolbar,
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         }).catch(function (error) {
             _log.error(error);
@@ -141,20 +143,13 @@ module.exports = function (controller, component, app) {
 
     controller.view = function (req, res) {
         // Add button
-        let back_link = '/admin/users';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_index_list']) {
-            back_link = '/admin' + search_params[route + '_index_list'];
-        }
-
-        //add button on view
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
+        toolbar.addBackButton('user_back_link');
         toolbar.addSaveButton(isAllow(req, 'index'));
         toolbar = toolbar.render();
 
         // Get user by session and list roles
-        app.models.role.findAll().then(function (roles) {
+        app.feature.roles.actions.findAll().then(function (roles) {
             res.backend.render(edit_template, {
                 title: __('m_users_backend_controllers_index_update'),
                 roles: roles,
@@ -182,6 +177,7 @@ module.exports = function (controller, component, app) {
         //Get user by id
         app.models.user.findById(req.params.uid).then(function (user) {
             edit_user = user;
+
             return new Promise(function (fulfill, reject) {
                 if (data.base64 && data.base64 != '' && data.base64 != user.user_image_url) {
                     let fileName = folder_upload + slug(user.user_login).toLowerCase() + '.png';
@@ -220,7 +216,7 @@ module.exports = function (controller, component, app) {
                 return res.redirect('/' + adminPrefix + '/users/' + req.params.uid);
             });
         }).catch(function (error) {
-            if (error.name == 'SequelizeUniqueConstraintError') {
+            if (error.name == ArrowHelper.UNIQUE_ERROR) {
                 req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
                 return next();
             } else {
@@ -231,20 +227,14 @@ module.exports = function (controller, component, app) {
     };
 
     controller.create = function (req, res) {
-        // Add button
-        let back_link = '/admin/users';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_index_list']) {
-            back_link = '/admin' + search_params[route + '_index_list'];
-        }
-        //add button on view
+        // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
+        toolbar.addBackButton('user_back_link');
         toolbar.addSaveButton(isAllow(req, 'index'));
         toolbar = toolbar.render();
 
-        //Get list roles
-        app.models.role.findAll({
+        // Get list roles
+        app.feature.roles.actions.findAll({
             order: "id asc"
         }).then(function (roles) {
             res.backend.render(edit_template, {
@@ -264,18 +254,15 @@ module.exports = function (controller, component, app) {
     };
 
     controller.save = function (req, res, next) {
-        let back_link = '/admin/users';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_index_list']) {
-            back_link = '/admin' + search_params[route + '_index_list'];
-        }
-        //add button on view
+        // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
+        toolbar.addBackButton('user_back_link');
         toolbar.addSaveButton(isAllow(req, 'create'));
         toolbar = toolbar.render();
+
         // Get form data
         var data = req.body;
+
         return new Promise(function (fulfill, reject) {
             if (data.base64 && data.base64 != '') {
                 let fileName = folder_upload + slug(data.user_login).toLowerCase() + '.png';
@@ -292,13 +279,13 @@ module.exports = function (controller, component, app) {
                 app.models.user.create(data).then(function (user) {
                     req.flash.success(__('m_users_backend_controllers_index_add_flash_success'));
                     res.locals.title = __('m_users_backend_controllers_index_list');
-                    res.redirect(back_link);
+                    res.redirect(req.originalUrl);
                 }).catch(function (error) {
                     if (error.name == 'SequelizeUniqueConstraintError') {
                         res.locals.title = __('m_users_backend_controllers_index_update');
                         res.locals.toolbar = toolbar;
                         req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
-                        res.redirect(back_link);
+                        res.redirect(req.originalUrl);
                     } else {
                         req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
                         res.backend.render(edit_template, {
@@ -352,9 +339,9 @@ module.exports = function (controller, component, app) {
     controller.profile = function (req, res) {
         let role_ids = [];
 
-        //add button on view
+        // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('/admin');
+        toolbar.addBackButton('user_back_link');
         toolbar.addSaveButton(isAllow(req, 'create'));
         toolbar = toolbar.render();
 
@@ -363,7 +350,7 @@ module.exports = function (controller, component, app) {
             role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
                 return val.match(/\d/g);
             });
-        app.models.role.findAll({
+        app.feature.roles.actions.findAll({
             where: {
                 id: {
                     $in: role_ids
@@ -383,7 +370,6 @@ module.exports = function (controller, component, app) {
                 role_ids: null
             });
         })
-
     };
 
     /**
@@ -401,9 +387,9 @@ module.exports = function (controller, component, app) {
      * Change pass view
      */
     controller.changePass = function (req, res) {
-        //add button on view
+        // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('/admin');
+        toolbar.addBackButton('user_back_link');
         toolbar = toolbar.render();
         res.backend.render('change-pass', {
             title: "Change User's password",
@@ -417,7 +403,7 @@ module.exports = function (controller, component, app) {
      */
     controller.updatePass = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('/admin/users');
+        toolbar.addBackButton('user_back_link');
         toolbar = toolbar.render();
         let old_pass = req.body.old_pass;
         let user_pass = req.body.user_pass;

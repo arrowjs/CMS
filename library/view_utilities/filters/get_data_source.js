@@ -5,7 +5,7 @@ module.exports =  {
     handler :  function (source, filter, cb) {
         if (typeof source == 'string') {
             if (filter.source_type && filter.source_type == "query") {
-                this.models[source].findAll().then(function (data) {
+                this.models.rawQuery(source).then(function (data) {
                     let arr = [];
                     for (let i in data) {
                         let ob = {};
@@ -14,6 +14,10 @@ module.exports =  {
                         arr.push(ob);
                     }
                     cb(null, arr);
+                });
+            } else if(filter.source_type=="static_resource"){
+                this.models.rawQuery(source).then(function (data) {
+                    cb(null, data[0][0].data);
                 });
             } else {
                 this.models[source].find({

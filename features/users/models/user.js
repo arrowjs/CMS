@@ -1,4 +1,5 @@
-"use strict";
+'use strict';
+
 let crypto = require('crypto');
 
 module.exports = function (sequelize, DataTypes) {
@@ -21,11 +22,6 @@ module.exports = function (sequelize, DataTypes) {
                 len: {
                     args: [1, 60],
                     msg: 'please input not too long'
-                },
-                isName: function (value) {
-                    if (typeof value !== 'string' || value.match(/[\ +-.,!@#$%^&*();\/|<>"'\\]/g)) {
-                        throw new Error('Please input valid value Username');
-                    }
                 }
             }
         },
@@ -40,17 +36,13 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         user_email: {
-            type: DataTypes.STRING(100),
+            type: DataTypes.STRING,
             unique: true,
             validate: {
                 isEmail: {
                     msg: 'Please input valid Email'
                 }
             }
-        },
-        user_url: {
-            type: DataTypes.STRING(100),
-            allowNull: true
         },
         user_registered: {
             type: DataTypes.DATE,
@@ -84,7 +76,7 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         user_image_url: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.TEXT,
             defaultValue: '/img/noImage.png'
         },
         salt: {
@@ -130,7 +122,7 @@ module.exports = function (sequelize, DataTypes) {
                     if (temp.length > 0) temp += ',' + v;
                     else temp += v;
                     if (v == role_id_value) flag = true;
-                })
+                });
                 if (!flag) this.setDataValue('role_id', Number(value[0]));
                 this.setDataValue('role_ids', temp);
             }

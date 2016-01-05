@@ -37,7 +37,8 @@ module.exports = function (controller, component, app) {
 
         // Config columns
         let filter = ArrowHelper.createFilter(req, res, table, {
-            rootLink: '/admin/menu/sort'
+            rootLink: '/admin/menu/sort',
+            backLink: 'menu_back_link'
         });
 
         app.models.menu.findAll({
@@ -63,7 +64,7 @@ module.exports = function (controller, component, app) {
     controller.create = function (req, res) {
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('/admin/menu');
+        toolbar.addBackButton('menu_back_link');
         toolbar.addSaveButton(isAllow(req,'create'));
 
         readFileAsync(__base + "themes/frontend/" + app.getConfig('frontendTheme') + "/theme.json", "utf8")
@@ -134,17 +135,12 @@ module.exports = function (controller, component, app) {
 
 
     controller.saveSortAdminMenu = function (req, res) {
-        let systems = req.body['s[]'] || [];
         let defaults = req.body['d[]'] || [];
-
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"))
             .then(function (data) {
                 let menus = JSON.parse(data);
-                if (systems.length > 0) {
-                    menus.sorting.systems = systems;
-                }
                 if (defaults.length > 0) {
-                    menus.sorting.default = defaults;
+                    menus.sorting = defaults;
                 }
 
                 app.redisClient.setAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"), JSON.stringify(menus))
@@ -160,6 +156,7 @@ module.exports = function (controller, component, app) {
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"))
             .then(function (data) {
                 let menus = JSON.parse(data);
+                //console.log(JSON.stringify(menus,null,2));
                 res.render('admin_sort', {
                     title: __('m_menus_backend_controller_sort_admin_menu_render_title'),
                     menus: menus,
@@ -254,7 +251,7 @@ module.exports = function (controller, component, app) {
 
     controller.read = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('/admin/menu');
+        toolbar.addBackButton('menu_back_link');
         toolbar.addSaveButton(isAllow(req,'create'));
 
         readFileAsync(__base + "themes/frontend/" + app.getConfig('frontendTheme') + "/theme.json", "utf8")

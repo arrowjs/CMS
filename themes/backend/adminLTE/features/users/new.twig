@@ -1,4 +1,4 @@
-{% extends '_layout.twig' %}
+{% extends '_layout.' + getConfig('viewExtension') %}
 
 {% block cssExtends %}
     <link href="/backend/adminLTE/assets/plugins/cropit/jquery.avatar.css" rel="stylesheet"/>
@@ -33,12 +33,6 @@
                                     <label>{{ __('all_table_column_email') }}<span class="required"> *</span></label>
                                     <input type="email" class="form-control" name="user_email"
                                            value="{{ item.user_email }}" required="required"/>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>{{ __('all_table_column_phone') }}<span class="required"> *</span></label>
-                                    <input type="text" class="form-control" name="phone"
-                                           value="{{ item.phone }}" required="required"/>
                                 </div>
 
                                 <div class="form-group">

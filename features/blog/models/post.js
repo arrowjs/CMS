@@ -1,53 +1,45 @@
-"use strict";
+'use strict';
 
 module.exports = function (sequelize, DataTypes) {
+
     return sequelize.define("post", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true,
-            validate: {
-                isInt: {
-                    msg: 'ID must be an integer number'
-                }
-            }
+            autoIncrement: true
         },
         title: {
             type: DataTypes.STRING,
-            allowNull: false,
             validate: {
                 len: {
-                    args: [1, 255],
-                    msg: 'Title cannot empty or too long'
-                },
-                isTitle : function(value){
-                    if(value.length == 0 || value.match(/[+-,$%^*();\/|<>"'\\]/g)){
-                        throw new Error('Please input valid value title');
-                    }
+                    args: [0, 255],
+                    msg: 'Title cannot too long'
                 }
             }
         },
         alias: {
-            type: DataTypes.STRING(255),
-            unique: true,
+            type: DataTypes.STRING,
             validate: {
                 len: {
-                    args: [0, 255],
-                    msg: 'Alias is too long'
+                    args: [1, 255],
+                    msg: 'Alias cannot empty or too long'
+                },
+                isSlug: function (value) {
+                    if (typeof value !== 'string' || !value.match(/[a-zA-Z0-9-_]/g)) {
+                        throw new Error('Alias cannot includes special characters!');
+                    }
                 }
             }
         },
+        categories: DataTypes.TEXT,
         intro_text: DataTypes.TEXT,
-        full_text: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
+        full_text: DataTypes.TEXT,
         image: {
-            type: DataTypes.STRING(255),
-            defaultValue : '/img/noImage.png',
+            type: DataTypes.STRING,
+            defaultValue: '/img/noImage.png',
             len: {
                 args: [0, 255],
-                msg: 'Image is too long'
+                msg: 'Image name is too long'
             }
         },
         published: {
@@ -58,7 +50,6 @@ module.exports = function (sequelize, DataTypes) {
                     msg: 'Invalid data type'
                 }
             }
-
         },
         published_at: {
             type: DataTypes.DATE,
@@ -68,59 +59,56 @@ module.exports = function (sequelize, DataTypes) {
                 }
             }
         },
-        categories: {
-            type: DataTypes.TEXT
-        },
         type: {
-            type: DataTypes.STRING(15),
-            len: {
-                args: [1, 15],
-                msg: 'Invalid data type'
+            type: DataTypes.STRING,
+            validate: {
+                isSlug: function (value) {
+                    if (typeof value !== 'string' || !value.match(/[a-zA-Z0-9-_]/g)) {
+                        throw new Error('Type cannot includes special characters!');
+                    }
+                }
             }
         },
         created_at: {
             type: DataTypes.DATE,
             validate: {
                 isDate: {
-                    msg: 'Please input datetime value'
+                    msg: 'Invalid date value'
                 }
             }
         },
         created_by: {
             type: DataTypes.INTEGER,
-            validate: {
-                isInt: {
-                    msg: 'Please input integer value'
-                }
-            },
             allowNull: false
         },
         modified_at: {
             type: DataTypes.DATE,
             validate: {
                 isDate: {
-                    msg: 'Please input datetime value'
+                    msg: 'Invalid date value'
                 }
             }
         },
         modified_by: {
-            type: DataTypes.INTEGER,
-            validate: {
-                isInt: {
-                    msg: 'Please input integer value'
-                }
-            }
+            type: DataTypes.INTEGER
         },
         author_visible: {
             type: DataTypes.BOOLEAN,
             isIn: {
                 args: [['0', '1', 0, 1, true, false]],
-                msg: 'Please input valid value of author_visible'
+                msg: 'Invalid boolean value'
             }
         }
     }, {
+        indexes: [
+            {
+                unique: true,
+                fields: ['alias', 'type']
+            }
+        ],
         tableName: 'arr_post',
         createdAt: 'created_at',
         updatedAt: 'modified_at'
     });
+
 };

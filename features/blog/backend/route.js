@@ -4,155 +4,228 @@
  * Map final part of URL to equivalent functions in controller
  */
 module.exports = function (component, application) {
-    let comp = component.controllers.backend;
+
+    let controller = component.controllers.backend;
+    let postPermissions = ['post_manage', 'post_manage_all'];
+    let pagePermissions = ['page_manage', 'page_manage_all'];
+    let categoryPermission = ['category_manage'];
+
     return {
-        // route post
+        // Post
         "/blog": {
             get: {
-                handler: comp.postList,
+                handler: controller.postList,
                 authenticate: true,
-                permissions: "post_index"
+                permissions: postPermissions
             },
             param: {
-                key: "cid",
-                handler: comp.postRead
-            }
-        },
-        "/blog/posts/page/:page": {
-            get: {
-                handler: comp.postList,
-                authenticate: true,
-                permissions: "post_index"
-            }
-        },
-        "/blog/posts/page/:page/sort/:sort/(:order)?": {
-            get: {
-                handler: comp.postList,
-                authenticate: true,
-                permissions: "post_index"
+                key: "postId",
+                handler: controller.postRead
             }
         },
         "/blog/posts": {
             get: {
-                handler: comp.postList,
+                handler: controller.postList,
                 authenticate: true,
-                permissions: "post_index"
+                permissions: postPermissions
             },
             delete: {
-                handler: comp.postDelete,
+                handler: controller.postDelete,
                 authenticate: true,
-                permissions: "post_delete"
+                permissions: postPermissions
+            }
+        },
+        "/blog/posts/page/:page": {
+            get: {
+                handler: controller.postList,
+                authenticate: true,
+                permissions: postPermissions
+            }
+        },
+        "/blog/posts/page/:page/sort/:sort/(:order)?": {
+            get: {
+                handler: controller.postList,
+                authenticate: true,
+                permissions: postPermissions
             }
         },
         "/blog/posts/create": {
             get: {
-                handler: comp.postCreate,
+                handler: controller.postCreate,
                 authenticate: true,
-                permissions: "post_create"
+                permissions: postPermissions
             },
             post: {
-                handler: [comp.postSave,comp.postCreate],
+                handler: [controller.postSave, controller.postCreate],
                 authenticate: true,
-                permissions: "post_create"
+                permissions: postPermissions
             }
         },
-        "/blog/posts/:cid": {
+        "/blog/posts/:postId([0-9]+)": {
             get: {
-                handler: comp.postView,
+                handler: controller.postView,
                 authenticate: true,
-                permissions: "post_index"
+                permissions: postPermissions
             },
             post: {
-                handler: [comp.postUpdate, comp.postView],
+                handler: [controller.postUpdate, controller.postView],
                 authenticate: true,
-                permissions: ["post_edit_all", "post_edit"]
-            }
-        },"/blog/posts/preview/:postId([0-9]+)": {
-            get: {
-                handler: comp.postPreview,
-                authenticate: true,
-                permissions: "post_index"
+                permissions: postPermissions
             }
         },
-
-
-
-        // route page
-
+        "/blog/posts/preview/:postId([0-9]+)": {
+            get: {
+                handler: controller.postPreview,
+                authenticate: true,
+                permissions: postPermissions
+            }
+        },
+        "/blog/posts/autosave": {
+            post: {
+                handler: controller.postAutosave,
+                authenticate: true,
+                permissions: postPermissions
+            }
+        },
+        // Page
         "/blog/pages": {
             get: {
-                handler: comp.pageList,
+                handler: controller.pageList,
                 authenticate: true,
-                permissions: "page_index"
+                permissions: pagePermissions
             },
             delete: {
-                handler: comp.pageDelete,
+                handler: controller.pageDelete,
                 authenticate: true,
-                permissions: "page_delete"
+                permissions: pagePermissions
             }
         },
         "/blog/pages/page/:page": {
             get: {
-                handler: comp.pageList,
+                handler: controller.pageList,
                 authenticate: true,
-                permissions: "page_index"
+                permissions: pagePermissions
             }
         },
         "/blog/pages/page/:page/sort/:sort/(:order)?": {
             get: {
-                handler: comp.pageList,
+                handler: controller.pageList,
                 authenticate: true,
-                permissions: "page_index"
+                permissions: pagePermissions
             }
         },
         "/blog/pages/create": {
             get: {
-                handler: comp.pageCreate,
+                handler: controller.pageCreate,
                 authenticate: true,
-                permissions: "page_create"
+                permissions: pagePermissions
             },
             post: {
-                handler: [comp.pageSave,comp.pageCreate],
+                handler: [controller.pageSave, controller.pageCreate],
                 authenticate: true,
-                permissions: "page_create"
+                permissions: pagePermissions
             }
         },
-        "/blog/pages/:cid([0-9]+)": {
+        "/blog/pages/:postId([0-9]+)": {
             get: {
-                handler: comp.pageView,
+                handler: controller.pageView,
                 authenticate: true,
-                permissions: "page_index"
+                permissions: pagePermissions
             },
             post: {
-                handler: [comp.pageUpdate, comp.pageView],
+                handler: [controller.pageUpdate, controller.pageView],
                 authenticate: true,
-                permissions: "page_edit"
+                permissions: pagePermissions
             }
         },
-        "/blog/pages/:name": {
+        "/blog/pages/preview/:postId([0-9]+)": {
             get: {
-                handler: comp.redirectToView,
+                handler: controller.pagePreview,
                 authenticate: true,
-                permissions: "page_edit"
+                permissions: pagePermissions
             }
         },
-
+        "/blog/pages/autosave": {
+            post: {
+                handler: controller.pageAutosave,
+                authenticate: true,
+                permissions: pagePermissions
+            }
+        },
+        // Category
+        "/blog/categories": {
+            get: {
+                handler: controller.categoryList,
+                authenticate: true,
+                permissions: categoryPermission
+            },
+            delete: {
+                handler: controller.categoryDelete,
+                authenticate: true,
+                permissions: categoryPermission
+            }
+        },
+        "/blog/categories/page/:page": {
+            get: {
+                handler: controller.categoryList,
+                authenticate: true,
+                permissions: categoryPermission
+            }
+        },
+        "/blog/categories/page/:page/sort/:sort/(:order)?": {
+            get: {
+                handler: controller.categoryList,
+                authenticate: true,
+                permissions: categoryPermission
+            }
+        },
+        "/blog/categories/quick-create": {
+            post: {
+                handler: controller.categoryQuickCreate,
+                authenticate: true,
+                permissions: categoryPermission
+            }
+        },
+        "/blog/categories/create": {
+            get: {
+                handler: controller.categoryCreate,
+                authenticate: true,
+                permissions: categoryPermission
+            },
+            post: {
+                handler: [controller.categorySave, controller.categoryCreate],
+                authenticate: true,
+                permissions: categoryPermission
+            }
+        },
+        "/blog/categories/:categoryId([0-9]+)": {
+            get: {
+                handler: controller.categoryView,
+                authenticate: true,
+                permissions: categoryPermission
+            },
+            post: {
+                handler: [controller.categoryUpdate, controller.categoryView],
+                authenticate: true,
+                permissions: categoryPermission
+            }
+        },
 
         /*
-        * Defines route for add link menu
-        * */
-        "/blog/post/link/menu" : {
-            get : {
-                handler : comp.link_menu_post,
-                authenticate : true
+         * Defines route for add link menu
+         * */
+        "/blog/post/link/menu": {
+            get: {
+                handler: controller.linkMenuPost,
+                authenticate: true
             }
         },
-        "/blog/page/link/menu" : {
-            get : {
-                handler : comp.link_menu_page,
-                authenticate : true
+        "/blog/page/link/menu": {
+            get: {
+                handler: controller.linkMenuPage,
+                authenticate: true
             }
         }
-
     }
+
 };

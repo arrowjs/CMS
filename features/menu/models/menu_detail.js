@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (sequelize, DataTypes) {
-    let MenuDetail = sequelize.define("menu_detail", {
+    return sequelize.define('menu_detail', {
         detail_id : {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -59,5 +59,4 @@ module.exports = function (sequelize, DataTypes) {
         updatedAt: "modified_at",
         deletedAt: false
     });
-    return MenuDetail;
 };

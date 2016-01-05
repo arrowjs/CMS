@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="/backend/adminLTE/assets/plugins/datepicker/datepicker3.css">
 
     <link rel="stylesheet" href="/backend/adminLTE/dist/css/custom.css">
-    <link rel="shortcut icon" href="/img/favicon.ico"  type="image/x-icon"/>
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
 
     {% block cssExtends %}{% endblock %}
 
@@ -36,12 +36,12 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
     <header class="main-header">
-        {% include '_header.twig' %}
+        {% include '_header.' + getConfig('viewExtension') %}
     </header>
 
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
-        {{ getBackendMenu(route,permissions) | async | safe }}
+        {{ getBackendMenu(route, permissions) | async | safe }}
     </aside>
 
     <!-- Content Wrapper. Contains page content -->
@@ -56,7 +56,7 @@
 
         <!-- Main content -->
         <section class="content">
-            {% include '_messages.twig' %}
+            {% include '_messages.' + getConfig('viewExtension') %}
 
             {% block content %}{% endblock %}
         </section>
@@ -66,7 +66,7 @@
     <!-- /.content-wrapper -->
 
     <footer class="main-footer">
-        {% include '_footer.twig' %}
+        {% include '_footer.' + getConfig('viewExtension') %}
     </footer>
 </div>
 <!-- ./wrapper -->

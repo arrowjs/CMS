@@ -1,0 +1,65 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row toolbar">
+                <div class="col-md-12">
+                    {{ toolbar | safe }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12" style="margin-bottom: 10px">
+                    <form method="post" action="{{ baseRoute }}quick-create">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-plus"></i></span>
+                                    <input type="text" class="form-control" name="name" required="required"
+                                            placeholder="Category name">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary btn-flat"
+                                                type="submit">Quick create
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="box box-solid box-primary">
+                <div class="box-body table-responsive">
+                    {% include 'basic_table/_table.' + getConfig('viewExtension') %}
+
+                    {{ paginateLinks(totalPage, currentPage, baseRoute+'page/{page}/sort/'+currentColumn+'/'+currentOrder+queryString) | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsExtends %}
+    <script>
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+
+            if (ids.length > 0) {
+                $.ajax({
+                    url: '{{ baseRoute }}',
+                    type: 'DELETE',
+                    data: {
+                        ids: ids.join()
+                    }
+                }).done(function () {
+                    window.location.href = '{{ baseRoute }}';
+                });
+            }
+        }
+    </script>
+{% endblock %}

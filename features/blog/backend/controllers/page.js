@@ -1,32 +1,47 @@
 'use strict';
 
-let slug = require('slug');
-let promise = require('arrowjs').Promise;
-
-let route = 'blog';
+let _ = require('arrowjs')._;
+let Promise = require('arrowjs').Promise;
+let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
-    let isAllow = ArrowHelper.isAllow;
     let itemOfPage = app.getConfig('pagination').numberItem || 10;
+    let baseRoute = '/admin/blog/pages/';
+    let permissionManageAll = 'page_manage_all';
+
+    function getErrorMsg(err, oldData, newData) {
+        logger.error(err);
+
+        let errorMsg = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
+
+        if (err.name == ArrowHelper.UNIQUE_ERROR) {
+            for (let i in err.errors) {
+                if (oldData && oldData._previousDataValues)
+                    newData[err.errors[i].path] = oldData._previousDataValues[err.errors[i].path];
+                else
+                    newData[err.errors[i].path] = '';
+            }
+
+            errorMsg = 'A page with the alias provided already exists';
+        }
+
+        return errorMsg;
+    }
 
     controller.pageList = function (req, res) {
-
+        // Get current page and default sorting
         var page = req.params.page || 1;
+
         // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addCreateButton(isAllow(req, 'page_create'), '/admin/blog/pages/create');
-        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
+        toolbar.addRefreshButton(baseRoute);
+        toolbar.addSearchButton('true');
+        toolbar.addCreateButton(true, baseRoute + 'create');
+        toolbar.addDeleteButton(true);
         toolbar = toolbar.render();
 
-        // Store search data to session
-        let session_search = {};
-        if (req.session.search) {
-            session_search = req.session.search;
-        }
-        session_search[route + '_page_list'] = req.url;
-        req.session.search = session_search;
-
+        // Config columns
         let tableStructure = [
             {
                 column: "id",
@@ -38,8 +53,7 @@ module.exports = function (controller, component, app) {
                 column: 'title',
                 width: '25%',
                 header: __('all_table_column_title'),
-                link: '/admin/blog/pages/{id}',
-                acl: 'blog.post_edit',
+                link: baseRoute + '{id}',
                 filter: {
                     data_type: 'string'
                 }
@@ -58,7 +72,7 @@ module.exports = function (controller, component, app) {
                 header: __('all_table_column_author'),
                 filter: {
                     data_type: 'string',
-                    filter_key: 'created_by'
+                    filter_key: 'user.display_name'
                 }
             },
             {
@@ -99,37 +113,52 @@ module.exports = function (controller, component, app) {
             }
         ];
 
+        // Check permissions view all pages: If user does not have permission manage all, only show own pages
+        let customCondition = " AND type='page'";
+        if (req.permissions.indexOf(permissionManageAll) == -1) customCondition += " AND created_by = " + req.user.id;
+
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/blog/pages/page/$page/sort',
+            rootLink: baseRoute + 'page/$page/sort',
             limit: itemOfPage,
-            customCondition: " AND type='page' "
+            customCondition: customCondition,
+            backLink: 'page_back_link'
         });
 
-        // List pages
-        app.models.post.findAndCountAll({
+        // Find all pages
+        app.feature.blog.actions.findAndCountAll({
+            where: filter.conditions,
             include: [
                 {
-                    model: app.models.user, attributes: ['display_name'],
+                    model: app.models.user,
+                    attributes: ['display_name'],
                     where: ['1 = 1']
                 }
             ],
-            where: filter.conditions,
             order: filter.order,
-            limit: itemOfPage,
+            limit: filter.limit,
             offset: (page - 1) * itemOfPage
         }).then(function (results) {
             let totalPage = Math.ceil(results.count / itemOfPage);
+
+            // Replace title of no-title page
+            let items = results.rows;
+            items.map(function (item) {
+                if (!item.title) item.title = '(no title)';
+            });
+
             // Render view
             res.backend.render('page/index', {
                 title: __('m_blog_backend_page_render_title'),
                 totalPage: totalPage,
-                items: results.rows,
+                items: items,
                 currentPage: page,
-                toolbar: toolbar
+                toolbar: toolbar,
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop()),
+                baseRoute: baseRoute
             });
-
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+        }).catch(function (err) {
+            logger.error(err);
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
 
             // Render view if has error
             res.backend.render('page/index', {
@@ -137,201 +166,220 @@ module.exports = function (controller, component, app) {
                 totalPage: 1,
                 items: null,
                 currentPage: page,
-                toolbar: toolbar
+                toolbar: toolbar,
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop()),
+                baseRoute: baseRoute
             });
-        });
-    };
-
-    controller.pageDelete = function (req, res) {
-        app.models.post.destroy({
-            where: {
-                id: {
-                    "in": req.body.ids.split(',')
-                }
-            }
-        }).then(function () {
-            req.flash.success(__('m_blog_backend_page_flash_delete_success'));
-            res.send(200);
         });
     };
 
     controller.pageCreate = function (req, res) {
-        // Add button
-        let back_link = '/blog/pages/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_page_list']) {
-            back_link = '/admin' + search_params[route + '_page_list'];
-        }
-
-        // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req, 'page_create'));
-        toolbar = toolbar.render();
+        toolbar.addBackButton(req, 'page_back_link');
+        toolbar.addSaveButton(true);
 
-        app.models.user.findAll({
-            order: "id asc"
-        }).then(function (results) {
-            res.backend.render('page/new', {
-                title: __('m_blog_backend_page_render_create'),
-                users: results,
-                toolbar: toolbar
-            });
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
+        res.backend.render('page/new', {
+            title: __('m_blog_backend_page_render_create'),
+            baseRoute: baseRoute,
+            toolbar: toolbar.render()
         });
     };
 
     controller.pageSave = function (req, res, next) {
-        // Add button
-        let back_link = '/admin/blog/pages/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_page_list']) {
-            back_link = '/admin' + search_params[route + '_page_list'];
+        let data = req.body;
+        let author = req.user.id;
+        let blogAction = app.feature.blog.actions;
+        let page_id = 0;
+        let oldPage;
+        let resolve = Promise.resolve();
+
+        if (data.page_id && data.page_id > 0) {
+            page_id = data.page_id;
+
+            // Update draft page
+            resolve = resolve.then(function () {
+                data.modified_by = author;
+
+                return blogAction.findById(page_id).then(function (page) {
+                    return blogAction.update(page, data);
+                });
+            });
+        } else {
+            // Create page
+            resolve = resolve.then(function () {
+                data.created_by = author;
+
+                return blogAction.create(data, 'page').then(function (page) {
+                    page_id = post.id;
+                    oldPage = page;
+                    return null;
+                });
+            });
         }
 
-        // Add buttons
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req, 'page_create'));
-        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
-
-        let data = req.body;
-        data.title = data.title.trim();
-        if (data.alias == null || data.alias == '')
-            data.alias = slug(data.title).toLowerCase();
-        data.created_by = req.user.id;
-        data.type = 'page';
-        if (!data.published) data.published = 0;
-
-        app.models.post.create(data).then(function (page) {
+        resolve.then(function () {
             req.flash.success(__('m_blog_backend_page_flash_create_success'));
-            res.locals.toolbar = toolbar.render();
-            res.redirect('/admin/blog/pages/' + page.id);
+            res.redirect(baseRoute + page_id);
         }).catch(function (err) {
-            let messageError ='' ;
-            if(err.name == 'SequelizeValidationError'){
-                err.errors.map(function (e) {
-                    if(e)
-                    messageError += e.message+'<br />';
-                })
-            }else{
-                messageError = 'Name: ' + err.name + '<br />' + 'Message: ' + err.message;
-            }
-            req.flash.error(messageError);
-            res.locals.page = data,
+            req.flash.error(getErrorMsg(err, oldPage, data));
+            res.locals.page = data;
             next();
         });
     };
 
     controller.pageView = function (req, res) {
-        // Add button
-        let back_link = '/admin/blog/pages/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_page_list']) {
-            back_link = '/admin' + search_params[route + '_page_list'];
+        let page = req.page;
+
+        // Check permissions
+        if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != req.user.id) {
+            req.flash.error("You do not have permission to manage this page");
+            return res.redirect(baseRoute);
         }
 
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req, 'page_create'));
-        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
-        toolbar = toolbar.render();
+        toolbar.addBackButton(req, 'page_back_link');
+        toolbar.addSaveButton(true);
+        toolbar.addDeleteButton(true);
 
-        promise.all([
-            app.models.user.findAll({
-                order: "id asc"
-            }),
-            app.models.post.find({
-                include: [app.models.user],
-                where: {
-                    id: req.params.cid,
-                    type: 'page'
-                }
-            })
-        ]).then(function (results) {
-            res.locals.viewButton = results[1].alias;
-            res.backend.render('page/new', {
-                title: __('m_blog_backend_page_render_update'),
-                users: results[0],
-                page: results[1],
-                toolbar: toolbar
+        // Add preview button
+        toolbar.addGeneralButton(true, 'Preview', baseRoute + 'preview/' + page.id,
+            {
+                icon: '<i class="fa fa-eye"></i>',
+                buttonClass: 'btn btn-info',
+                target: '_blank'
             });
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
+
+        // Render view
+        res.backend.render('page/new', {
+            title: __('m_blog_backend_page_render_update'),
+            page: page,
+            baseRoute: baseRoute,
+            toolbar: toolbar.render()
         });
     };
 
-    controller.redirectToView = function (req, res) {
-        app.models.post.find({
-            where: {
-                alias: req.params.name
-            }
-        }).then(function (page) {
-            res.redirect('/admin/blog/pages/' + page.id);
-        }).catch(function (err) {
-            res.backend.render('_404');
-        })
-    };
-    // todo: not yet check data when user update successfully or unsuccessfully
-    controller.pageUpdate = function (req, res) {
-        let back_link = '/admin/blog/pages/page/1';
-        let search_params = req.session.search;
-        if (search_params && search_params[route + '_page_list']) {
-            back_link = '/admin' + search_params[route + '_page_list'];
-        }
+    controller.pageUpdate = function (req, res, next) {
+        let page = req.page;
+        let author = req.user.id;
 
-        // Add buttons
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(back_link);
-        toolbar.addSaveButton(isAllow(req, 'page_create'));
-        toolbar.addDeleteButton(isAllow(req, 'page_delete'));
-        toolbar = toolbar.render();
+        // Check permissions
+        if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != author) {
+            req.flash.error("You do not have permission to manage this page");
+            return res.redirect(baseRoute);
+        }
 
         let data = req.body;
-        // check data title and alias
-        data.title = data.title.trim();
-        if (data.alias == null || data.alias == '')
-            data.alias = slug(data.title).toLowerCase();
-        if (!data.published) data.published = 0;
-        data.modified_date = data.modified_date_gmt = Date.now();
+        data.modified_by = author;
 
-        app.models.post.find({
-            include: [app.models.user],
-            where: {
-                id: req.params.cid
-            }
-        }).then(function (page) {
-            page.updateAttributes(data).then(function () {
-                res.locals.viewButton = page.alias;
-                req.messages = req.flash.success(__('m_blog_backend_page_flash_update_success'));
-                res.backend.render('page/new', {
-                    title: __('m_blog_backend_page_render_update'),
-                    page: page,
-                    toolbar: toolbar
-                });
-            }).catch(function (error) {
-                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                res.redirect(back_link);
-            });
-        }).catch(function (error) {
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.redirect(back_link);
+        // Update page
+        app.feature.blog.actions.update(page, data).then(function () {
+            req.flash.success(__('m_blog_backend_page_flash_update_success'));
+            res.redirect(baseRoute + page.id);
+        }).catch(function (err) {
+            req.flash.error(getErrorMsg(err, page, data));
+            res.locals.page = data;
+            next();
         });
     };
 
-    controller.link_menu_page = function (req, res) {
+    controller.pagePreview = function (req, res) {
+        if (req.page) {
+            // Check permissions
+            if (req.permissions.indexOf(permissionManageAll) == -1 && req.page.created_by != req.user.id) {
+                req.flash.error("You do not have permission to view this page");
+                return res.redirect(baseRoute);
+            }
+
+            // Render frontend view
+            res.frontend.render('page', {
+                page: req.page
+            });
+        } else {
+            // Redirect to 404 if page not exist
+            res.frontend.render('_404');
+        }
+    };
+
+    controller.pageAutosave = function (req, res) {
+        let data = req.body;
+        let author = req.user.id;
+
+        if (data.page_id) {
+            app.feature.blog.actions.findById(data.page_id).then(function (page) {
+                // Recheck permissions to prevent user access by ajax
+                if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != author) {
+                    return res.jsonp({id: 0});
+                }
+
+                data.modified_by = author;
+
+                // Update page
+                app.feature.blog.actions.update(page, data).then(function () {
+                    res.jsonp({id: page.id});
+                }).catch(function (err) {
+                    logger.error(err);
+                    res.jsonp({id: 0});
+                });
+            })
+        } else {
+            data.created_by = author;
+
+            // Create page
+            app.feature.blog.actions.create(data, 'page').then(function (page) {
+                if (page && page.id)
+                    res.jsonp({id: page.id});
+                else
+                    res.jsonp({id: 0});
+            }).catch(function (err) {
+                logger.error(err);
+                res.jsonp({id: 0});
+            })
+        }
+    };
+
+    controller.pageDelete = function (req, res) {
+        let ids = req.body.ids.split(',');
+        let blogAction = app.feature.blog.actions;
+
+        // Find page need to delete
+        blogAction.findAll({
+            where: {
+                id: {
+                    $in: ids
+                }
+            }
+        }).then(function (pages) {
+            return Promise.map(pages, function (page) {
+                // Recheck permissions to prevent user access by ajax
+                if (req.permissions.indexOf(permissionManageAll) == -1 && page.created_by != req.user.id) {
+                    return null;
+                } else {
+                    return blogAction.destroy([page.id]);
+                }
+            });
+        }).then(function () {
+            req.flash.success(__('m_blog_backend_page_flash_delete_success'));
+            res.sendStatus(200);
+        }).catch(function (err) {
+            logger.error(err);
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            res.sendStatus(200);
+        });
+    };
+
+    /**
+     * Return data to create frontend menu (used in menu module)
+     */
+    controller.linkMenuPage = function (req, res) {
         let page = req.query.page;
         let searchText = req.query.searchStr;
 
         let conditions = "type='page' AND published = 1";
-        if (searchText != '') conditions += " AND title ilike '%" + searchText + "%'";
+        if (searchText != '') conditions += " AND title like '%" + searchText.toLowerCase() + "%'";
 
-        // Find all page with page and search keyword
-        app.models.post.findAndCount({
+        // Find all pages with page and search keyword
+        app.feature.blog.actions.findAndCountAll({
             attributes: ['id', 'alias', 'title'],
             where: [conditions],
             limit: itemOfPage,
@@ -348,9 +396,9 @@ module.exports = function (controller, component, app) {
                 totalPage: totalPage,
                 items: items,
                 title_column: 'title',
-                link_template: '/blog/{alias}'
+                link_template: '/{alias}'
             });
         });
-    };
+    }
 
 };

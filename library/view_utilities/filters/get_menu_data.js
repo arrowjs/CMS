@@ -1,14 +1,16 @@
-/**
- * Created by thangnv on 11/24/15.
- */
-
 'use strict';
+
 module.exports = {
-    handler : function (id, _menus_data) {
-        for (let i in _menus_data) {
-            if (id == _menus_data[i].id) {
-                return _menus_data[i];
+    handler: function (id, menus_data) {
+        if (menus_data.length) {
+            for (let i in menus_data) {
+                if (id == menus_data[i].detail_id) {
+                    return menus_data[i];
+                }
             }
+            return '';
+        } else {
+            return '';
         }
     }
-}
+};
