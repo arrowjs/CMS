@@ -7,7 +7,10 @@ module.exports = function (controller, component, application) {
         let form = new ArrowHelper.WidgetForm(widget);
         form.addText('title', 'Title');
         form.addText('number_of_posts', 'Number of posts');
-        form.addSelect('color_scheme', 'Color scheme', ['Light', 'Dark']);
+        form.addSelect('color_scheme', 'Color scheme', {
+            light: 'Light',
+            dark: 'Dark'
+        });
         form.addSelect('order_by', 'Order By', {
             social: 'Social',
             reverse_time: 'Reverse time',

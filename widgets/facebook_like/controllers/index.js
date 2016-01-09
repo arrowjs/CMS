@@ -11,8 +11,14 @@ module.exports = function (controller, component, application) {
             button_count: 'Button count',
             button: 'Button'
         });
-        form.addSelect('action_type', 'Action type', ['Like', 'Recommend']);
-        form.addSelect('color_scheme', 'Color scheme', ['Light', 'Dark']);
+        form.addSelect('action_type', 'Action type', {
+            like: 'Like',
+            recommend: 'Recommend'
+        });
+        form.addSelect('color_scheme', 'Color scheme', {
+            light: 'Light',
+            dark: 'Dark'
+        });
         form.addCheckbox('show_friend_faces', 'Show friend faces');
         form.addCheckbox('include_share_button', 'Include share button');
 
