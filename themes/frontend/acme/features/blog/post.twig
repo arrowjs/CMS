@@ -88,6 +88,8 @@
                             </h1>
 
                             <p>{{ post.full_text | safe }}</p>
+
+                            {{ getSidebar('bottom-post') | async | safe }}
                         </div>
                     </div>
                 </div>
@@ -95,7 +97,7 @@
 
             <div class="col-lg-3">
                 <div class="blog-side-item">
-                    {{ getSidebar("right-sidebar") | async | safe }}
+                    {{ getSidebar('right-sidebar') | async | safe }}
                 </div>
             </div>
         </div>
