@@ -5,14 +5,16 @@ module.exports = function (controller, component, application) {
     controller.settingWidget = function (widget) {
         // Create setting form
         let form = new ArrowHelper.WidgetForm(widget);
-        form.addText('title', 'Title');
-        form.addText('number_of_posts', 'Number of posts');
-        form.addSelect('color_scheme', 'Color scheme', ['Light', 'Dark']);
-        form.addSelect('order_by', 'Order By', {
-            social: 'Social',
-            reverse_time: 'Reverse time',
-            time: 'Time'
+        form.addSelect('layout_type', 'Layout type', {
+            standard: 'Standard',
+            box_count: 'Box count',
+            button_count: 'Button count',
+            button: 'Button'
         });
+        form.addSelect('action_type', 'Action type', ['Like', 'Recommend']);
+        form.addSelect('color_scheme', 'Color scheme', ['Light', 'Dark']);
+        form.addCheckbox('show_friend_faces', 'Show friend faces');
+        form.addCheckbox('include_share_button', 'Include share button');
 
         return new Promise(function (fullfill, reject) {
             fullfill(form.render());
