@@ -1,0 +1,15 @@
+<meta property="fb:app_id" content="{{ fb_app_id }}"/>
+<meta property="og:site_name" content="{{ fb_site_name }}"/>
+<meta property="og:locale" content="{{ fb_language }}"/>
+
+<meta property="og:url" content="{{ url }}"/>
+
+{% if fb_share_type %}
+    <meta property="og:type" content="{{ fb_share_type }}"/>
+{% endif %}
+{% if fb_share_description %}
+    <meta property="og:description" content="{{ fb_share_description }}"/>
+{% endif %}
+{% if fb_share_image %}
+    <meta property="og:image" content="{{ fb_share_image }}"/>
+{% endif %}

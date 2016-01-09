@@ -12,7 +12,10 @@ module.exports = function (sequelize, DataTypes) {
                 }
             }
         },
-        key: DataTypes.STRING,
+        key: {
+            type: DataTypes.STRING,
+            unique: true
+        },
         value: DataTypes.TEXT
     }, {
         tableName: 'arr_seo',

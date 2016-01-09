@@ -12,7 +12,7 @@ module.exports = function (action, component, app) {
             return result
         }).catch(function (err) {
             return null;
-        })
+        });
     };
 
     action.saveData = function (key, value) {
@@ -31,13 +31,12 @@ module.exports = function (action, component, app) {
             }
         }).catch(function (err) {
             return null;
-        })
+        });
     };
 
-    action.render = function (data) {
-        var rawData = JSON.parse(data);
-        return component.render("main", rawData).then(function (html) {
-            return html
-        })
-    }
+    action.render = function (data, view) {
+        return component.render(view, data).then(function (html) {
+            return html;
+        });
+    };
 };

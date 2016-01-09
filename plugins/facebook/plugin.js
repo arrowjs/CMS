@@ -1,9 +1,13 @@
 'use strict';
 
 module.exports = {
-    title: "Facebook plugin",
+    title: 'Facebook plugin',
     author: 'Techmaster',
     version: '0.1.0',
-    description: "Facebook plugin"
+    description: 'acebook plugin',
+    pluginLocation: {
+        head_tag: 'frontend_head',
+        body_tag: 'frontend_body'
+    }
 };
 

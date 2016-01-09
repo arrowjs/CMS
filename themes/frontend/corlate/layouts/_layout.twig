@@ -6,7 +6,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{% block title %}{{ title if title else "Corlate" }}{% endblock %}</title>
+    {% block headExtends %}
+        <title>Corlate</title>
+        <meta name="description" content="Free Responsive Business HTML Template">
+        <meta name="keywords" content="bootstrap, corporate, html, responsive, corlate">
+        {{ getPlugin('facebook', 'head_tag', {url: url}) | async | safe }}
+    {% endblock %}
 
     <!-- core CSS -->
     <link href="/frontend/corlate/assets/css/bootstrap.min.css" rel="stylesheet">
@@ -35,6 +40,8 @@
 <!--/head-->
 
 <body>
+{{ getPlugin('facebook', 'body_tag', null) | async | safe }}
+
 <!--header start-->
 {% include '_header.twig' %}
 <!--header end-->

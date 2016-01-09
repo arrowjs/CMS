@@ -2,10 +2,7 @@
 
 let _ = require('arrowjs')._;
 let Promise = require('arrowjs').Promise;
-
-let fs = require("fs");
-let readFileAsync = Promise.promisify(fs.readFile);
-
+let fs = require('fs');
 let log = require('arrowjs').logger;
 
 module.exports = function (controller, component, application) {
@@ -19,18 +16,19 @@ module.exports = function (controller, component, application) {
                     plugin_name: pluginName
                 }
             }).then(function (result) {
-                if(result) {
+                if (result) {
                     application.plugin[pluginName].active = result.active || false;
-                    return null
+                    return null;
                 } else {
                     application.plugin[pluginName].active = false;
-                    return null
+                    return null;
                 }
             })
         }).then(function () {
             res.render("index", {plugins: application.plugin});
         });
     };
+
     controller.viewPlugin = function (req, res) {
         let pluginName = req.params.pluginName;
         pluginModel.find({
@@ -39,51 +37,52 @@ module.exports = function (controller, component, application) {
             }
         }).then(function (result) {
             if (application.plugin[pluginName]) {
-                if(result.dataValues && result.dataValues.data) {
+                if (result.dataValues && result.dataValues.data) {
                     result.dataValues.data = JSON.parse(result.dataValues.data)
                 }
-                _.assign(application.plugin[pluginName],result.dataValues.data);
+                _.assign(application.plugin[pluginName], result.dataValues.data);
             }
-            res.render("setting",{ plugin : application.plugin[pluginName]});
+            res.render("setting", {plugin: application.plugin[pluginName]});
         });
     };
-    controller.updatePlugin = function (req,res) {
+
+    controller.updatePlugin = function (req, res) {
         let pluginName = req.params.pluginName;
         pluginModel.find({
             where: {
                 plugin_name: pluginName
             }
         }).then(function (result) {
-            if(result) {
-                if(req.body) {
-                    return result.updateAttributes({data : JSON.stringify(req.body)})
+            if (result) {
+                if (req.body) {
+                    return result.updateAttributes({data: JSON.stringify(req.body)})
                 } else {
                     return result
                 }
             } else {
                 if (application.plugin[pluginName]) {
                     return pluginModel.create({plugin_name: pluginName}).then(function (plugin) {
-                        return plugin.updateAttributes({data : JSON.stringify(req.body)})
+                        return plugin.updateAttributes({data: JSON.stringify(req.body)})
                     })
                 } else {
                     return {};
                 }
             }
-
         }).then(function (plugin) {
             if (application.plugin[pluginName]) {
-                if(plugin.dataValues && plugin.dataValues.data) {
+                if (plugin.dataValues && plugin.dataValues.data) {
                     plugin.dataValues.data = JSON.parse(plugin.dataValues.data)
                 }
-                _.assign(application.plugin[pluginName],plugin.dataValues.data);
+                _.assign(application.plugin[pluginName], plugin.dataValues.data);
             }
             req.flash.success("Update successfully");
-            res.render("setting",{ plugin : application.plugin[pluginName]});
+            res.render("setting", {plugin: application.plugin[pluginName]});
         }).catch(function (err) {
             req.flash.error("Cant update setting : " + err.stack);
-            res.render("setting",{ plugin : application.plugin[pluginName]});
-        })
+            res.render("setting", {plugin: application.plugin[pluginName]});
+        });
     };
+
     controller.activePlugin = function (req, res) {
         let pluginName = req.params.pluginName;
         pluginModel.find({

@@ -3,6 +3,7 @@
 var formidable = require("formidable");
 
 module.exports = function (controller, comp, app) {
+
     controller.saveSeo = function (req, res, next) {
         let data = {};
         let key = "";
