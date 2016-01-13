@@ -65,7 +65,7 @@ function createUser(app, role_id, callback) {
         user_email: 'admin@example.com',
         user_url: 'https://facebook.com/...',
         user_status: 'publish',
-        display_name: 'Administartor',
+        display_name: 'Administrator',
         image: '/img/admin.jpg',
         role_id: role_id,
         role_ids: role_id
