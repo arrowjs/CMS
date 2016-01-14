@@ -36,6 +36,8 @@
           href="/frontend/corlate/assets/img/ico/apple-touch-icon-57-precomposed.png">
 
     {% block cssExtends %}{% endblock %}
+
+    {{ getPlugin('google_analytics', 'head_tag', {url: url}) | async | safe }}
 </head>
 <!--/head-->
 

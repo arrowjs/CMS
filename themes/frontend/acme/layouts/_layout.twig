@@ -47,6 +47,8 @@
     <![endif]-->
 
     {% block cssExtends %}{% endblock %}
+
+    {{ getPlugin('google_analytics', 'head_tag', {url: url}) | async | safe }}
 </head>
 
 <body>
