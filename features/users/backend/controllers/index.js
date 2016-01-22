@@ -287,13 +287,7 @@ module.exports = function (controller, component, app) {
         let index = ids.indexOf(id);
 
         if (index == -1) {
-            app.feature.users.actions.destroy({
-                where: {
-                    id: {
-                        "in": ids.split(',')
-                    }
-                }
-            }).then(function () {
+            app.feature.users.actions.destroy(ids.split(',')).then(function () {
                 req.flash.success(__('m_users_backend_controllers_index_delete_flash_success'));
                 res.sendStatus(204);
             }).catch(function (error) {
@@ -301,7 +295,7 @@ module.exports = function (controller, component, app) {
                 res.sendStatus(200);
             });
         } else {
-            req.flash.warning(__('m_users_backend_controllers_index_delete_flash_success'));
+            req.flash.warning('Cannot delete yourself');
             res.sendStatus(200);
         }
     };
