@@ -101,7 +101,7 @@ module.exports = function (controller, component, app) {
         });
 
         // List users
-        app.models.user.findAndCountAll({
+        app.feature.users.actions.findAndCountAll({
             attributes: filter.attributes,
             include: [
                 {
@@ -250,12 +250,7 @@ module.exports = function (controller, component, app) {
                 if (req.url.indexOf('profile') !== -1) {
                     redis.del(req.user.key, function (err, reply) {
                         if (!err)
-                            userAction.find({
-                                include: [app.models.role],
-                                where: {
-                                    id: result.id
-                                }
-                            }).then(function (user) {
+                            userAction.findWithRole({id: result.id}).then(function (user) {
                                 let user_tmp = JSON.parse(JSON.stringify(user));
                                 user_tmp.key = redisPrefix + 'current-user-' + user.id;
                                 user_tmp.acl = JSON.parse(user_tmp.role.permissions);
@@ -389,16 +384,7 @@ module.exports = function (controller, component, app) {
     };
 
     controller.userById = function (req, res, next, id) {
-        app.models.user.find({
-            include: [
-                {
-                    model: app.models.role
-                }
-            ],
-            where: {
-                id: id
-            }
-        }).then(function (user) {
+        app.feature.users.actions.findWithRole({id: id}).then(function (user) {
             req._user = user;
             next();
         }).catch(function (err) {

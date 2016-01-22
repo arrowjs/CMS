@@ -31,6 +31,17 @@ module.exports = function (action, comp, app) {
     };
 
     /**
+     * Find user with conditions, include roles
+     * @param conditions {object} - Conditions used in query
+     */
+    action.findWithRole = function (conditions) {
+        return app.models.user.find({
+            include: [app.models.role],
+            where: conditions
+        });
+    };
+
+    /**
      * Find all users with conditions
      * @param conditions {object} - Conditions used in query
      */
