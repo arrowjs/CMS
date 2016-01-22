@@ -14,10 +14,10 @@ Thanks.
 
 [Demo Website](http://cms.arrowjs.io/) 
 
-Demo account backend
+Default account backend
 ```
-    username : demo
-    password: demo12
+    username: admin@example.com
+    password: 123456
 ```
 
 ## Documents

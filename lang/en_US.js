@@ -378,7 +378,7 @@ module.exports = {
     "all_table_column_username": "Username",
     "all_table_column_password": "Password",
     "all_table_column_fullname": "Full Name",
-    "all_table_column_url": "url",
+    "all_table_column_url": "URL",
     "all_table_column_title": "Title",
     "all_table_column_name": "Name",
     "all_table_column_alias": "Alias",

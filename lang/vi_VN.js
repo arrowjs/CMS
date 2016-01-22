@@ -373,7 +373,7 @@ module.exports = {
     "all_table_column_username": "Tên đăng nhập",
     "all_table_column_password": "Mật khẩu",
     "all_table_column_fullname": "Tên đầy đủ",
-    "all_table_column_url": "url",
+    "all_table_column_url": "URL",
     "all_table_column_title": "Tiêu đề",
     "all_table_column_name": "Tên",
     "all_table_column_alias": "Định danh",

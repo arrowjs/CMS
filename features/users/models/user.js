@@ -3,7 +3,7 @@
 let crypto = require('crypto');
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define("user", {
+    return sequelize.define('user', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -14,24 +14,13 @@ module.exports = function (sequelize, DataTypes) {
                 }
             }
         },
-        user_login: {
-            type: DataTypes.STRING(60),
-            allowNull: false,
-            unique: true,
-            validate: {
-                len: {
-                    args: [1, 60],
-                    msg: 'please input not too long'
-                }
-            }
-        },
         user_pass: {
             type: DataTypes.STRING(255),
             allowNull: false,
             validate: {
                 len: {
                     args: [6, 255],
-                    msg: 'Password must be greater than 6 characters'
+                    msg: 'Password must be greater than 5 characters'
                 }
             }
         },
@@ -40,7 +29,7 @@ module.exports = function (sequelize, DataTypes) {
             unique: true,
             validate: {
                 isEmail: {
-                    msg: 'Please input valid Email'
+                    msg: 'Invalid email address'
                 }
             }
         },
@@ -62,7 +51,7 @@ module.exports = function (sequelize, DataTypes) {
             validate: {
                 isIn: {
                     args: [['publish', 'un-publish']],
-                    msg: 'Please only input publish or un-publish'
+                    msg: 'Invalid data value'
                 }
             }
         },
@@ -70,8 +59,8 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(250),
             validate: {
                 len: {
-                    args: [0, 250],
-                    msg: 'Please don\'t input too long'
+                    args: [1, 250],
+                    msg: 'Display name cannot empty or exceed 250 characters'
                 }
             }
         },
@@ -79,53 +68,17 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.TEXT,
             defaultValue: '/img/noImage.png'
         },
-        salt: {
-            type: DataTypes.STRING(255),
-            validate: {
-                len: {
-                    args: [0, 255],
-                    msg: 'please input salt not too long'
-                }
-            }
-        },
+        salt: DataTypes.STRING(255),
         role_id: {
             type: DataTypes.INTEGER,
             validate: {
                 isInt: {
-                    msg: 'please input integer value role_id'
+                    msg: 'ID must be a number'
                 }
-            },
-            set: function (val) {
-                let roleIds = this.getDataValue('role_ids');
-                let flag = false;
-                //set values of role_ids
-                if (roleIds)
-                    roleIds.split(',').forEach(function (v) {
-                        if (val === v)
-                            flag = true;
-                    });
-                if (flag)
-                    this.setDataValue('role_id', val);
-                else
-                    this.setDataValue('role_id', 0);
             }
         },
         role_ids: {
-            type: DataTypes.STRING(255),
-            defaultValue: '{0}',
-            set: function (val) {
-                let value = val.toString().split(',')
-                let temp = '';
-                let flag = false;
-                let role_id_value = this.getDataValue('role_id');
-                value.forEach(function (v) {
-                    if (temp.length > 0) temp += ',' + v;
-                    else temp += v;
-                    if (v == role_id_value) flag = true;
-                });
-                if (!flag) this.setDataValue('role_id', Number(value[0]));
-                this.setDataValue('role_ids', temp);
-            }
+            type: DataTypes.STRING
         },
         reset_password_expires: {
             type: DataTypes.BIGINT

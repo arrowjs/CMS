@@ -11,8 +11,8 @@ let readdirAsync = promise.promisify(fs.readdir);
 let formidable = require('formidable');
 promise.promisifyAll(formidable);
 
-let _log = require('arrowjs').logger;
-let edit_template = 'new';
+let logger = require('arrowjs').logger;
+let view_template = 'new';
 let folder_upload = '/img/users/';
 let route = 'users';
 
@@ -40,14 +40,6 @@ module.exports = function (controller, component, app) {
                 width: '15%',
                 header: __('m_users_backend_full_name'),
                 link: '/admin/users/{id}',
-                filter: {
-                    data_type: 'string'
-                }
-            },
-            {
-                column: "user_login",
-                width: '15%',
-                header: __('m_users_backend_user_name'),
                 filter: {
                     data_type: 'string'
                 }
@@ -131,7 +123,7 @@ module.exports = function (controller, component, app) {
                 queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         }).catch(function (error) {
-            _log.error(error);
+            logger.error(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
             res.backend.render('index', {
                 title: __('m_users_backend_controllers_index_list'),
@@ -141,46 +133,106 @@ module.exports = function (controller, component, app) {
         });
     };
 
+    controller.create = function (req, res) {
+        // Add button on view
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton(req, 'user_back_link');
+        toolbar.addSaveButton(isAllow(req, 'index'));
+        toolbar = toolbar.render();
+
+        // Get list roles
+        app.feature.roles.actions.findAll({
+            order: "id asc"
+        }).then(function (roles) {
+            res.backend.render(view_template, {
+                title: __('m_users_backend_controllers_index_add_user'),
+                roles: roles,
+                toolbar: toolbar
+            });
+        }).catch(function (error) {
+            logger.error(error);
+            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+            res.backend.render(view_template, {
+                title: __('m_users_backend_controllers_index_add_user'),
+                roles: null,
+                toolbar: toolbar
+            });
+        });
+    };
+
+    controller.save = function (req, res, next) {
+        // Get form data
+        let data = req.body;
+
+        return new Promise(function (fulfill, reject) {
+            if (data.base64 && data.base64 != '') {
+                let fileName = folder_upload + slug(data.user_email).toLowerCase() + '.png';
+                let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
+
+                return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
+                    data.user_image_url = fileName;
+                    fulfill(data);
+                }).catch(function (err) {
+                    reject(err);
+                });
+            } else fulfill(data);
+        }).then(function (result) {
+                return app.feature.users.actions.create(result);
+            }).then(function (user) {
+                req.flash.success(__('m_users_backend_controllers_index_add_flash_success'));
+                res.redirect('/admin/users/' + user.id);
+            }).catch(function (error) {
+                logger.error(error);
+                if (error.name == ArrowHelper.UNIQUE_ERROR) {
+                    req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
+                    return next();
+                } else {
+                    req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+                    return next();
+                }
+            });
+    };
+
     controller.view = function (req, res) {
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('user_back_link');
+        toolbar.addBackButton(req, 'user_back_link');
         toolbar.addSaveButton(isAllow(req, 'index'));
         toolbar = toolbar.render();
 
         // Get user by session and list roles
         app.feature.roles.actions.findAll().then(function (roles) {
-            res.backend.render(edit_template, {
+            res.backend.render(view_template, {
                 title: __('m_users_backend_controllers_index_update'),
                 roles: roles,
                 item: req._user,
                 id: req.params.uid,
-                toolbar: toolbar //pass params to view button
+                toolbar: toolbar
             });
-        }).catch(function (err) {
-            _log.error(err);
+        }).catch(function (error) {
+            logger.error(error);
             req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.backend.render(edit_template, {
+            res.backend.render(view_template, {
                 title: __('m_users_backend_controllers_index_update'),
                 roles: null,
                 item: null,
                 id: 0,
-                toolbar: toolbar //pass params to view button
+                toolbar: toolbar
             });
         });
     };
 
     controller.update = function (req, res, next) {
+        let userAction = app.feature.users.actions;
         let edit_user = null;
         let data = req.body;
 
-        //Get user by id
-        app.models.user.findById(req.params.uid).then(function (user) {
+        userAction.findById(req.params.uid).then(function (user) {
             edit_user = user;
 
             return new Promise(function (fulfill, reject) {
                 if (data.base64 && data.base64 != '' && data.base64 != user.user_image_url) {
-                    let fileName = folder_upload + slug(user.user_login).toLowerCase() + '.png';
+                    let fileName = folder_upload + slug(user.user_email).toLowerCase() + '.png';
                     let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
 
                     return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
@@ -192,12 +244,13 @@ module.exports = function (controller, component, app) {
                 } else fulfill(data);
             })
         }).then(function (data) {
-            return edit_user.updateAttributes(data).then(function (result) {
+            return userAction.update(edit_user, data).then(function (result) {
                 req.flash.success(__('m_users_backend_controllers_index_update_flash_success'));
+
                 if (req.url.indexOf('profile') !== -1) {
                     redis.del(req.user.key, function (err, reply) {
                         if (!err)
-                            app.models.user.find({
+                            userAction.find({
                                 include: [app.models.role],
                                 where: {
                                     id: result.id
@@ -216,6 +269,7 @@ module.exports = function (controller, component, app) {
                 return res.redirect('/' + adminPrefix + '/users/' + req.params.uid);
             });
         }).catch(function (error) {
+            logger.error(error);
             if (error.name == ArrowHelper.UNIQUE_ERROR) {
                 req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
                 return next();
@@ -226,87 +280,6 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.create = function (req, res) {
-        // Add button on view
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('user_back_link');
-        toolbar.addSaveButton(isAllow(req, 'index'));
-        toolbar = toolbar.render();
-
-        // Get list roles
-        app.feature.roles.actions.findAll({
-            order: "id asc"
-        }).then(function (roles) {
-            res.backend.render(edit_template, {
-                title: __('m_users_backend_controllers_index_add_user'),
-                roles: roles,
-                toolbar: toolbar
-            });
-        }).catch(function (error) {
-            _log.error(error);
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-            res.backend.render(edit_template, {
-                title: __('m_users_backend_controllers_index_add_user'),
-                roles: null,
-                toolbar: toolbar
-            });
-        });
-    };
-
-    controller.save = function (req, res, next) {
-        // Add button on view
-        let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('user_back_link');
-        toolbar.addSaveButton(isAllow(req, 'create'));
-        toolbar = toolbar.render();
-
-        // Get form data
-        var data = req.body;
-
-        return new Promise(function (fulfill, reject) {
-            if (data.base64 && data.base64 != '') {
-                let fileName = folder_upload + slug(data.user_login).toLowerCase() + '.png';
-                let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
-
-                return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
-                    data.user_image_url = fileName;
-                    fulfill(data);
-                }).catch(function (err) {
-                    reject(err);
-                });
-            } else fulfill(data);
-        }).then(function (data) {
-                app.models.user.create(data).then(function (user) {
-                    req.flash.success(__('m_users_backend_controllers_index_add_flash_success'));
-                    res.locals.title = __('m_users_backend_controllers_index_list');
-                    res.redirect(req.originalUrl);
-                }).catch(function (error) {
-                    if (error.name == 'SequelizeUniqueConstraintError') {
-                        res.locals.title = __('m_users_backend_controllers_index_update');
-                        res.locals.toolbar = toolbar;
-                        req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
-                        res.redirect(req.originalUrl);
-                    } else {
-                        req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                        res.backend.render(edit_template, {
-                            user: data,
-                            toolbar: toolbar,
-                            create: 'true',
-                            title: __('m_users_backend_controllers_index_update')
-                        });
-                    }
-                });
-            }).catch(function (error) {
-                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                res.backend.render(edit_template, {
-                    title: __('m_users_backend_controllers_index_update'),
-                    item: data,
-                    toolbar: toolbar,
-                    create: true
-                });
-            })
-    };
-
     controller.delete = function (req, res) {
         // Check delete current user
         let ids = req.body.ids;
@@ -314,7 +287,7 @@ module.exports = function (controller, component, app) {
         let index = ids.indexOf(id);
 
         if (index == -1) {
-            app.models.user.destroy({
+            app.feature.users.actions.destroy({
                 where: {
                     id: {
                         "in": ids.split(',')
@@ -341,15 +314,10 @@ module.exports = function (controller, component, app) {
 
         // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('user_back_link');
+        toolbar.addBackButton(req, 'user_back_link');
         toolbar.addSaveButton(isAllow(req, 'create'));
         toolbar = toolbar.render();
 
-        if (!req.user.role_ids) role_ids.push(req.user.role_id);
-        else
-            role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
-                return val.match(/\d/g);
-            });
         app.feature.roles.actions.findAll({
             where: {
                 id: {
@@ -357,19 +325,19 @@ module.exports = function (controller, component, app) {
                 }
             }
         }).then(function (roles) {
-            res.backend.render('new', {
+            res.backend.render(view_template, {
                 item: req.user,
                 toolbar: toolbar,
                 role_ids: roles
             });
         }).catch(function (err) {
-            log.error(err);
-            res.backend.render('new', {
+            logger.error(error);
+            res.backend.render(view_template, {
                 item: req.user,
                 toolbar: toolbar,
                 role_ids: null
             });
-        })
+        });
     };
 
     /**
@@ -380,7 +348,7 @@ module.exports = function (controller, component, app) {
             res.json(files);
         }).catch(function (err) {
             res.status(500).send(err.stack);
-        })
+        });
     };
 
     /**
@@ -389,7 +357,7 @@ module.exports = function (controller, component, app) {
     controller.changePass = function (req, res) {
         // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('user_back_link');
+        toolbar.addBackButton(req, 'user_back_link');
         toolbar = toolbar.render();
         res.backend.render('change-pass', {
             title: "Change User's password",
@@ -403,12 +371,12 @@ module.exports = function (controller, component, app) {
      */
     controller.updatePass = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('user_back_link');
+        toolbar.addBackButton(req, 'user_back_link');
         toolbar = toolbar.render();
         let old_pass = req.body.old_pass;
         let user_pass = req.body.user_pass;
 
-        app.models.user.findById(req.user.id).then(function (user) {
+        app.feature.users.actions.findById(req.user.id).then(function (user) {
             if (user.authenticate(old_pass)) {
                 user.updateAttributes({
                     user_pass: user.hashPassword(user_pass)
@@ -426,22 +394,6 @@ module.exports = function (controller, component, app) {
         });
     };
 
-    controller.saveOAuthUserProfile = function (req, profile, done) {
-        app.models.user.find({
-            where: {
-                user_email: profile.user_email
-            }
-        }).then(function (user) {
-            if (user) {
-                return done(null, user);
-            } else {
-                app.models.user.create(profile).then(function (user) {
-                    return done(null, user);
-                })
-            }
-        })
-    };
-
     controller.userById = function (req, res, next, id) {
         app.models.user.find({
             include: [
@@ -451,29 +403,14 @@ module.exports = function (controller, component, app) {
             ],
             where: {
                 id: id
-            },
-            raw: true
+            }
         }).then(function (user) {
             req._user = user;
             next();
         }).catch(function (err) {
-            logger.error('ERROR : ' + err);
+            logger.error(err);
+            next();
         })
-    };
-
-    controller.forgotPass = function (req, res) {
-
-    };
-
-    controller.forgotPassView = function (req, res) {
-        res.backend.render('forgot-password');
-    };
-
-    controller.hasAuthorization = function (req, res, next) {
-        if (req._user.id !== req.user.id) {
-            return false;
-        }
-        return true;
     };
 
 };
