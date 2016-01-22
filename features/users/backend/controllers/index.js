@@ -224,55 +224,52 @@ module.exports = function (controller, component, app) {
 
     controller.update = function (req, res, next) {
         let userAction = app.feature.users.actions;
-        let edit_user = null;
+        let edit_user = req._user;
         let data = req.body;
 
-        userAction.findById(req.params.uid).then(function (user) {
-            edit_user = user;
+        return new Promise(function (fulfill, reject) {
+            if (data.base64 && data.base64 != '' && data.base64 != user.user_image_url) {
+                let fileName = folder_upload + slug(user.user_email).toLowerCase() + '.png';
+                let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
 
-            return new Promise(function (fulfill, reject) {
-                if (data.base64 && data.base64 != '' && data.base64 != user.user_image_url) {
-                    let fileName = folder_upload + slug(user.user_email).toLowerCase() + '.png';
-                    let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
-
-                    return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
-                        data.user_image_url = fileName;
-                        fulfill(data);
-                    }).catch(function (err) {
-                        reject(err);
-                    });
-                } else fulfill(data);
-            })
+                return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
+                    data.user_image_url = fileName;
+                    fulfill(data);
+                }).catch(function (err) {
+                    reject(err);
+                });
+            } else
+                fulfill(data);
         }).then(function (data) {
-            return userAction.update(edit_user, data).then(function (result) {
-                req.flash.success(__('m_users_backend_controllers_index_update_flash_success'));
+                return userAction.update(edit_user, data).then(function (result) {
+                    req.flash.success(__('m_users_backend_controllers_index_update_flash_success'));
 
-                if (req.url.indexOf('profile') !== -1) {
-                    redis.del(req.user.key, function (err, reply) {
-                        if (!err)
-                            userAction.findWithRole({id: result.id}).then(function (user) {
-                                let user_tmp = JSON.parse(JSON.stringify(user));
-                                user_tmp.key = redisPrefix + 'current-user-' + user.id;
-                                user_tmp.acl = JSON.parse(user_tmp.role.permissions);
-                                redis.setex(user_tmp.key, 300, JSON.stringify(user_tmp));
-                            }).catch(function (error) {
-                                logger.error(error.stack);
-                            });
-                    });
-                    return res.redirect('/' + adminPrefix + '/users/profile/' + req.params.uid);
+                    if (req.url.indexOf('profile') !== -1) {
+                        redis.del(req.user.key, function (err, reply) {
+                            if (!err)
+                                userAction.findWithRole({id: result.id}).then(function (user) {
+                                    let user_tmp = JSON.parse(JSON.stringify(user));
+                                    user_tmp.key = redisPrefix + 'current-user-' + user.id;
+                                    user_tmp.acl = JSON.parse(user_tmp.role.permissions);
+                                    redis.setex(user_tmp.key, 300, JSON.stringify(user_tmp));
+                                }).catch(function (error) {
+                                    logger.error(error.stack);
+                                });
+                        });
+                        return res.redirect('/' + adminPrefix + '/users/profile/' + req.params.uid);
+                    }
+                    return res.redirect('/' + adminPrefix + '/users/' + req.params.uid);
+                });
+            }).catch(function (error) {
+                logger.error(error);
+                if (error.name == ArrowHelper.UNIQUE_ERROR) {
+                    req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
+                    return next();
+                } else {
+                    req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+                    return next();
                 }
-                return res.redirect('/' + adminPrefix + '/users/' + req.params.uid);
             });
-        }).catch(function (error) {
-            logger.error(error);
-            if (error.name == ArrowHelper.UNIQUE_ERROR) {
-                req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
-                return next();
-            } else {
-                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                return next();
-            }
-        });
     };
 
     controller.delete = function (req, res) {
