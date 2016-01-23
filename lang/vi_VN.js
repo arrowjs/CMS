@@ -253,7 +253,7 @@ module.exports = {
     "m_users_backend_controllers_index_delete_flash_success": "Xóa người dùng thành công",
     "m_users_backend_controllers_index_delete_flash_error": "Không thể xóa người dùng hiện tại",
     "m_users_backend_controllers_index_update_pass_flash_success": "Thay đổi mật khẩu thành công",
-    "m_users_backend_controllers_index_update_pass_flash_error": "Mật khẩu không hợp lệ",
+    "m_users_backend_controllers_index_update_pass_flash_error": "Mật khẩu cũ không chính xác",
     "m_users_backend_views_change_pass_old_pass": "Mật khẩu cũ",
     "m_users_backend_views_change_pass_new_pass": "Mật khẩu mới",
     "m_users_backend_views_change_pass_confirm": "Nhập lại mật khẩu mới",

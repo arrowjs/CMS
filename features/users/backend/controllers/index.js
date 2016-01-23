@@ -287,7 +287,7 @@ module.exports = function (controller, component, app) {
                 res.sendStatus(200);
             });
         } else {
-            req.flash.warning('Cannot delete yourself');
+            req.flash.error('Cannot delete yourself');
             res.sendStatus(200);
         }
     };
@@ -374,7 +374,7 @@ module.exports = function (controller, component, app) {
                     res.backend.render('change-pass', {toolbar: toolbar});
                 });
             } else {
-                req.flash.warning(__('m_users_backend_controllers_index_update_pass_flash_error'));
+                req.flash.error(__('m_users_backend_controllers_index_update_pass_flash_error'));
                 res.backend.render('change-pass', {toolbar: toolbar});
             }
         });

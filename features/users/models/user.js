@@ -16,13 +16,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         user_pass: {
             type: DataTypes.STRING(255),
-            allowNull: false,
-            validate: {
-                len: {
-                    args: [6, 255],
-                    msg: 'Password must be greater than 5 characters'
-                }
-            }
+            allowNull: false
         },
         user_email: {
             type: DataTypes.STRING,
