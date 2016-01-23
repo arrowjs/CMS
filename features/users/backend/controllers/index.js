@@ -296,7 +296,13 @@ module.exports = function (controller, component, app) {
      * Profile
      */
     controller.profile = function (req, res) {
+        // Get current user role
         let role_ids = [];
+        if (!req.user.role_ids && req.user.role_id) role_ids.push(req.user.role_id);
+        else
+            role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
+                return val.match(/\d/g);
+            });
 
         // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
@@ -311,6 +317,7 @@ module.exports = function (controller, component, app) {
                 }
             }
         }).then(function (roles) {
+            console.log("\x1b[33m", roles, "\x1b[0m");
             res.backend.render(view_template, {
                 item: req.user,
                 toolbar: toolbar,
