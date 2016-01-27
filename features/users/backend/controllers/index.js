@@ -241,6 +241,11 @@ module.exports = function (controller, component, app) {
             } else
                 fulfill(data);
         }).then(function (data) {
+                // If in profile page, don't allow change role_ids
+                if (req.url.indexOf('profile') !== -1) {
+                    data.role_ids = null;
+                }
+
                 return userAction.update(edit_user, data).then(function (result) {
                     req.flash.success(__('m_users_backend_controllers_index_update_flash_success'));
 
