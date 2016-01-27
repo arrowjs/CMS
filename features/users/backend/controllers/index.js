@@ -142,7 +142,7 @@ module.exports = function (controller, component, app) {
 
         // Get list roles
         app.feature.roles.actions.findAll({
-            order: "id asc"
+            order: "id ASC"
         }).then(function (roles) {
             res.backend.render(view_template, {
                 title: __('m_users_backend_controllers_index_add_user'),
@@ -317,7 +317,6 @@ module.exports = function (controller, component, app) {
                 }
             }
         }).then(function (roles) {
-            console.log("\x1b[33m", roles, "\x1b[0m");
             res.backend.render(view_template, {
                 item: req.user,
                 toolbar: toolbar,

@@ -1,60 +1,54 @@
-/**
- * Created by thangnv on 11/12/15.
- */
 'use strict';
-/*
-* route :if /roles => /[admin_prefix]/roles
-*        else roles =>/[admin_prefix]/roles(name of modules)/roles
-* */
-module.exports = function (component,app) {
-    let comp = component.controllers.backend;
+
+module.exports = function (component, app) {
+    
+    let controller = component.controllers.backend;
+    
     return {
-        "/roles" : {
-            get : {
-                handler : comp.list,
-                authenticate : true,
-                permissions : "view"
+        "/roles": {
+            get: {
+                handler: controller.list,
+                authenticate: true,
+                permissions: "view"
             },
-            delete : {
-                handler : comp.delete,
-                authenticate : true,
-                permissions : "delete"
+            delete: {
+                handler: controller.delete,
+                authenticate: true,
+                permissions: "delete"
             }
 
         },
-        "/roles/sort/:sort/:order" : {
-            get : {
-                handler : comp.list,
-                authenticate : true,
-                permissions : "view"
+        "/roles/sort/:sort/:order": {
+            get: {
+                handler: controller.list,
+                authenticate: true,
+                permissions: "view"
             }
-
         },
-        "create" : {
-            get : {
-                handler : comp.create,
-                authenticate : true,
-                permissions : "create"
+        "create": {
+            get: {
+                handler: controller.create,
+                authenticate: true,
+                permissions: "create"
             },
-            post : {
-                handler : [comp.save,comp.list],
-                authenticate : true,
-                permissions : "create"
+            post: {
+                handler: [controller.save, controller.create],
+                authenticate: true,
+                permissions: "create"
             }
-
         },
-        "/roles/:rid" : {
-            get : {
-                handler : comp.view,
-                authenticate : true,
-                permissions : "update"
+        "/roles/:rid": {
+            get: {
+                handler: controller.view,
+                authenticate: true,
+                permissions: "update"
             },
-            post : {
-                handler : [comp.update,comp.list],
-                authenticate : true,
-                permissions : "update"
+            post: {
+                handler: [controller.update, controller.view],
+                authenticate: true,
+                permissions: "update"
             }
-
         }
     }
-}
+    
+};
