@@ -105,7 +105,7 @@ module.exports = function (action, comp, app) {
         if (!data.role_ids) {
             if (data.role_id && user && user.role_ids) {
                 user.role_ids = user.role_ids.split(',');
-                if (user.role_ids.indexOf(data.role_id) == -1) data.role_id = user.role_ids[0];
+                if (user.role_ids.indexOf(data.role_id.toString()) == -1) data.role_id = user.role_ids[0];
             } else if (data.role_id) {
                 delete data.role_id;
             }
@@ -114,9 +114,9 @@ module.exports = function (action, comp, app) {
             data.role_ids = data.role_ids.split(',');
 
             if (data.role_id) {
-                if (data.role_ids.indexOf(data.role_id) == -1) data.role_id = data.role_ids[0];
+                if (data.role_ids.indexOf(data.role_id.toString()) == -1) data.role_id = data.role_ids[0];
             } else if (!data.role_id && user && user.role_id) {
-                if (data.role_ids.indexOf(user.role_id) == -1) data.role_id = data.role_ids[0];
+                if (data.role_ids.indexOf(user.role_id.toString()) == -1) data.role_id = data.role_ids[0];
             }
 
             data.role_ids = data.role_ids.toString();
