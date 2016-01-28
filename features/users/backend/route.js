@@ -23,12 +23,26 @@ module.exports = function (component, application) {
                 handler: controller.userById
             }
         },
+        "/users/page/:page": {
+            get: {
+                handler: controller.list,
+                authenticate: true,
+                permissions: 'index'
+            }
+        },
+        "/users/page/:page/sort/:sort/(:order)?": {
+            get: {
+                handler: controller.list,
+                authenticate: true,
+                permissions: 'index'
+            }
+        },
         "/users/:uid([0-9]+)": {
             get: {
                 handler: controller.view,
                 name: "update-users-get",
                 authenticate: true,
-                permissions: "index"
+                permissions: 'index'
             },
             post: {
                 handler: [controller.update, controller.view],
@@ -65,7 +79,6 @@ module.exports = function (component, application) {
                 permissions: "update_profile"
             }
         },
-
         "/users/:page([0-9]+)": {
             get: {
                 handler: controller.list,

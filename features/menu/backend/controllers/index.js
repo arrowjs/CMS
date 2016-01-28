@@ -7,6 +7,7 @@ let readFileAsync = promise.promisify(fs.readFile);
 let log = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
+
     let isAllow = ArrowHelper.isAllow;
 
     controller.index = function (req, res) {

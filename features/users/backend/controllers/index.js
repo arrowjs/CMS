@@ -21,7 +21,6 @@ module.exports = function (controller, component, app) {
     let redis = app.redisClient;
     let adminPrefix = app.getConfig('admin_prefix') || 'admin';
     let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
-    let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let isAllow = ArrowHelper.isAllow;
 
     controller.list = function (req, res) {
@@ -92,6 +91,8 @@ module.exports = function (controller, component, app) {
         toolbar.addRefreshButton('/admin/users');
         toolbar.addCreateButton(isAllow(req, 'create'), '/admin/users/create');
         toolbar = toolbar.render();
+
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Config columns
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
@@ -228,8 +229,8 @@ module.exports = function (controller, component, app) {
         let data = req.body;
 
         return new Promise(function (fulfill, reject) {
-            if (data.base64 && data.base64 != '' && data.base64 != user.user_image_url) {
-                let fileName = folder_upload + slug(user.user_email).toLowerCase() + '.png';
+            if (data.base64 && data.base64 != '' && data.base64 != edit_user.user_image_url) {
+                let fileName = folder_upload + slug(edit_user.user_email).toLowerCase() + '.png';
                 let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
 
                 return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {

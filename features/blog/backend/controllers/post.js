@@ -6,7 +6,6 @@ let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
-    let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let baseRoute = '/admin/blog/posts/';
     let permissionManageAll = 'post_manage_all';
 
@@ -143,6 +142,8 @@ module.exports = function (controller, component, app) {
                 }
             }
         ];
+
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Check permissions view all posts: If user does not have permission manage all, only show own posts
         let customCondition = " AND type='post'";

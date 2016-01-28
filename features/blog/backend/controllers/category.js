@@ -5,7 +5,6 @@ let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
-    let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let baseRoute = '/admin/blog/categories/';
 
     controller.categoryList = function (req, res) {
@@ -58,6 +57,8 @@ module.exports = function (controller, component, app) {
         toolbar.addCreateButton(true, baseRoute + 'create');
         toolbar.addDeleteButton(true);
         toolbar = toolbar.render();
+
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Config columns
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {

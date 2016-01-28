@@ -79,6 +79,12 @@ module.exports = function (sequelize, DataTypes) {
         },
         reset_password_token: {
             type: DataTypes.STRING
+        },
+        change_email_expires: {
+            type: DataTypes.BIGINT
+        },
+        change_email_token: {
+            type: DataTypes.STRING
         }
     }, {
         timestamps: false,

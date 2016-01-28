@@ -10,11 +10,9 @@ let route = 'roles';
 
 module.exports = function (controller, component, app) {
 
-    let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let isAllow = ArrowHelper.isAllow;
 
     controller.list = function (req, res) {
-
         // Config ordering
         let column = req.params.sort || 'id';
         let order = req.params.order || '';
@@ -73,6 +71,8 @@ module.exports = function (controller, component, app) {
         toolbar.addCreateButton(isAllow(req, 'create'), '/admin/roles/create');
         toolbar.addDeleteButton(isAllow(req, 'delete'));
         toolbar = toolbar.render();
+
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         let filter = ArrowHelper.createFilter(req, res, tableStruture, {
             rootLink: '/admin/roles/sort',
