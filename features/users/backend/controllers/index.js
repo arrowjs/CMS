@@ -242,9 +242,12 @@ module.exports = function (controller, component, app) {
             } else
                 fulfill(data);
         }).then(function (data) {
-                // If in profile page, don't allow change role_ids
+                // If in profile page, don't allow change role_ids and email
                 if (req.url.indexOf('profile') !== -1) {
-                    data.role_ids = null;
+                    if (data.role_ids !== undefined) delete data.role_ids;
+                    if (data.email !== undefined) delete data.email;
+                } else {
+                    if (data.role_ids === undefined) data.role_ids = null;
                 }
 
                 return userAction.update(edit_user, data).then(function (result) {
@@ -305,10 +308,11 @@ module.exports = function (controller, component, app) {
         // Get current user role
         let role_ids = [];
         if (!req.user.role_ids && req.user.role_id) role_ids.push(req.user.role_id);
-        else
+        else if (req.user.role_ids) {
             role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
                 return val.match(/\d/g);
             });
+        }
 
         // Add button on view
         let toolbar = new ArrowHelper.Toolbar();

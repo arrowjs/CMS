@@ -69,14 +69,12 @@ module.exports = function (component, application) {
             get: {
                 handler: controller.profile,
                 name: "users-profile-get",
-                authenticate: true,
-                permissions: "update_profile"
+                authenticate: true
             },
             post: {
                 handler: [controller.update, controller.profile],
                 name: "users-profile-post",
-                authenticate: true,
-                permissions: "update_profile"
+                authenticate: true
             }
         },
         "/users/:page([0-9]+)": {
@@ -113,8 +111,7 @@ module.exports = function (component, application) {
             post: {
                 handler: controller.getAvatarGallery,
                 name: "users-avatar",
-                authenticate: true,
-                permissions: "update_profile"
+                authenticate: true
             }
         }
     }

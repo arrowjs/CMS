@@ -22,13 +22,7 @@
                                            value="{{ item.display_name }}" required="required"/>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>{{ __('all_table_column_email') }}<span class="required"> *</span></label>
-                                    <input type="email" class="form-control" name="user_email"
-                                           value="{{ item.user_email }}" required="required"/>
-                                </div>
-
-                                {% if role_ids %}
+                                {% if role_ids and role_ids | length %}
                                     <div class="form-group">
                                         <label>{{ __('all_table_column_current_role') }}</label>
                                         <select class="table-group-action-input form-control input-medium"
@@ -45,6 +39,12 @@
                                 {% endif %}
 
                                 {% if roles %}
+                                    <div class="form-group">
+                                        <label>{{ __('all_table_column_email') }}<span class="required"> *</span></label>
+                                        <input type="email" class="form-control" name="user_email"
+                                               value="{{ item.user_email }}" required="required"/>
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="role_ids">{{ __('all_table_column_role') }}</label>
                                         <select multiple="multiple" name="role_ids" id="role_ids"

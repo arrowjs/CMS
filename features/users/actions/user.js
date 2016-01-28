@@ -101,26 +101,24 @@ module.exports = function (action, comp, app) {
         // Trim display name
         data.display_name = data.display_name.trim();
 
-        // Check role_id and role_ids, role_id must in role_ids
-        if (!data.role_ids) {
-            if (data.role_id && user && user.role_ids) {
-                user.role_ids = user.role_ids.split(',');
-                if (user.role_ids.indexOf(data.role_id.toString()) == -1) data.role_id = user.role_ids[0];
-            } else if (data.role_id) {
-                delete data.role_id;
+        if (user) {
+            if (data.role_id && !data.role_ids) {
+                data.role_ids = user.role_ids;
+            } else if (!data.role && data.role_ids) {
+                data.role_id = user.role_id;
             }
-        } else {
-            data.role_ids = data.role_ids.toString();
-            data.role_ids = data.role_ids.split(',');
-
-            if (data.role_id) {
-                if (data.role_ids.indexOf(data.role_id.toString()) == -1) data.role_id = data.role_ids[0];
-            } else if (!data.role_id && user && user.role_id) {
-                if (data.role_ids.indexOf(user.role_id.toString()) == -1) data.role_id = data.role_ids[0];
-            }
-
-            data.role_ids = data.role_ids.toString();
         }
+
+        if (data.role && data.role_ids) {
+            // Check role_id must in role_ids
+            data.role_ids = data.role_ids.toString().split(',');
+            if (data.role_ids.indexOf(data.role_id.toString()) == -1) data.role_id = data.role_ids[0];
+        } else if (!data.role_ids) {
+            data.role_id = data.role_ids = null;
+        }
+
+        // Convert role_ids to string
+        if (Array.isArray(data.role_ids)) data.role_ids = data.role_ids.toString();
 
         return data;
     }
