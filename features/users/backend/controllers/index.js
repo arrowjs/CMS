@@ -22,6 +22,7 @@ module.exports = function (controller, component, app) {
     let adminPrefix = app.getConfig('admin_prefix') || 'admin';
     let redisPrefix = app.getConfig('redis_prefix') || 'arrowCMS_';
     let isAllow = ArrowHelper.isAllow;
+    let baseRoute = '/admin/users/';
 
     controller.list = function (req, res) {
         let tableStructure = [
@@ -38,7 +39,7 @@ module.exports = function (controller, component, app) {
                 column: "display_name",
                 width: '15%',
                 header: __('m_users_backend_full_name'),
-                link: '/admin/users/{id}',
+                link: baseRoute + '{id}',
                 filter: {
                     data_type: 'string'
                 }
@@ -88,15 +89,15 @@ module.exports = function (controller, component, app) {
         // Add toolbar
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addSearchButton(isAllow(req, 'index'));
-        toolbar.addRefreshButton('/admin/users');
-        toolbar.addCreateButton(isAllow(req, 'create'), '/admin/users/create');
+        toolbar.addRefreshButton(baseRoute);
+        toolbar.addCreateButton(isAllow(req, 'create'), baseRoute + 'create');
         toolbar = toolbar.render();
 
         let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Config columns
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
-            rootLink: '/admin/users/$page',
+            rootLink: baseRoute + '$page',
             limit: itemOfPage,
             backLink: 'user_back_link'
         });
@@ -181,7 +182,7 @@ module.exports = function (controller, component, app) {
                 return app.feature.users.actions.create(result);
             }).then(function (user) {
                 req.flash.success(__('m_users_backend_controllers_index_add_flash_success'));
-                res.redirect('/admin/users/' + user.id);
+                res.redirect(baseRoute + user.id);
             }).catch(function (error) {
                 logger.error(error);
                 if (error.name == ArrowHelper.UNIQUE_ERROR) {
@@ -399,12 +400,17 @@ module.exports = function (controller, component, app) {
 
     controller.userById = function (req, res, next, id) {
         app.feature.users.actions.findWithRole({id: id}).then(function (user) {
-            req._user = user;
-            next();
+            if (user) {
+                req._user = user;
+                next();
+            } else {
+                req.flash.error('User is not exists');
+                res.redirect(baseRoute);
+            }
         }).catch(function (err) {
-            logger.error(err);
-            next();
-        })
+            req.flash.error(err.name + ': ' + err.message);
+            res.redirect(baseRoute);
+        });
     };
 
 };

@@ -443,11 +443,16 @@ module.exports = function (controller, component, app) {
 
     controller.postRead = function (req, res, next, id) {
         app.feature.blog.actions.findById(id).then(function (post) {
-            req.post = req.page = post;
-            next();
+            if (post) {
+                req.post = req.page = req.interview = post;
+                next();
+            } else {
+                req.flash.error('Post is not exists');
+                res.redirect(baseRoute);
+            }
         }).catch(function (err) {
-            logger.error(err);
-            next();
+            req.flash.error(err.name + ': ' + err.message);
+            res.redirect(baseRoute);
         });
     };
 
