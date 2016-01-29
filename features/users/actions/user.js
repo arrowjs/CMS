@@ -99,7 +99,7 @@ module.exports = function (action, comp, app) {
 
     function optimizeData(data, user) {
         // Trim display name
-        data.display_name = data.display_name.trim();
+        if (data.display_name) data.display_name = data.display_name.trim();
 
         if (user) {
             if (data.role_id && !data.role_ids) {
