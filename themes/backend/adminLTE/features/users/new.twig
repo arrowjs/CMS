@@ -71,11 +71,6 @@
                                             {% endif %}
                                         </select>
                                     </div>
-                                    {% if item %}
-                                        <a class="btn btn-sm btn-danger" data-toggle="modal" href="#confirm">
-                                            <i class="fa fa-remove"></i> {{ __('delete') }}
-                                        </a>
-                                    {% endif %}
                                 {% endif %}
                             </div>
 
@@ -185,7 +180,7 @@
         }
 
         {% if item and not create %}
-        function deleteUser() {
+        function deleteRecords() {
             $.ajax({
                 url: '/admin/users',
                 type: 'DELETE',

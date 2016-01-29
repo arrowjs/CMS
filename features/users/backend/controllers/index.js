@@ -199,6 +199,7 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'user_back_link');
         toolbar.addSaveButton(isAllow(req, 'index'));
+        toolbar.addDeleteButton(isAllow(req, 'delete'));
         toolbar = toolbar.render();
 
         // Get user by session and list roles
@@ -283,12 +284,12 @@ module.exports = function (controller, component, app) {
 
     controller.delete = function (req, res) {
         // Check delete current user
-        let ids = req.body.ids;
-        let id = req.user.id;
+        let ids = req.body.ids.split(',');
+        let id = req.user.id.toString();
         let index = ids.indexOf(id);
 
         if (index == -1) {
-            app.feature.users.actions.destroy(ids.split(',')).then(function () {
+            app.feature.users.actions.destroy(ids).then(function () {
                 req.flash.success(__('m_users_backend_controllers_index_delete_flash_success'));
                 res.sendStatus(204);
             }).catch(function (error) {
