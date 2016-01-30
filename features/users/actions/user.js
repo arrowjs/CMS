@@ -102,6 +102,7 @@ module.exports = function (action, comp, app) {
         if (data.display_name) data.display_name = data.display_name.trim();
 
         if (user) {
+            // Get role of user
             if (data.role_id && !data.role_ids) {
                 data.role_ids = user.role_ids;
             } else if (!data.role && data.role_ids) {
@@ -109,11 +110,17 @@ module.exports = function (action, comp, app) {
             }
         }
 
-        if (data.role && data.role_ids) {
-            // Check role_id must in role_ids
-            data.role_ids = data.role_ids.toString().split(',');
-            if (data.role_ids.indexOf(data.role_id.toString()) == -1) data.role_id = data.role_ids[0];
-        } else if (!data.role_ids) {
+        if (data.role) {
+            if (data.role_ids) {
+                // Check role_id must in role_ids
+                data.role_ids = data.role_ids.toString().split(',');
+                if (data.role_ids.indexOf(data.role_id.toString()) === -1) data.role_id = data.role_ids[0];
+            } else {
+                data.role_id = data.role_ids = null;
+            }
+        }
+
+        if (data.role_ids === null) {
             data.role_id = data.role_ids = null;
         }
 
