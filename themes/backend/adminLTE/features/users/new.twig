@@ -22,7 +22,7 @@
                                            value="{{ item.display_name }}" required="required"/>
                                 </div>
 
-                                {% if role_ids and role_ids | length %}
+                                {% if role_ids and role_ids|length > 1 %}
                                     <div class="form-group">
                                         <label>{{ __('all_table_column_current_role') }}</label>
                                         <select class="table-group-action-input form-control input-medium"

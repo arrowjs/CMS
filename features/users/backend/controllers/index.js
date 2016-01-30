@@ -309,8 +309,7 @@ module.exports = function (controller, component, app) {
     controller.profile = function (req, res) {
         // Get current user role
         let role_ids = [];
-        if (!req.user.role_ids && req.user.role_id) role_ids.push(req.user.role_id);
-        else if (req.user.role_ids) {
+        if (req.user.role_ids) {
             role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
                 return val.match(/\d/g);
             });
