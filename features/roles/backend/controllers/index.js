@@ -16,6 +16,7 @@ module.exports = function (controller, component, app) {
         // Config ordering
         let column = req.params.sort || 'id';
         let order = req.params.order || '';
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Config columns
         let tableStruture = [
@@ -71,8 +72,6 @@ module.exports = function (controller, component, app) {
         toolbar.addCreateButton(isAllow(req, 'create'), '/admin/roles/create');
         toolbar.addDeleteButton(isAllow(req, 'delete'));
         toolbar = toolbar.render();
-
-        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         let filter = ArrowHelper.createFilter(req, res, tableStruture, {
             rootLink: '/admin/roles/sort',

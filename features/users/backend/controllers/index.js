@@ -25,6 +25,8 @@ module.exports = function (controller, component, app) {
     let baseRoute = '/admin/users/';
 
     controller.list = function (req, res) {
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
+
         let tableStructure = [
             {
                 column: "id",
@@ -92,8 +94,6 @@ module.exports = function (controller, component, app) {
         toolbar.addRefreshButton(baseRoute);
         toolbar.addCreateButton(isAllow(req, 'create'), baseRoute + 'create');
         toolbar = toolbar.render();
-
-        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Config columns
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {

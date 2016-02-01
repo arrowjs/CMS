@@ -9,6 +9,7 @@ module.exports = function (controller, component, app) {
 
     controller.categoryList = function (req, res) {
         let page = req.params.page || 1;
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         let tableStructure = [
             {
@@ -57,8 +58,6 @@ module.exports = function (controller, component, app) {
         toolbar.addCreateButton(true, baseRoute + 'create');
         toolbar.addDeleteButton(true);
         toolbar = toolbar.render();
-
-        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Config columns
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
