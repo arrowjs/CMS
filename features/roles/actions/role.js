@@ -66,7 +66,7 @@ module.exports = function (action, comp, app) {
         return app.models.role.destroy({
             where: {
                 id: {
-                    'in': ids
+                    $in: ids
                 }
             }
         })
