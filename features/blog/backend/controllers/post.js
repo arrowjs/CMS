@@ -6,7 +6,6 @@ let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
-    let itemOfPage = app.getConfig('pagination').numberItem || 10;
     let baseRoute = '/admin/blog/posts/';
     let permissionManageAll = 'post_manage_all';
 
@@ -143,6 +142,8 @@ module.exports = function (controller, component, app) {
                 }
             }
         ];
+
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Check permissions view all posts: If user does not have permission manage all, only show own posts
         let customCondition = " AND type='post'";
@@ -442,11 +443,16 @@ module.exports = function (controller, component, app) {
 
     controller.postRead = function (req, res, next, id) {
         app.feature.blog.actions.findById(id).then(function (post) {
-            req.post = req.page = post;
-            next();
+            if (post) {
+                req.post = req.page = req.interview = post;
+                next();
+            } else {
+                req.flash.error('Post is not exists');
+                res.redirect(baseRoute);
+            }
         }).catch(function (err) {
-            logger.error(err);
-            next();
+            req.flash.error(err.name + ': ' + err.message);
+            res.redirect(baseRoute);
         });
     };
 

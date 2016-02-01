@@ -16,35 +16,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>{{ __('all_table_column_username') }} <span
-                                                class="required"> *</span></label>
-                                    <input type="text" class="form-control" name="user_login"
-                                           value="{{ item.user_login }}" required="required"/>
-                                </div>
-
-                                <div class="form-group">
                                     <label>{{ __('all_table_column_fullname') }}<span
                                                 class="required"> *</span></label>
                                     <input type="text" class="form-control" name="display_name"
                                            value="{{ item.display_name }}" required="required"/>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>{{ __('all_table_column_email') }}<span class="required"> *</span></label>
-                                    <input type="email" class="form-control" name="user_email"
-                                           value="{{ item.user_email }}" required="required"/>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>{{ __('all_table_column_url') }}</label>
-                                    <input type="text" class="form-control" name="user_url"
-                                           value="{{ item.user_url }}"/>
-                                </div>
-
-                                {% if role_ids %}
+                                {% if role_ids and role_ids|length > 1 %}
                                     <div class="form-group">
-                                        <label>{{ __('all_table_column_current_role') }} <span
-                                                    class="required"> * </span></label>
+                                        <label>{{ __('all_table_column_current_role') }}</label>
                                         <select class="table-group-action-input form-control input-medium"
                                                 name="role_id" required="required">
                                             {% for roleid in role_ids %}
@@ -60,9 +40,13 @@
 
                                 {% if roles %}
                                     <div class="form-group">
-                                        <label for="role_ids">{{ __('all_table_column_role') }}
-                                            <span class="required"> *</span>
-                                        </label>
+                                        <label>{{ __('all_table_column_email') }}<span class="required"> *</span></label>
+                                        <input type="email" class="form-control" name="user_email"
+                                               value="{{ item.user_email }}" required="required"/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="role_ids">{{ __('all_table_column_role') }}</label>
                                         <select multiple="multiple" name="role_ids" id="role_ids"
                                                 class="form-control">
                                             {% for role in roles %}
@@ -87,34 +71,33 @@
                                             {% endif %}
                                         </select>
                                     </div>
-                                    {% if item %}
-                                        <a class="btn btn-sm btn-danger" data-toggle="modal" href="#confirm">
-                                            <i class="fa fa-remove"></i> {{ __('delete') }}
-                                        </a>
-                                    {% endif %}
                                 {% endif %}
                             </div>
 
                             <div class="col-md-6">
                                 {% if not item or create %}
                                     <div class="form-group">
-                                        <label>{{ __('all_table_column_password') }} <span
-                                                    class="required"> *</span></label>
+                                        <label>{{ __('all_table_column_password') }}
+                                            <span class="required"> *</span>
+                                        </label>
                                         <input type="password" class="form-control" id="user_pass" name="user_pass"
-                                               required="required"/>
+                                               pattern=".{6,}" required title="Password must be greater than 5 character"/>
                                     </div>
 
                                     <div class="form-group">
-                                        <label>{{ __('m_users_backend_views_new_pass_confirm') }}<span
-                                                    class="required"> *</span></label>
+                                        <label>{{ __('m_users_backend_views_new_pass_confirm') }}
+                                            <span class="required"> *</span>
+                                        </label>
                                         <input type="password" class="form-control" id="confirm_pass"
                                                required="required"/>
                                     </div>
                                 {% endif %}
 
                                 <div class="form-group">
-                                    <label>{{ __('m_users_backend_views_new_avatar') }} <span class="help-block"
-                                                                                              style="display: inline;">(128x128px) </span></label>
+                                    <label>{{ __('m_users_backend_views_new_avatar') }}
+                                        <span class="help-block" style="display: inline;">(128x128px) </span>
+                                    </label>
+
                                     <a href="#" id="avt" class="btn btn-primary btn-block"><i class="fa fa-upload"></i>
                                         {{ __('m_users_backend_views_new_choose_image') }}</a>
 
@@ -197,7 +180,7 @@
         }
 
         {% if item and not create %}
-        function deleteUser() {
+        function deleteRecords() {
             $.ajax({
                 url: '/admin/users',
                 type: 'DELETE',

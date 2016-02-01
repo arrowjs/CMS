@@ -7,6 +7,7 @@ let readFileAsync = promise.promisify(fs.readFile);
 let log = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
+
     let isAllow = ArrowHelper.isAllow;
 
     controller.index = function (req, res) {
@@ -64,7 +65,7 @@ module.exports = function (controller, component, app) {
     controller.create = function (req, res) {
         // Add button
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('menu_back_link');
+        toolbar.addBackButton(req, 'menu_back_link');
         toolbar.addSaveButton(isAllow(req,'create'));
 
         readFileAsync(__base + "themes/frontend/" + app.getConfig('frontendTheme') + "/theme.json", "utf8")
@@ -251,7 +252,7 @@ module.exports = function (controller, component, app) {
 
     controller.read = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton('menu_back_link');
+        toolbar.addBackButton(req, 'menu_back_link');
         toolbar.addSaveButton(isAllow(req,'create'));
 
         readFileAsync(__base + "themes/frontend/" + app.getConfig('frontendTheme') + "/theme.json", "utf8")

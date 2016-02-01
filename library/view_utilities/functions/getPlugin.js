@@ -2,51 +2,68 @@
 
 let _ = require('arrowjs')._;
 let log = require('arrowjs').logger;
-let Promise = require("arrowjs").Promise;
+let Promise = require('arrowjs').Promise;
 
 module.exports = {
 
     async: true,
 
     /**
-     * Get sidebar by name
+     * Get plugin by key and location
      *
-     * @param sidebarName - Name of sidebar
+     * @param key - Key of plugin
+     * @param location - Location of plugin
+     * @param dynamicData - Dynamic data used in specific view
      * @param callback - Content of sidebar
      */
-    handler: function (key,location,callback) {
+    handler: function (key, location, dynamicData, callback) {
         let app = this;
         if (key) {
             app.models.plugin.findAll({
                 where: {
                     active: true
                 },
-                order: "ordering asc",
+                order: "ordering ASC",
                 raw: true
             }).then(function (plugins) {
                 let html = "";
                 if (_.isEmpty(plugins)) {
-                    callback(null, "")
+                    callback(null, "");
                 } else {
                     Promise.map(plugins, function (plugin) {
-                        let pluginName = plugin.plugin_name;
-                        if (app.plugin[pluginName] && app.plugin[pluginName].pluginLocation === location) {
-                            return  app.plugin[pluginName].actions.getData(key).then(function (data) {
-                                return app.plugin[pluginName].actions.render(data.value).then(function (pluginHtml) {
-                                    html += pluginHtml;
-                                    return null
-                                });
-                            })
+                        let pluginConfig = app.plugin[plugin.plugin_name];
+
+                        if (pluginConfig.pluginLocation && pluginConfig.pluginLocation.hasOwnProperty(location)) {
+                            return pluginConfig.actions.getData(key).then(function (data) {
+                                if (data) {
+                                    try {
+                                        data = JSON.parse(data);
+                                    } catch (e) {
+                                        return null;
+                                    }
+
+                                    if (_.isPlainObject(dynamicData)){
+                                        data = _.merge(data, dynamicData);
+                                    }
+
+                                    return pluginConfig.actions.render(data, pluginConfig.pluginLocation[location], dynamicData).then(function (pluginHtml) {
+                                        html += pluginHtml;
+                                        return null;
+                                    });
+                                } else {
+                                    return null;
+                                }
+                            });
                         }
                     }).then(function () {
-                        callback(null, html)
-                    })
+                        callback(null, html);
+                    });
                 }
             }).catch(function (err) {
-                callback(null, "")
-            })
+                callback(null, "");
+            });
         } else {
-            callback(null, "")
+            callback(null, "");
         }
     }
 };

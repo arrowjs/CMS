@@ -31,6 +31,17 @@ module.exports = function (action, comp, app) {
     };
 
     /**
+     * Find user with conditions, include roles
+     * @param conditions {object} - Conditions used in query
+     */
+    action.findWithRole = function (conditions) {
+        return app.models.user.find({
+            include: [app.models.role],
+            where: conditions
+        });
+    };
+
+    /**
      * Find all users with conditions
      * @param conditions {object} - Conditions used in query
      */
@@ -58,6 +69,7 @@ module.exports = function (action, comp, app) {
      * @param data {object} - Data of new user
      */
     action.create = function (data) {
+        data = optimizeData(data);
         return app.models.user.create(data);
     };
 
@@ -67,6 +79,7 @@ module.exports = function (action, comp, app) {
      * @param data {object} - New data
      */
     action.update = function (user, data) {
+        data = optimizeData(data, user);
         return user.updateAttributes(data);
     };
 
@@ -83,5 +96,38 @@ module.exports = function (action, comp, app) {
             }
         })
     };
+
+    function optimizeData(data, user) {
+        // Trim display name
+        if (data.display_name) data.display_name = data.display_name.trim();
+
+        if (user) {
+            // Get role of user
+            if (data.role_id && !data.role_ids) {
+                data.role_ids = user.role_ids;
+            } else if (!data.role && data.role_ids) {
+                data.role_id = user.role_id;
+            }
+        }
+
+        if (data.role) {
+            if (data.role_ids) {
+                // Check role_id must in role_ids
+                data.role_ids = data.role_ids.toString().split(',');
+                if (data.role_ids.indexOf(data.role_id.toString()) === -1) data.role_id = data.role_ids[0];
+            } else {
+                data.role_id = data.role_ids = null;
+            }
+        }
+
+        if (data.role_ids === null) {
+            data.role_id = data.role_ids = null;
+        }
+
+        // Convert role_ids to string
+        if (Array.isArray(data.role_ids)) data.role_ids = data.role_ids.toString();
+
+        return data;
+    }
 
 };

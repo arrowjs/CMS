@@ -2,6 +2,7 @@
 
 let slug = require('slug');
 let Promise = require('arrowjs').Promise;
+let _ = require('arrowjs')._;
 
 module.exports = function (action, component, app) {
 
@@ -91,9 +92,15 @@ module.exports = function (action, component, app) {
      */
     action.convertToArray = function (str) {
         if (typeof str == 'string') {
-            str = str.split(':');
-            str.shift();
-            str.pop(str.length - 1);
+            str = _.compact(str.split(':'));
+
+            // Check elements of str must be integers
+            for (var i = 0; i < str.length; i++) {
+                if (!Number.isInteger(parseInt(str[i]))) {
+                    return [];
+                }
+            }
+
             return str;
         } else {
             return [];

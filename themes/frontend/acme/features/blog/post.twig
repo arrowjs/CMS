@@ -1,6 +1,9 @@
 {% extends '_layout.' + getConfig('viewExtension') %}
+
 {% block headExtends %}
-    {{ getPlugin("post_"+ post.id,"head-tag") | async | safe }}
+    <title>{{ post.title }}</title>
+    {{ getPlugin('post_' + post.id, 'head_tag', null) | async | default_value('<meta name="description" content="Free Responsive Corporate Template"> <meta name="keywords" content="Bootstrap 3, Template, Theme, Responsive, Corporate, Business">') | safe }}
+    {{ getPlugin('facebook', 'head_tag', {url: url, fb_share_type: 'article', fb_share_image: post.image, fb_share_description: post.intro_text }) | async | safe }}
 {% endblock %}
 
 {% block content %}
@@ -9,24 +12,18 @@
             <div class="row">
                 <div class="col-lg-4 col-sm-4">
                     <h1>
-                        Blog Details
+                        {{ post.title }}
                     </h1>
                 </div>
                 <div class="col-lg-8 col-sm-8">
                     <ol class="breadcrumb pull-right">
                         <li>
-                            <a href="/">
-                                Home
-                            </a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
-                            <a href="/blog/posts">
-                                Blog
-                            </a>
+                            <a href="/blog/posts">Blog</a>
                         </li>
-                        <li class="active">
-                            Blog Details
-                        </li>
+                        <li class="active">{{ post.title }}</li>
                     </ol>
                 </div>
             </div>
@@ -52,8 +49,8 @@
                                     {{ post.published_at | moment("MMMM") }}
                                 </span>
                             </div>
-
                         </div>
+
                         <div class="col-lg-10 col-sm-10">
 
                             {% if post.image %}
@@ -91,6 +88,8 @@
                             </h1>
 
                             <p>{{ post.full_text | safe }}</p>
+
+                            {{ getSidebar('bottom-post') | async | safe }}
                         </div>
                     </div>
                 </div>
@@ -98,7 +97,7 @@
 
             <div class="col-lg-3">
                 <div class="blog-side-item">
-                    {{ getSidebar("right-sidebar") | async | safe }}
+                    {{ getSidebar('right-sidebar') | async | safe }}
                 </div>
             </div>
         </div>

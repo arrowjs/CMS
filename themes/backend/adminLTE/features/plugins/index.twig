@@ -49,15 +49,15 @@
 
                                     {% if plugin.active == undefined or plugin.active == false %}
                                         <td>
-                                            <a class="label label-success" href="javascript:void(0)"
-                                               title="Activate this module"
-                                               onclick="return active('{{ key }}')">{{ __('all_table_column_activation') }}</a>
+                                            <a class="label label-danger" href="javascript:void(0)"
+                                               title="Activate this plugin"
+                                               onclick="return active('{{ key }}')">Active this plugin</a>
                                         </td>
                                     {% else %}
                                         <td>
-                                            <a class="label label-danger" href="javascript:void(0)"
-                                               title="Deactive this module"
-                                               onclick="return active('{{ key }}')">{{ __('all_table_column_deactivation') }}</a>
+                                            <a class="label label-success" href="javascript:void(0)"
+                                               title="Deactive this plugin"
+                                               onclick="return active('{{ key }}')">Deactive this plugin</a>
                                         </td>
                                     {% endif %}
                                 </tr>

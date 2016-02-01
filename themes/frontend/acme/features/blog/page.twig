@@ -1,6 +1,9 @@
 {% extends '_layout.' + getConfig('viewExtension') %}
+
 {% block headExtends %}
-    {{ getPlugin("page_"+ item.id,"head-tag") | async | safe }}
+    <title>{{ item.title }}</title>
+    {{ getPlugin('page_' + item.id, 'head-tag', null) | async | default_value('<meta name="description" content="Free Responsive Corporate Template"> <meta name="keywords" content="Bootstrap 3, Template, Theme, Responsive, Corporate, Business">') | safe }}
+    {{ getPlugin('facebook', 'head_tag', {url: url, fb_share_type: 'article', fb_share_image: item.image, fb_share_description: item.intro_text }) | async | safe }}
 {% endblock %}
 
 {% block content %}
@@ -10,20 +13,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-sm-4">
-                    <h1>
-                        Blog Details
-                    </h1>
+                    <h1>{{ item.title }}</h1>
                 </div>
                 <div class="col-lg-8 col-sm-8">
                     <ol class="breadcrumb pull-right">
                         <li>
-                            <a href="/">
-                                Home
-                            </a>
+                            <a href="/">Home</a>
                         </li>
-                        <li class="active">
-                            Page Details
-                        </li>
+                        <li class="active">{{ item.title }}</li>
                     </ol>
                 </div>
             </div>
@@ -42,12 +39,12 @@
                     <div class="row">
                         <div class="col-lg-2 col-sm-2">
                             <div class="date-wrap">
-                  <span class="date">
-                    11
-                  </span>
-                  <span class="month">
-                    January
-                  </span>
+                              <span class="date">
+                                11
+                              </span>
+                              <span class="month">
+                                January
+                              </span>
                             </div>
 
                         </div>
@@ -136,12 +133,6 @@
                 </div>
 
             </div>
-
-            <div class="col-lg-3">
-
-            </div>
-
-
         </div>
 
     </div>

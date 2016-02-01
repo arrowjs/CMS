@@ -3,15 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     {% block headExtends %}
-        <meta name="description" content="Developed By M Abdur Rokib Promy">
-        <meta name="author" content="cosmic">
+        <title>ACME</title>
+        <meta name="description" content="Free Responsive Corporate Template">
         <meta name="keywords" content="Bootstrap 3, Template, Theme, Responsive, Corporate, Business">
+        {{ getPlugin('facebook', 'head_tag', {url: url}) | async | safe }}
     {% endblock %}
 
     <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon"/>
-
-    <title>{% block title %}{{ title if title else "ACME" }}{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/frontend/acme/assets/css/bootstrap.min.css" rel="stylesheet">
@@ -38,7 +38,7 @@
     <script type="text/javascript" src="/frontend/acme/assets/js/parallax-slider/modernizr.custom.28468.js">
     </script>
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltipss and media queries -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 tooltips and media queries -->
     <!--[if lt IE 9]>
     <script src="/frontend/acme/assets/js/html5shiv.js">
     </script>
@@ -46,11 +46,14 @@
     </script>
     <![endif]-->
 
-    {% block cssExtends %}
-    {% endblock %}
+    {% block cssExtends %}{% endblock %}
+
+    {{ getPlugin('google_analytics', 'head_tag', {url: url}) | async | safe }}
 </head>
 
 <body>
+{{ getPlugin('facebook', 'body_tag', null) | async | safe }}
+
 <!--header start-->
 {% include '_header.twig' %}
 <!--header end-->

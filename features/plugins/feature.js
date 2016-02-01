@@ -12,7 +12,7 @@ module.exports = {
         }
     ],
     backend_menu: {
-        title: 'Plugin manager',
+        title: 'Plugins',
         icon: 'fa fa-file-text',
         menus: {
             permission: 'index',

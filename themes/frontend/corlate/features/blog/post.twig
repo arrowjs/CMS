@@ -1,5 +1,11 @@
 {% extends '_layout.' + getConfig('viewExtension') %}
 
+{% block headExtends %}
+    <title>{{ post.title }}</title>
+    {{ getPlugin('post_' + post.id, 'head_tag') | async | default_value('<meta name="description" content="Free Responsive Business HTML Template"> <meta name="keywords" content="bootstrap, corporate, html, responsive, corlate">') | safe }}
+    {{ getPlugin('facebook', 'head_tag', {url: url, fb_share_type: 'article', fb_share_image: post.image, fb_share_description: post.intro_text }) | async | safe }}
+{% endblock %}
+
 {% block content %}
     <section id="blog" class="container">
         <div class="blog">

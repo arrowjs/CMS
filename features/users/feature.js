@@ -19,10 +19,6 @@ module.exports =  {
             title: __('m_users_backend_rule_update')
         },
         {
-            name: "update_profile",
-            title: __('m_users_backend_rule_update_profile')
-        },
-        {
             name: 'delete',
             title: __('m_users_backend_rule_delete')
         }

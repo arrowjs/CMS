@@ -23,7 +23,6 @@ module.exports = function (controller, component, app) {
                 totalPage = Math.ceil(parseInt(posts.count) / number_item) || 1;
                 // Render view
                 res.frontend.render('posts', {
-                    title: 'All Posts',
                     posts: posts.rows,
                     totalPage: totalPage,
                     currentPage: page,
@@ -104,7 +103,6 @@ module.exports = function (controller, component, app) {
                         let totalPage = Math.ceil(countPost[0][0].count / number_item) || 1;
 
                         res.frontend.render('archives', {
-                            title: year_ + ' ' + month_,
                             posts: result[0],
                             archives_date: year_ + ' ' + month_,
                             month: month_,
@@ -154,8 +152,7 @@ module.exports = function (controller, component, app) {
                     posts: results.rows,
                     totalPage: totalPage,
                     currentPage: page,
-                    baseURL: '/blog/posts/' + req.params.author + '/page-{page}',
-                    title: req.params.author + '\'s Posts'
+                    baseURL: '/blog/posts/' + req.params.author + '/page-{page}'
                 });
             } else {
                 // Redirect to 404 if post not exist
@@ -238,7 +235,6 @@ module.exports = function (controller, component, app) {
             totalPage = Math.ceil(parseInt(posts.count) / number_item) || 1;
 
             res.frontend.render('posts', {
-                title: 'Found (' + posts.count + ') Posts With key : ' + key,
                 posts: posts.rows,
                 totalPage: totalPage,
                 currentPage: page,

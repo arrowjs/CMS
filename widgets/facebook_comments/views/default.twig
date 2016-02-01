@@ -1,0 +1,10 @@
+{% if widget.title %}
+    <h3>{{ widget.title }}</h3>
+{% endif %}
+
+<div class="fb-comments" data-href=""
+     data-width="100%"
+     data-numposts="{{ widget.number_of_posts }}"
+     data-order_by="{{ widget.order_by }}"
+     data-colorscheme="{{ widget.color_scheme }}">
+</div>

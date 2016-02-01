@@ -12,7 +12,7 @@ module.exports = {
         }
     ],
     backend_menu: {
-        title: 'Widget manager',
+        title: 'Widgets',
         icon: 'fa fa-file-text',
         menus: {
             permission: 'index',

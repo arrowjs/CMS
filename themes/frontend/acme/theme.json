@@ -16,14 +16,12 @@
       "title": "Right sidebar"
     },
     {
+      "name": "bottom-post",
+      "title": "Bottom post"
+    },
+    {
       "name": "main-menu",
       "title": "Main nenu"
-    }
-  ],
-  "pluginLocation": [
-    {
-      "name" : "head-tag",
-      "title": "Head tag"
     }
   ]
 }

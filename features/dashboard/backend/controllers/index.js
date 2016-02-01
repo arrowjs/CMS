@@ -1,6 +1,3 @@
-/**
- * Created by thangnv on 11/11/15.
- */
 'use strict';
 
 let promise = require('arrowjs').Promise;

@@ -3,6 +3,7 @@
 module.exports = function (controller, component, app) {
 
     controller.pageIndex = function (req, res) {
+
         app.feature.blog.actions.find({
             include: [
                 {
@@ -19,7 +20,6 @@ module.exports = function (controller, component, app) {
             if (results) {
                 // Render view
                 res.frontend.render('page', {
-                    pageTitle: results.dataValues.title,
                     item: results.dataValues
                 });
             } else {
