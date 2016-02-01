@@ -91,7 +91,7 @@ module.exports = function (action, comp, app) {
         return app.models.user.destroy({
             where: {
                 id: {
-                    'in': ids
+                    $in: ids
                 }
             }
         })
@@ -105,12 +105,12 @@ module.exports = function (action, comp, app) {
             // Get role of user
             if (data.role_id && !data.role_ids) {
                 data.role_ids = user.role_ids;
-            } else if (!data.role && data.role_ids) {
+            } else if (!data.role_id && data.role_ids) {
                 data.role_id = user.role_id;
             }
         }
 
-        if (data.role) {
+        if (data.role_id) {
             if (data.role_ids) {
                 // Check role_id must in role_ids
                 data.role_ids = data.role_ids.toString().split(',');

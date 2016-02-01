@@ -80,7 +80,7 @@ module.exports = function (action, component, app) {
         return app.models.category.destroy({
             where: {
                 id: {
-                    'in': ids
+                    $in: ids
                 }
             }
         })

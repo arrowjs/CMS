@@ -16,6 +16,7 @@ module.exports = function (controller, component, app) {
         // Config ordering
         let column = req.params.sort || 'id';
         let order = req.params.order || '';
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Config columns
         let tableStruture = [
@@ -71,8 +72,6 @@ module.exports = function (controller, component, app) {
         toolbar.addCreateButton(isAllow(req, 'create'), '/admin/roles/create');
         toolbar.addDeleteButton(isAllow(req, 'delete'));
         toolbar = toolbar.render();
-
-        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         let filter = ArrowHelper.createFilter(req, res, tableStruture, {
             rootLink: '/admin/roles/sort',
@@ -135,7 +134,7 @@ module.exports = function (controller, component, app) {
         app.feature.roles.actions.create({
             name: req.body.title,
             status: req.body.status,
-            permissions: JSON.stringify(permissions)
+            _permissions: JSON.stringify(permissions)
         }).then(function (role) {
             req.flash.success(__('m_roles_backend_controllers_index_create_save_flash_success'));
             res.redirect('/admin/roles/' + role.id);
@@ -162,7 +161,7 @@ module.exports = function (controller, component, app) {
                 title: __('m_roles_backend_controllers_index_view_title'),
                 features: app.permissions.feature,
                 role: roles,
-                permissions: JSON.parse(roles.permissions),
+                _permissions: JSON.parse(roles.permissions),
                 toolbar: toolbar
             });
         }).catch(function (error) {
@@ -171,7 +170,7 @@ module.exports = function (controller, component, app) {
                 title: __('m_roles_backend_controllers_index_view_title'),
                 features: app.permissions.feature,
                 role: null,
-                permissions: null,
+                _permissions: null,
                 toolbar: toolbar
             });
         });
@@ -204,7 +203,7 @@ module.exports = function (controller, component, app) {
             return role.updateAttributes({
                 name: req.body.title,
                 status: req.body.status,
-                permissions: JSON.stringify(permissions)
+                _permissions: JSON.stringify(permissions)
             });
         }).then(function (role) {
             req.flash.success(__('m_roles_backend_controllers_index_update_flash_success'));

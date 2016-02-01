@@ -25,6 +25,8 @@ module.exports = function (controller, component, app) {
     let baseRoute = '/admin/users/';
 
     controller.list = function (req, res) {
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
+
         let tableStructure = [
             {
                 column: "id",
@@ -92,8 +94,6 @@ module.exports = function (controller, component, app) {
         toolbar.addRefreshButton(baseRoute);
         toolbar.addCreateButton(isAllow(req, 'create'), baseRoute + 'create');
         toolbar = toolbar.render();
-
-        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Config columns
         let filter = ArrowHelper.createFilter(req, res, tableStructure, {
@@ -250,6 +250,10 @@ module.exports = function (controller, component, app) {
                     if (data.email !== undefined) delete data.email;
                 } else {
                     if (data.role_ids === undefined) data.role_ids = null;
+                    else if (!edit_user.role_ids && data.role_ids) {
+                        // If user does not have a role, set role_id equal to first role in role_ids
+                        data.role_id = [].concat(data.role_ids)[0];
+                    }
                 }
 
                 return userAction.update(edit_user, data).then(function (result) {

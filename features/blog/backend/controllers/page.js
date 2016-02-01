@@ -31,6 +31,7 @@ module.exports = function (controller, component, app) {
     controller.pageList = function (req, res) {
         // Get current page and default sorting
         var page = req.params.page || 1;
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
@@ -111,8 +112,6 @@ module.exports = function (controller, component, app) {
                 }
             }
         ];
-
-        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         // Check permissions view all pages: If user does not have permission manage all, only show own pages
         let customCondition = " AND type='page'";
@@ -375,6 +374,7 @@ module.exports = function (controller, component, app) {
     controller.linkMenuPage = function (req, res) {
         let page = req.query.page;
         let searchText = req.query.searchStr;
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
 
         let conditions = "type='page' AND published = 1";
         if (searchText != '') conditions += " AND title like '%" + searchText.toLowerCase() + "%'";
