@@ -134,7 +134,7 @@ module.exports = function (controller, component, app) {
         app.feature.roles.actions.create({
             name: req.body.title,
             status: req.body.status,
-            _permissions: JSON.stringify(permissions)
+            permissions: JSON.stringify(permissions)
         }).then(function (role) {
             req.flash.success(__('m_roles_backend_controllers_index_create_save_flash_success'));
             res.redirect('/admin/roles/' + role.id);
@@ -203,7 +203,7 @@ module.exports = function (controller, component, app) {
             return role.updateAttributes({
                 name: req.body.title,
                 status: req.body.status,
-                _permissions: JSON.stringify(permissions)
+                permissions: JSON.stringify(permissions)
             });
         }).then(function (role) {
             req.flash.success(__('m_roles_backend_controllers_index_update_flash_success'));
