@@ -55,14 +55,12 @@ module.exports = function (component, application) {
             get: {
                 handler: controller.changePass,
                 name: "users-change-pass-get",
-                authenticate: true,
-                permissions: "update_profile"
+                authenticate: true
             },
             post: {
                 handler: controller.updatePass,
                 name: "users-change-pass-post",
-                authenticate: true,
-                permissions: "update_profile"
+                authenticate: true
             }
         },
         "profile/:uid([0-9]+)": {

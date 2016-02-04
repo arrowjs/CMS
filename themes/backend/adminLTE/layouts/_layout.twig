@@ -18,6 +18,7 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins, folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="/backend/adminLTE/dist/css/skins/_all-skins.min.css">
     <!-- Date Picker -->
+    <link rel="stylesheet" href="/backend/adminLTE/assets/plugins/bootstrap-daterangepicker/daterangepicker.css"/>
     <link rel="stylesheet" href="/backend/adminLTE/assets/plugins/datepicker/datepicker3.css">
 
     <link rel="stylesheet" href="/backend/adminLTE/dist/css/custom.css">
@@ -75,10 +76,9 @@
 <script src="/backend/adminLTE/assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>
 <!-- Bootstrap 3.3.5 -->
 <script src="/backend/adminLTE/assets/bootstrap/js/bootstrap.min.js"></script>
-<!-- daterangepicker -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
-<script src="/backend/adminLTE/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <!-- datepicker -->
+<script src="/backend/adminLTE/assets/plugins/bootstrap-daterangepicker/moment.min.js"></script>
+<script src="/backend/adminLTE/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
 <script src="/backend/adminLTE/assets/plugins/datepicker/bootstrap-datepicker.js"></script>
 <!-- Slimscroll -->
 <script src="/backend/adminLTE/assets/plugins/slimScroll/jquery.slimscroll.min.js"></script>
@@ -124,7 +124,22 @@
             }
         });
 
-        $('.date-range').daterangepicker({format: 'YYYY-MM-DD'});
+        // Init daterange picker
+        var dateRange = $('.date-range');
+        dateRange.daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD',
+                cancelLabel: 'Clear'
+            },
+            autoUpdateInput: false,
+            autoApply: true
+        });
+        dateRange.on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+        dateRange.on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
 
         $('.sort-link').each(function () {
             var link = $(this).attr('href');
