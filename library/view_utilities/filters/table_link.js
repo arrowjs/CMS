@@ -1,9 +1,7 @@
-/**
- * Created by thangnv on 11/16/15.
- */
 'use strict';
+
 module.exports = {
-    handler : function (link,item) {
+    handler: function (link, item) {
         let myRegex = /{(.*?)}/g;
         let match = myRegex.exec(link);
 
@@ -24,6 +22,7 @@ module.exports = {
             });
             match = myRegex.exec(link);
         }
+
         return link;
     }
-}
+};
