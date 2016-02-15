@@ -36,17 +36,19 @@ module.exports = {
                 _.map(menu.sorting, function (key) {
                     //Display all features have key 'backend_menus' in feature.js
                     if (_.has(menu.default.features, key) && _.has(menu.default.features[key], 'menus') && !_.isUndefined(permissions["feature"][key])) {
-                        htmlMenu += '<li class="treeview">';
+                        htmlMenu += '<li class="treeview '+active_menu(currentUrl,key,"active",0,[])+'">';
                         //Display item menu of features
                         if (_.isArray(menu.default.features[key]['menus'])) {
                             htmlMenu += '<a href="#">';
                             htmlMenu += '<i class="' + menu.default.features[key].icon + '"></i> <span>' + menu.default.features[key].title + '</span> <i class="fa fa-angle-left pull-right"></i>';
                             htmlMenu += '</a>';
-                            htmlMenu += '<ul class="treeview-menu" style="display: none;">';
+                            htmlMenu += '<ul class="treeview-menu">';
+                            // active_menu(currentUrl,key,"active") != "active" ? "display: none;" : "" +'>
                             _.map(menu.default.features[key]['menus'], function (val) {
+                                console.log(val);
                                 //Check permission of user to display
                                 if (isDisplay(val.permission, permissions["feature"][key])) {
-                                    htmlMenu += '<li>';
+                                    htmlMenu += '<li class="'+active_menu(currentUrl,key,"active",1,val.link)+'">';
                                     htmlMenu += '<a href="/' + app.getConfig("admin_prefix") + '/' + key + val.link + '">';
                                     htmlMenu += '<i class="fa fa-circle-o"></i> ' + val.title;
                                     htmlMenu += '</a>';
@@ -57,7 +59,7 @@ module.exports = {
                             //Display menu parent without items
                         } else if (_.isObject(menu.default.features[key]['menus'])) {
                             htmlMenu += '<a href="/' + app.getConfig("admin_prefix") + '/' + key + menu.default.features[key]['menus']['link'] + '">';
-                            htmlMenu += '<i class="' + menu.default.features[key].icon + '"></i> <span>' + menu.default.features[key].title + '</span> <i class="fa fa-angle-left pull-right"></i>';
+                            htmlMenu += '<i class="' + menu.default.features[key].icon + '"></i> <span>' + menu.default.features[key].title + '</span>';
                             htmlMenu += '</a>';
                         }
                         htmlMenu += '</li>';
@@ -66,7 +68,7 @@ module.exports = {
                 });
 
                 htmlMenu += '</ul>' +
-                '   </section>';
+                    '   </section>';
                 //set menu json variables to redis
                 app.redisClient.setAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"), JSON.stringify(menu)).then(function () {
                     //return htmlMenu to display on sidebar
@@ -125,35 +127,26 @@ function isDisplay(permissions, permissionsOfFeature) {
 
 /**
  * Add active class to current menu
- * @param {string} link - Menu link
- * @param {string} string_to_compare - String to compare with menu link
- * @param {string} css_class - CSS class when not use class "active"
- * @param {integer} index
- * @returns {string}
+ * @param {string} link - Current Link
+ * @param {string} returnStr - String to return (eg: active)
+ * @param {integer} type - check active for parent or item
+ * @returns {string} item - string for compare current item
  */
-function active_menu(link, string_to_compare, css_class, index) {
-    let arr = link.split('/');
-    let st = "active";
-
-    if (css_class) {
-        st = css_class;
-    }
-
-    if (string_to_compare == '') {
-        string_to_compare = 'index';
-    }
-
-    if (~string_to_compare.indexOf('/')) {
-        string_to_compare = string_to_compare.split('/')[index];
-    }
-
-    if (index) {
-        let v = arr[index];
-        if (!v) {
-            v = "index";
+function active_menu(currentURL,feature, returnStr, type , item) {
+    let currentFeature = currentURL.split('/')[2];
+    let currentItem = currentURL.split('/')[3];
+    let result = "";
+    if (currentFeature == feature){
+        if (type === 0){
+            result = returnStr;
         }
-        return v === string_to_compare ? st : "";
-    }
+        else if (type === 1){
+            if (currentItem == item.split("/").pop()){
+                result = returnStr;
+            }else{
 
-    return arr[2] == string_to_compare ? st : "";
+            }
+        }
+    }
+    return result;
 }
