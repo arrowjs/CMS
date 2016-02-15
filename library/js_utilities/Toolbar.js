@@ -18,22 +18,30 @@ class Toolbar {
     /**
      * Add general button
      */
-    addGeneralButton(permission, title, link, optional) {
-        permission = permission || false;
-        link = link || 'javascript: void(0);';
-        title = title || '';
-        let icon = _.isObject(optional) && optional.icon ? optional.icon : '';
-        let wrapperClass = _.isObject(optional) && optional.wrapperClass ? optional.wrapperClass : '';
-        let buttonClass = _.isObject(optional) && optional.buttonClass ? optional.buttonClass : 'btn btn-default';
-        let onclickFunction = _.isObject(optional) && optional.onclickFunction ? ` onclick="${optional.onclickFunction}"` : ``;
-        let target = _.isObject(optional) && optional.target ? ` target="${optional.target}"` : ``;
+    addGeneralButton(permission, properties) {
+        permission = permission || true;
+
+        // Check properties must be an object
+        if (!_.isObject(properties)) {
+            properties = {};
+        }
+
+        // Set properties default values
+        let title = properties.title || ' ';
+        let link = properties.link || 'javascript:void(0)';
+        let target = properties.target ? `target="${properties.target}"` : '';
+        let anchorClass = properties.anchorClass ? `class="${properties.anchorClass}"` : '';
+        let anchorAttr = properties.anchorAttr || '';
+        let buttonType = properties.buttonType || 'button';
+        let buttonClass = properties.buttonClass ? `class="${properties.buttonClass}"` : `class="btn btn-default"`;
+        let buttonAttr = properties.buttonAttr || '';
 
         // Display button if permission = true
         let button = '';
         if (permission)
-            button = `<a href="${link}"${target} class=${wrapperClass}>
-                        <button type="button" class="${buttonClass}"${onclickFunction}>
-                            ${icon} ${title}
+            button = `<a href="${link}" ${target} ${anchorClass} ${anchorAttr}>
+                        <button type="${buttonType}" ${buttonClass} ${buttonAttr}>
+                            ${title}
                         </button>
                     </a>`;
 
@@ -45,40 +53,38 @@ class Toolbar {
      */
     addBackButton(req, key) {
         let link;
-        if(req.session && req.session.search) {
-            link = req.session.search[key]  ? req.session.search[key] : 'javascript: window.history.back();';
-
+        if (req.session && req.session.search) {
+            link = req.session.search[key] ? req.session.search[key] : 'javascript: window.history.back();';
         } else {
             link = 'javascript: window.history.back();'
         }
-        this.addGeneralButton(true, 'Back', link, {icon: '<i class="fa fa-angle-left"></i>'});
+
+        this.addGeneralButton(true, {
+            title: '<i class="fa fa-angle-left"></i> Back',
+            link: link
+        });
     }
 
     /**
      * Add create button
      */
     addCreateButton(permission, link) {
-        this.addGeneralButton(permission, 'Create new', link,
-            {
-                icon: '<i class="fa fa-plus"></i>',
-                buttonClass: 'btn btn-primary'
-            }
-        );
+        this.addGeneralButton(permission, {
+            title: '<i class="fa fa-plus"></i> Create new',
+            link: link,
+            buttonClass: 'btn btn-primary'
+        });
     }
 
     /**
      * Add save button
      */
     addSaveButton(permission) {
-        let button = '';
-
-        if (permission)
-            button = `<a href="javascript: void(0);">
-                        <button type="submit" id="saveForm" class="btn btn-success">
-                            <i class="fa fa-check"></i> Save
-                        </button>
-                    </a>`;
-        this.addButton(button);
+        this.addGeneralButton(permission, {
+            title: '<i class="fa fa-check"></i> Save',
+            buttonType: 'submit',
+            buttonClass: 'btn btn-primary'
+        });
     }
 
     /**
@@ -86,43 +92,35 @@ class Toolbar {
      */
     addDeleteButton(permission) {
         this.useDeleteModal = true;
-        let button = '';
-
-        if (permission)
-            button = `<a class="pull-right" data-toggle="modal" onclick="openDeleteConfirmModal()" id="deleteForm">
-                        <button class="btn btn-danger">
-                            <i class="fa fa-remove"></i> Delete
-                        </button>
-                    </a>`;
-        this.addButton(button);
+        this.addGeneralButton(permission, {
+            title: '<i class="fa fa-remove"></i> Delete',
+            anchorClass: 'pull-right',
+            anchorAttr: 'data-toggle="modal" onclick="openDeleteConfirmModal()" id="deleteForm"',
+            buttonClass: 'btn btn-danger'
+        });
     }
 
     /**
      * Add search button
      */
-    addSearchButton(permission) {
-        let button = '';
-
-        if (permission)
-            button = `<a href="javascript: void(0);">
-                        <button type="submit" form="search-form" class="btn btn-warning"
-                           onclick='return document.forms["search-form"].submit();'>
-                            <i class="fa fa-search"></i> Search
-                        </button>
-                    </a>`;
-        this.addButton(button);
+    addSearchButton() {
+        this.addGeneralButton(true, {
+            title: '<i class="fa fa-search"></i> Search',
+            buttonType: 'submit',
+            buttonClass: 'btn btn-warning',
+            buttonAttr: 'form="search-form" onclick="return document.forms[\'search-form\'].submit();"'
+        });
     }
 
     /**
      * Add reset button
      */
     addRefreshButton(link) {
-        this.addGeneralButton(true, 'Refresh', link,
-            {
-                icon: '<i class="fa fa-refresh"></i>',
-                buttonClass: 'btn btn-info'
-            }
-        );
+        this.addGeneralButton(true, {
+            title: '<i class="fa fa-refresh"></i> Refresh',
+            link: link,
+            buttonClass: 'btn btn-info'
+        });
     }
 
     /**

@@ -27,7 +27,7 @@
                                     {% endif %}
                                 {% endfor %}
                             </select>
-                            {% elif filter.data_type == 'datetime' %}
+                        {% elif filter.data_type == 'datetime' %}
                             <input type="text" class="form-control date-range"
                                    id="{{ col.column }}"
                                    name="{{ col.column }}"

@@ -67,9 +67,9 @@ module.exports = function (controller, component, app) {
         // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
-        toolbar.addSearchButton(true);
+        toolbar.addSearchButton();
         toolbar.addCreateButton(true, baseRoute + 'create');
-        toolbar.addDeleteButton(true);
+        toolbar.addDeleteButton();
         toolbar = toolbar.render();
 
         // Config columns
@@ -207,7 +207,7 @@ module.exports = function (controller, component, app) {
     controller.postCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(true);
+        toolbar.addSaveButton();
 
         app.feature.category.actions.findAll({
             where: {
@@ -284,8 +284,8 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'post_back_link');
-        toolbar.addSaveButton(true);
-        toolbar.addDeleteButton(true);
+        toolbar.addSaveButton();
+        toolbar.addDeleteButton();
 
         // Find all categories
         app.feature.category.actions.findAll({
@@ -295,12 +295,12 @@ module.exports = function (controller, component, app) {
             order: 'name ASC'
         }).then(function (categories) {
             // Add preview button
-            toolbar.addGeneralButton(true, 'Preview', baseRoute + 'preview/' + post.id,
-                {
-                    icon: '<i class="fa fa-eye"></i>',
-                    buttonClass: 'btn btn-info',
-                    target: '_blank'
-                });
+            toolbar.addGeneralButton(true, {
+                title: '<i class="fa fa-eye"></i> Preview',
+                link: baseRoute + 'preview/' + post.id,
+                target: '_blank',
+                buttonClass: 'btn btn-info'
+            });
 
             // Render view
             res.backend.render('post/new', {

@@ -322,7 +322,7 @@ module.exports = function (controller, component, app) {
         // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'user_back_link');
-        toolbar.addSaveButton(true);
+        toolbar.addSaveButton();
         toolbar = toolbar.render();
 
         app.feature.roles.actions.findAll({
