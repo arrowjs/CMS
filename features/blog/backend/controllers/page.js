@@ -36,9 +36,9 @@ module.exports = function (controller, component, app) {
         // Add buttons and check authorities
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
-        toolbar.addSearchButton('true');
+        toolbar.addSearchButton();
         toolbar.addCreateButton(true, baseRoute + 'create');
-        toolbar.addDeleteButton(true);
+        toolbar.addDeleteButton();
         toolbar = toolbar.render();
 
         // Config columns
@@ -176,7 +176,7 @@ module.exports = function (controller, component, app) {
     controller.pageCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'page_back_link');
-        toolbar.addSaveButton(true);
+        toolbar.addSaveButton();
 
         res.backend.render('page/new', {
             title: __('m_blog_backend_page_render_create'),
@@ -239,16 +239,16 @@ module.exports = function (controller, component, app) {
         // Add buttons
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'page_back_link');
-        toolbar.addSaveButton(true);
-        toolbar.addDeleteButton(true);
+        toolbar.addSaveButton();
+        toolbar.addDeleteButton();
 
         // Add preview button
-        toolbar.addGeneralButton(true, 'Preview', baseRoute + 'preview/' + page.id,
-            {
-                icon: '<i class="fa fa-eye"></i>',
-                buttonClass: 'btn btn-info',
-                target: '_blank'
-            });
+        toolbar.addGeneralButton(true, {
+            title: '<i class="fa fa-eye"></i> Preview',
+            link: baseRoute + 'preview/' + page.id,
+            target: '_blank',
+            buttonClass: 'btn btn-info'
+        });
 
         // Render view
         res.backend.render('page/new', {

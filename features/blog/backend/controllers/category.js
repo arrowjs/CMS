@@ -54,9 +54,9 @@ module.exports = function (controller, component, app) {
 
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
-        toolbar.addSearchButton('true');
+        toolbar.addSearchButton();
         toolbar.addCreateButton(true, baseRoute + 'create');
-        toolbar.addDeleteButton(true);
+        toolbar.addDeleteButton();
         toolbar = toolbar.render();
 
         // Config columns
@@ -121,7 +121,7 @@ module.exports = function (controller, component, app) {
     controller.categoryCreate = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'category_back_link');
-        toolbar.addSaveButton(true);
+        toolbar.addSaveButton();
 
         res.backend.render('category/new', {
             title: 'New category',
@@ -161,7 +161,7 @@ module.exports = function (controller, component, app) {
     controller.categoryView = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'category_back_link');
-        toolbar.addSaveButton(true);
+        toolbar.addSaveButton();
 
         app.feature.category.actions.findById(req.params.categoryId).then(function (category) {
             res.backend.render('category/new', {
