@@ -45,7 +45,6 @@ module.exports = {
                             htmlMenu += '<ul class="treeview-menu">';
                             // active_menu(currentUrl,key,"active") != "active" ? "display: none;" : "" +'>
                             _.map(menu.default.features[key]['menus'], function (val) {
-                                console.log(val);
                                 //Check permission of user to display
                                 if (isDisplay(val.permission, permissions["feature"][key])) {
                                     htmlMenu += '<li class="'+active_menu(currentUrl,key,"active",1,val.link)+'">';

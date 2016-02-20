@@ -27,7 +27,6 @@ exports.createUserAdmin = function (app, callback) {
                         status: 'publish',
                         permissions: permissions
                     }).then(function (role) {
-                        console.log('create role : ', role.id);
                         createUser(app, role.id, function (user) {
                             callback(user, role);
                         });
