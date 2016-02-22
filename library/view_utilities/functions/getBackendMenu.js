@@ -1,15 +1,16 @@
 "use strict";
 
 let _ = require('arrowjs')._;
-let log = require('arrowjs').logger;
+let logger = require('arrowjs').logger;
 
 module.exports = {
     name: "getBackendMenu",
     async: true,
     handler: function (currentUrl, currPermission, callback) {
         let app = this;
-        let permissions = currPermission || app.permissions;
+        let permissions = currPermission || {feature: ''};
         let feature_data = app.featureManager.getAttribute();
+
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"))
             .then(function (menu) {
                 let htmlMenu = '<section class="sidebar">' +
@@ -34,20 +35,20 @@ module.exports = {
 
                 htmlMenu += '<li class="header">' + menu.default.title + '</li>';
                 _.map(menu.sorting, function (key) {
-                    //Display all features have key 'backend_menus' in feature.js
+                    // Display all features have key 'backend_menus' in feature.js
                     if (_.has(menu.default.features, key) && _.has(menu.default.features[key], 'menus') && !_.isUndefined(permissions["feature"][key])) {
-                        htmlMenu += '<li class="treeview '+active_menu(currentUrl,key,"active",0,[])+'">';
-                        //Display item menu of features
+                        htmlMenu += '<li class="treeview ' + active_menu(currentUrl, key, "active", 0, []) + '">';
+                        // Display item menu of features
                         if (_.isArray(menu.default.features[key]['menus'])) {
                             htmlMenu += '<a href="#">';
                             htmlMenu += '<i class="' + menu.default.features[key].icon + '"></i> <span>' + menu.default.features[key].title + '</span> <i class="fa fa-angle-left pull-right"></i>';
                             htmlMenu += '</a>';
                             htmlMenu += '<ul class="treeview-menu">';
-                            // active_menu(currentUrl,key,"active") != "active" ? "display: none;" : "" +'>
+
                             _.map(menu.default.features[key]['menus'], function (val) {
-                                //Check permission of user to display
+                                // Check permission of user to display
                                 if (isDisplay(val.permission, permissions["feature"][key])) {
-                                    htmlMenu += '<li class="'+active_menu(currentUrl,key,"active",1,val.link)+'">';
+                                    htmlMenu += '<li class="' + active_menu(currentUrl, key, "active", 1, val.link) + '">';
                                     htmlMenu += '<a href="/' + app.getConfig("admin_prefix") + '/' + key + val.link + '">';
                                     htmlMenu += '<i class="fa fa-circle-o"></i> ' + val.title;
                                     htmlMenu += '</a>';
@@ -62,12 +63,11 @@ module.exports = {
                             htmlMenu += '</a>';
                         }
                         htmlMenu += '</li>';
-
                     }
                 });
 
                 htmlMenu += '</ul>' +
-                    '   </section>';
+                '   </section>';
                 //set menu json variables to redis
                 app.redisClient.setAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"), JSON.stringify(menu)).then(function () {
                     //return htmlMenu to display on sidebar
@@ -109,8 +109,8 @@ function sortMenus(menus) {
 
 /*
  * Check permissions of user with permissions of feature
- * return true if user has leatest one permistion else return false
- * @permistions :  permissions(permissions of feature) of user
+ * return true if user has at least one permission else return false
+ * @permissions :  permissions(permissions of feature) of user
  * @permissionsOfFeature: all permissions of feature is defined in feature.js (in backend_menus)
  * */
 function isDisplay(permissions, permissionsOfFeature) {
@@ -126,23 +126,24 @@ function isDisplay(permissions, permissionsOfFeature) {
 
 /**
  * Add active class to current menu
- * @param {string} link - Current Link
+ * @param {string} currentURL - Current URL
+ * @param {string} feature - Feature
  * @param {string} returnStr - String to return (eg: active)
  * @param {integer} type - check active for parent or item
- * @returns {string} item - string for compare current item
+ * @param {string} item - string for compare current item
  */
-function active_menu(currentURL,feature, returnStr, type , item) {
+function active_menu(currentURL, feature, returnStr, type, item) {
     let currentFeature = currentURL.split('/')[2];
     let currentItem = currentURL.split('/')[3];
     let result = "";
-    if (currentFeature == feature){
-        if (type === 0){
+    if (currentFeature == feature) {
+        if (type === 0) {
             result = returnStr;
         }
-        else if (type === 1){
-            if (currentItem == item.split("/").pop()){
+        else if (type === 1) {
+            if (currentItem == item.split("/").pop()) {
                 result = returnStr;
-            }else{
+            } else {
 
             }
         }
