@@ -179,6 +179,10 @@ module.exports = function (controller, component, app) {
                 });
             } else fulfill(data);
         }).then(function (result) {
+                // Set role equal first role in role_ids
+                result.role_id = [].concat(result.role_ids)[0];
+
+                // Create user
                 return app.feature.users.actions.create(result);
             }).then(function (user) {
                 req.flash.success(__('m_users_backend_controllers_index_add_flash_success'));
