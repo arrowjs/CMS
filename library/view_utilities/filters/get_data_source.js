@@ -6,6 +6,7 @@ module.exports = {
         if (typeof source == 'string') {
             if (filter.source_type && filter.source_type == "query") {
                 this.models.rawQuery(source).then(function (data) {
+                    data = data[0];
                     let arr = [];
                     for (let i in data) {
                         let ob = {};
