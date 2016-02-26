@@ -245,7 +245,7 @@ module.exports = {
     /* modules upload */
     "m_upload_backend_module_title": "Uploads",
     "m_upload_backend_module_desc": "Upload file with roxyfileman",
-    "m_upload_backend_controllers_index_delete_dir_error": "Cannot delete folder when file still exist !",
+    "m_upload_backend_controllers_index_delete_dir_error": "Cannot delete folder when file still exist!",
     "m_upload_backend_controllers_index_delete_error_integrated": "Not Integrated",
 
     /* modules users */

@@ -5,6 +5,15 @@ module.exports = {
     author: 'Nguyen Van Thanh',
     version: '0.1.1',
     description: __('m_upload_backend_module_desc'),
-    permissions: []
+    permissions: [
+        {
+            name: 'upload_manage',
+            title: 'Manage files'
+        },
+        {
+            name: 'upload_manage_all',
+            title: 'Manage all files'
+        }
+    ]
 };
 
