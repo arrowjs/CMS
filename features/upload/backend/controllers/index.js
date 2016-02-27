@@ -73,7 +73,7 @@ module.exports = function (controller, component, app) {
         let results = [];
         let rootPath = app.getConfig('uploadPath');
         let userId = req.user.id;
-        let ownerPath = standardPath + rootPath + '/' + userId;
+        let ownerPath = standardPath + rootPath + '/users/' + userId;
 
         // Create dir for user if not exists (dir name = user id)
         fs.access(ownerPath, fs.F_OK, function (err) {
@@ -84,7 +84,7 @@ module.exports = function (controller, component, app) {
                     } else {
                         // If user does not have permission manage all, only show his dir
                         if (req.permissions.indexOf(permissionManageAll) === -1) {
-                            rootPath += '/' + userId;
+                            rootPath += '/users/' + userId;
                         }
                         getDirectories(rootPath, results);
                         res.jsonp(results);
@@ -93,7 +93,7 @@ module.exports = function (controller, component, app) {
             } else {
                 // If user does not have permission manage all, only show his dir
                 if (req.permissions.indexOf(permissionManageAll) === -1) {
-                    rootPath += '/' + req.user.id;
+                    rootPath += '/users/' + userId;
                 }
                 getDirectories(rootPath, results);
                 res.jsonp(results);
@@ -107,12 +107,16 @@ module.exports = function (controller, component, app) {
 
         // Only allow delete dir inside owner folder if user does not have permission manage all
         if (req.permissions.indexOf(permissionManageAll) === -1 &&
-            dir.indexOf(app.getConfig('uploadPath') + '/' + req.user.id) === -1) {
+            dir.indexOf(app.getConfig('uploadPath') + '/users/' + req.user.id) === -1) {
             res.jsonp({"res": "error", "msg": "You don't have permission to create directory here"});
         } else {
             fs.mkdir(standardPath + dir + '/' + name, '7777', function (err) {
                 if (err) {
-                    res.jsonp({"res": "error", "msg": "Cannot create directory"});
+                    if (err.code == 'EEXIST') {
+                        res.jsonp({"res": "error", "msg": "Directory already exists"});
+                    } else {
+                        res.jsonp({"res": "error", "msg": "Cannot create directory"});
+                    }
                 } else {
                     res.jsonp({"res": "ok", "msg": ""});
                 }
@@ -125,17 +129,21 @@ module.exports = function (controller, component, app) {
 
         // Only allow delete dir inside owner folder if user does not have permission manage all
         if (req.permissions.indexOf(permissionManageAll) === -1 &&
-            dir.indexOf(app.getConfig('uploadPath') + '/' + req.user.id) === -1) {
+            dir.indexOf(app.getConfig('uploadPath') + '/users/' + req.user.id) === -1) {
             res.jsonp({"res": "error", "msg": "You don't have permission to delete this directory"});
         } else {
-            fs.rmdir(standardPath + dir, function (err) {
-                console.log("\x1b[33m", err, "\x1b[0m");
-                if (err) {
-                    res.jsonp({"res": "error", "msg": __('m_upload_backend_controllers_index_delete_dir_error')});
-                } else {
-                    res.jsonp({"res": "ok", "msg": ""});
-                }
-            });
+            // Don't allow delete primary directory
+            if (dir == '/fileman/uploads' || dir == '/fileman/uploads/users') {
+                res.jsonp({"res": "error", "msg": "Cannot delete this directory"});
+            } else {
+                fs.rmdir(standardPath + dir, function (err) {
+                    if (err) {
+                        res.jsonp({"res": "error", "msg": __('m_upload_backend_controllers_index_delete_dir_error')});
+                    } else {
+                        res.jsonp({"res": "ok", "msg": ""});
+                    }
+                });
+            }
         }
     };
 
@@ -163,7 +171,7 @@ module.exports = function (controller, component, app) {
 
         // Only show files inside owner folder if user does not have permission manage all
         if (req.permissions.indexOf(permissionManageAll) === -1 &&
-            rPath.indexOf(app.getConfig('uploadPath') + '/' + req.user.id) === -1) {
+            rPath.indexOf(app.getConfig('uploadPath') + '/users/' + req.user.id) === -1) {
             res.jsonp({"res": "error", "msg": "You don't have permission to view this directory"});
         } else {
             fs.readdir(rPath, function (err, files) {
@@ -201,7 +209,7 @@ module.exports = function (controller, component, app) {
 
             // Only show files inside owner folder if user does not have permission manage all
             if (req.permissions.indexOf(permissionManageAll) === -1 &&
-                destination.indexOf(app.getConfig('uploadPath') + '/' + req.user.id) === -1) {
+                destination.indexOf(app.getConfig('uploadPath') + '/users/' + req.user.id) === -1) {
                 msg = "You don't have permission to upload here";
             } else {
                 fs.access(destination, function (err) {
@@ -255,7 +263,7 @@ module.exports = function (controller, component, app) {
 
         // Only allow delete file inside owner folder if user does not have permission manage all
         if (req.permissions.indexOf(permissionManageAll) === -1 &&
-            filePath.indexOf(app.getConfig('uploadPath') + '/' + req.user.id) === -1) {
+            filePath.indexOf(app.getConfig('uploadPath') + '/users/' + req.user.id) === -1) {
             res.jsonp({"res": "error", "msg": "Cannot delete this file"});
         } else {
             if (fs.existsSync(filePath)) {
@@ -311,7 +319,7 @@ module.exports = function (controller, component, app) {
 
         // Only show files inside owner folder if user does not have permission manage all
         if (req.permissions.indexOf(permissionManageAll) === -1 &&
-            filePath.indexOf(app.getConfig('uploadPath') + '/' + req.user.id) === -1) {
+            filePath.indexOf(app.getConfig('uploadPath') + '/users/' + req.user.id) === -1) {
             res.jsonp({"res": "error", "msg": "You don't have permission to view this directory"});
         } else {
             // Check file exit
