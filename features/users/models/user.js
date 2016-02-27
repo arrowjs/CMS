@@ -7,16 +7,10 @@ module.exports = function (sequelize, DataTypes) {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true,
-            validate: {
-                isInt: {
-                    msg: 'please input integer value'
-                }
-            }
+            autoIncrement: true
         },
         user_pass: {
-            type: DataTypes.STRING(255),
-            allowNull: false
+            type: DataTypes.STRING(255)
         },
         user_email: {
             type: DataTypes.STRING,
@@ -59,7 +53,7 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         user_image_url: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(1000),
             defaultValue: '/img/noImage.png'
         },
         salt: DataTypes.STRING(255),

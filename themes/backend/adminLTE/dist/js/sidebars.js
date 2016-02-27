@@ -1,4 +1,6 @@
 $(function () {
+    var isSelfSort = false;
+
     // Allow drag widget from Widget List to Sidebar
     $('.widget-list').sortable({
         connectWith: ".sidebar-widget",
@@ -13,30 +15,33 @@ $(function () {
         update: function (event, ui) {
             var dropItem = $(ui.item[0]);
 
-            var li = $('<li id=""></li>');
-            li.append('<div class="widget-item">' + dropItem.text().trim() + '</div>');
-            li.append('<a href="#" class="fa fa-caret-down expand_arrow" onclick="return showDetail(this);"></a>');
+            // The destination must be different 'widget-list'
+            if (dropItem.parent().attr('class') != 'widget-list list-unstyled ui-sortable') {
+                var li = $('<li id=""></li>');
+                li.append('<div class="widget-item">' + dropItem.text().trim() + '</div>');
+                li.append('<a href="#" class="fa fa-caret-down expand_arrow" onclick="return showDetail(this);"></a>');
 
-            var ul = $(this);
+                var ul = $(this);
 
-            $.ajax({
-                url: '/admin/widgets/add/' + dropItem.attr('data-alias')
-            }).done(function (result) {
-                if (result) {
-                    // Render widget setting form after drop item
-                    var new_box = $("<div class='box box-solid open'><div class='box-body'></div></div>");
-                    new_box.find(".box-body").first().append(result);
-                    new_box.find("form").first().append("<input type='hidden' name='sidebar' value='" + dropItem.parents('.box').first().attr('id') + "'>");
-                    new_box.find("form").first().append("<input type='hidden' name='ordering' value='" + (ul.find("li").length + 1) + "'>");
-                    li.append(new_box);
-                    dropItem.after(li);
-                }
+                $.ajax({
+                    url: '/admin/widgets/add/' + dropItem.attr('data-alias')
+                }).done(function (result) {
+                    if (result) {
+                        // Render widget setting form after drop item
+                        var new_box = $("<div class='box box-solid open'><div class='box-body'></div></div>");
+                        new_box.find(".box-body").first().append(result);
+                        new_box.find("form").first().append("<input type='hidden' name='sidebar' value='" + dropItem.parents('.box').first().attr('id') + "'>");
+                        new_box.find("form").first().append("<input type='hidden' name='ordering' value='" + (ul.find("li").length + 1) + "'>");
+                        li.append(new_box);
+                        dropItem.after(li);
+                    }
 
-                // Remove drop item
-                dropItem.remove();
-            });
+                    // Remove drop item
+                    dropItem.remove();
+                });
+            }
         }
-    });
+    }).disableSelection();
 
     // Allow sort widgets in sidebar
     $(".sidebar-widget").sortable({
@@ -70,7 +75,7 @@ $(function () {
             var ids = $(this).sortable('toArray');
             sorting(this, ids);
         }
-    });
+    }).disableSelection();
 });
 
 function showDetail(element, changeIcon) {
@@ -179,7 +184,7 @@ function sorting(element, ids) {
         }
     }).done(function (re) {
         removeBlock(box);
-    }).fail(function(error){
+    }).fail(function (error) {
         console.log(error);
         removeBlock(box);
     });

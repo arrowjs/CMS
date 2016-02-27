@@ -83,7 +83,8 @@ class Toolbar {
         this.addGeneralButton(permission, {
             title: '<i class="fa fa-check"></i> Save',
             buttonType: 'submit',
-            buttonClass: 'btn btn-primary'
+            buttonClass: 'btn btn-success',
+            buttonAttr: 'id="saveForm"'
         });
     }
 

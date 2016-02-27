@@ -36,7 +36,7 @@
                 {% elif col.type=='image' %}
                 <img class="img-circle" src="{{ col.column|get_value(item) }}" style="width: 55px;">
             {% else %}
-                {{ col.column|get_value(item)|safe }}
+                {{ col.column|get_value(item) }}
             {% endif %}
         {% endif %}
     </span>

@@ -23,7 +23,7 @@ module.exports = {
                 } else {
                     let nav = "";
                     let body = "";
-                    let jsscript = "";
+                    let jsScript = "";
 
                     Promise.map(plugins, function (plugin) {
                         let pluginName = plugin.plugin_name;
@@ -56,7 +56,7 @@ module.exports = {
                                             body += `<div id="${pluginName}" class="tab-pane active">${info}</div>`;
 
                                             if (app.plugin[pluginName].onSave) {
-                                                jsscript += `
+                                                jsScript += `
                                                 var ${pluginName}Element = document.getElementById("${pluginName}_form");
                                                 var ${pluginName}Data = new FormData(${pluginName}Element);
                                                 ${pluginName}Data.append('key', "${key}");
@@ -90,7 +90,7 @@ module.exports = {
 
                                 <script>
                                     document.getElementById("saveForm").onclick = function(){
-                                        ${jsscript}
+                                        ${jsScript}
                                     }
                                 </script>`;
                             callback(null, raw);
@@ -101,7 +101,7 @@ module.exports = {
                 }
             }).catch(function (err) {
                 callback(null, '');
-            })
+            });
         } else {
             callback(null, '');
         }
