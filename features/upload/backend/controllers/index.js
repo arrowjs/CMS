@@ -12,6 +12,12 @@ module.exports = function (controller, component, app) {
 
     let permissionManageAll = 'upload_manage_all';
     let standardPath = __base + 'upload';
+    let allowExtension = [
+        '.jpg', '.jpeg', '.gif', '.png', '.bmp',
+        '.psd', '.pdf',
+        '.txt', '.doc', '.docx', '.csv', '.xls', '.xlsx',
+        '.zip', '.rar', '.tar', '.gz'
+    ];
 
     function checkFileExist(fileName, index, extension) {
         return new Promise(function (fulfill, reject) {
@@ -212,31 +218,35 @@ module.exports = function (controller, component, app) {
                 destination.indexOf(app.getConfig('uploadPath') + '/users/' + req.user.id) === -1) {
                 msg = "You don't have permission to upload here";
             } else {
-                fs.access(destination, function (err) {
-                    if (!err) {
-                        let ext = path.extname(destination);
-                        let noExt = destination.replace(/\..*$/, '');
+                let ext = path.extname(destination);
+                let noExt = destination.replace(/\..*$/, '');
 
-                        let number = noExt.match(/\(\d\)$/);
-                        if (number) {
-                            checkFileExist(noExt.replace(/\(\d\)$/, ''), 1, ext).then(function (result) {
-                                fs.rename(files["files[]"].path, result, function (err) {
-                                    if (err) logger.error(err);
+                if (allowExtension.indexOf(ext) !== -1) {
+                    fs.access(destination, function (err) {
+                        if (!err) {
+                            let number = noExt.match(/\(\d\)$/);
+                            if (number) {
+                                checkFileExist(noExt.replace(/\(\d\)$/, ''), 1, ext).then(function (result) {
+                                    fs.rename(files["files[]"].path, result, function (err) {
+                                        if (err) logger.error(err);
+                                    });
                                 });
-                            });
+                            } else {
+                                checkFileExist(noExt, 1, ext).then(function (result) {
+                                    fs.rename(files["files[]"].path, result, function (err) {
+                                        if (err) logger.error(err);
+                                    });
+                                });
+                            }
                         } else {
-                            checkFileExist(noExt, 1, ext).then(function (result) {
-                                fs.rename(files["files[]"].path, result, function (err) {
-                                    if (err) logger.error(err);
-                                });
+                            fs.rename(files["files[]"].path, destination, function (err) {
+                                if (err) logger.error(err);
                             });
                         }
-                    } else {
-                        fs.rename(files["files[]"].path, destination, function (err) {
-                            if (err) logger.error(err);
-                        });
-                    }
-                });
+                    });
+                } else {
+                    msg = "File type does not allowed";
+                }
             }
         });
 
