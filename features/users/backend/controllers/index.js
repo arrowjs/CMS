@@ -317,8 +317,8 @@ module.exports = function (controller, component, app) {
     controller.profile = function (req, res) {
         // Get current user role
         let role_ids = [];
-        if (req.user.role_ids) {
-            role_ids = req.user.role_ids.split(/\D/).filter(function (val) {
+        if (req._user.role_ids) {
+            role_ids = req._user.role_ids.split(/\D/).filter(function (val) {
                 return val.match(/\d/g);
             });
         }
