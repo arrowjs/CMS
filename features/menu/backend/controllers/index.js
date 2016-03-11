@@ -159,6 +159,13 @@ module.exports = function (controller, component, app) {
     };
 
     controller.update = function (req, res) {
+        //check if string => convert to Array
+        if (_.isString(req.body.title)){
+            req.body.title = [req.body.title];
+            req.body.mn_id = [req.body.mn_id];
+            req.body.attribute = [req.body.attribute];
+            req.body.url = [req.body.url];
+        }
         // Find menu to update
         app.models.menu.find({
             where: {
@@ -204,6 +211,13 @@ module.exports = function (controller, component, app) {
 
     controller.save = function (req, res) {
         let menu_id = 0;
+        //check if string => convert to Array
+        if (_.isString(req.body.title)){
+            req.body.title = [req.body.title];
+            req.body.mn_id = [req.body.mn_id];
+            req.body.attribute = [req.body.attribute];
+            req.body.url = [req.body.url];
+        }
         app.models.menu.create({
             name: req.body.name,
             menu_order: req.body.output
