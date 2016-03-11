@@ -51,9 +51,14 @@ module.exports = function (action, comp, app) {
         data = optimizeData(data);
         data.type = type;
 
+        // If post was published
         if (+data.published) {
             if (!data.title) data.title = '(no title)';
             data.published_at = Date.now();
+
+            // Set intro_text equal to full_text if intro_text is empty
+            if (data.full_text && !data.intro_text)
+                data.intro_text = data.full_text
         }
 
         return app.models.post.create(data);
@@ -67,9 +72,14 @@ module.exports = function (action, comp, app) {
     action.update = function (post, data) {
         data = optimizeData(data);
 
+        // If post was published
         if (+data.published) {
             if (!data.title) data.title = '(no title)';
             if (data.published != post.published) data.published_at = Date.now();
+
+            // Set intro_text equal to full_text if intro_text is empty
+            if (data.full_text && !data.intro_text)
+                data.intro_text = data.full_text
         }
 
         return post.updateAttributes(data);
