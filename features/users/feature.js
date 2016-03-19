@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports =  {
+module.exports = {
     title: __('m_users_backend_title'),
-    author: 'Nguyen Van Thanh',
+    author: 'Techmaster',
     version: '0.1.0',
     description: __('m_users_backend_description'),
     permissions: [
@@ -39,4 +39,4 @@ module.exports =  {
             }
         ]
     }
-}
+};

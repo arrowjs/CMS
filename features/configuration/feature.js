@@ -2,8 +2,8 @@
 
 module.exports = {
     title: __('m_configurations_backend_module_title'),
-    author: 'Nguyen Van Thanh',
-    version: '0.0.1',
+    author: 'Techmaster',
+    version: '0.1.0',
     description: __('m_configurations_backend_module_desc'),
     permissions: [
         {

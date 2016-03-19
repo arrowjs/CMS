@@ -1,64 +1,66 @@
 'use strict';
 
-module.exports = function (component,application) {
-    let comp = component.controllers.backend;
+module.exports = function (component, app) {
+
+    let controller = component.controllers.backend;
+
     return {
-        "/menu" : {
-            get : {
-                handler : comp.index,
-			authenticate: true,
+        "/menu": {
+            get: {
+                handler: controller.index,
+                authenticate: true,
                 permissions: "index"
             },
-            delete : {
-                handler : comp.delete,
-			authenticate: true,
-                permissions : "delete"
+            delete: {
+                handler: controller.delete,
+                authenticate: true,
+                permissions: "delete"
             },
-            param : {
-                key : "mid",
-                handler : comp.menuById
+            param: {
+                key: "mid",
+                handler: controller.menuById
             }
         },
-        "/menu/create" : {
-            get : {
-                handler : comp.create,
-			authenticate: true,
+        "/menu/create": {
+            get: {
+                handler: controller.create,
+                authenticate: true,
                 permissions: "create"
             },
-            post : {
-                handler : comp.save,
-			authenticate: true,
+            post: {
+                handler: controller.save,
+                authenticate: true,
                 permissions: "create"
             }
         },
-        "/menu/update/:mid":{
-            get : {
-                handler : [comp.read],
-			authenticate: true,
+        "/menu/update/:mid": {
+            get: {
+                handler: controller.read,
+                authenticate: true,
                 permissions: "update"
             },
-            post : {
-                handler : comp.update,
-			authenticate: true,
+            post: {
+                handler: controller.update,
+                authenticate: true,
                 permissions: "update"
             }
         },
-        '/menu/sort-admin-menu' : {
-            get : {
-                handler : comp.sortAdminMenu,
-			authenticate: true,
+        '/menu/sort-admin-menu': {
+            get: {
+                handler: controller.sortAdminMenu,
+                authenticate: true,
                 permissions: "update"
             },
-            post : {
-                handler : comp.saveSortAdminMenu,
-			authenticate: true,
+            post: {
+                handler: controller.saveSortAdminMenu,
+                authenticate: true,
                 permissions: "update"
             }
         },
         '/menu/sort/:sort/:order': {
-            get : {
-                handler : comp.index,
-			authenticate: true,
+            get: {
+                handler: controller.index,
+                authenticate: true,
                 permissions: "index"
             }
         }

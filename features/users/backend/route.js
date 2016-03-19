@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (component, application) {
+module.exports = function (component, app) {
 
     let controller = component.controllers.backend;
 
