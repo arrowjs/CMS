@@ -2,25 +2,59 @@
 
 let logger = require('arrowjs').logger;
 
-module.exports = function (passport, application) {
+module.exports = function (passport, app) {
     return {
         serializeUser: function (user, done) {
             done(null, user.id);
         },
         deserializeUser: function (id, done) {
-            application.models.user.findById(id).then(function (user) {
-                done(null, user);
-            }).catch(function (err) {
-                done(err)
+            let redis = app.redisClient;
+            let key = app.getConfig('redis_prefix') + 'current-user-' + id;
+
+            redis.get(key, function (err, result) {
+                if (result != null) {
+                    let user;
+                    try {
+                        user = JSON.parse(result);
+                    } catch (err) {
+                        logger.error(err);
+                        done(null, false);
+                    }
+
+                    done(null, user);
+                } else {
+                    app.feature.users.actions.find({
+                        include: [app.models.role],
+                        where: {
+                            id: id,
+                            user_status: 'publish'
+                        }
+                    }).then(function (user) {
+                        let user_tmp;
+                        try {
+                            user_tmp = JSON.parse(JSON.stringify(user));
+                        } catch (err) {
+                            logger.error(err);
+                            done(null, false);
+                        }
+
+                        // Set expires 300 seconds
+                        redis.setex(key, 300, JSON.stringify(user_tmp));
+                        done(null, user_tmp);
+                    }).catch(function (err) {
+                        logger.error(err);
+                        done(null, false);
+                    });
+                }
             });
         },
         checkAuthenticate: function (req, res, next) {
             if (req.isAuthenticated()) {
-                application.models.user.find({
+                app.models.user.find({
                     where: {
                         id: req.user.id
                     },
-                    include: application.models.role
+                    include: app.models.role
                 }).then(function (user) {
                     try {
                         req.session.permissions = res.locals.permissions = JSON.parse(user.role.permissions);
@@ -30,7 +64,7 @@ module.exports = function (passport, application) {
                     res.locals.user = user;
                     return next();
                 }).catch(function (err) {
-                    logger.error('Error at : checkAuthenticate :', err);
+                    logger.error('Check authenticate error: ', err);
                     res.redirect('/admin/login');
                 });
             } else {

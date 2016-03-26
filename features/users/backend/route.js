@@ -63,14 +63,14 @@ module.exports = function (component, app) {
                 authenticate: true
             }
         },
-        "profile/:uid([0-9]+)": {
+        "profile": {
             get: {
                 handler: controller.profile,
                 name: "users-profile-get",
                 authenticate: true
             },
             post: {
-                handler: [controller.update, controller.profile],
+                handler: [controller.updateProfile, controller.profile],
                 name: "users-profile-post",
                 authenticate: true
             }

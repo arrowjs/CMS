@@ -366,7 +366,7 @@ module.exports = {
     /** login.html */
     "t_backend_default_login_remember_me": "Ghi nhớ",
     "t_backend_default_login_forgot_pass": "Quên mật khẩu",
-    "t_backend_default_layout_sign_in": "Đăng ký",
+    "t_backend_default_layout_sign_in": "Đăng nhập",
     "t_backend_default_reset_pass_back": "Trở lại trang đăng nhập",
 
     /** table column */
