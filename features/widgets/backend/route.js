@@ -1,41 +1,41 @@
 'use strict';
 
-/**
- * Widgets routes
- */
-module.exports = function (component, application) {
+module.exports = function (component, app) {
+
+    let controller = component.controllers.backend;
+
     return {
         "/widgets": {
             get: {
-                handler: component.controllers.backend.index,
+                handler: controller.index,
                 authenticate : true,
                 permissions : "index"
             }
         },
         "/widgets/add/:widgetName([a-zA-Z0-9_-]+)": {
             get: {
-                handler: component.controllers.backend.addWidget,
+                handler: controller.addWidget,
                 authenticate : true,
                 permissions : "index"
             }
         },
         "/widgets/save": {
             post: {
-                handler: component.controllers.backend.saveWidget,
+                handler: controller.saveWidget,
                 authenticate : true,
                 permissions : "index"
             }
         },
         "/widgets/sort": {
             post: {
-                handler: component.controllers.backend.sortWidget,
+                handler: controller.sortWidget,
                 authenticate : true,
                 permissions : "index"
             }
         },
         "/widgets/delete": {
             post: {
-                handler: component.controllers.backend.deleteWidget,
+                handler: controller.deleteWidget,
                 authenticate : true,
                 permissions : "index"
             }

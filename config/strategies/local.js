@@ -19,10 +19,8 @@ module.exports = function (passport, config, app) {
                         model: app.models.role
                     }
                 ]
-            }).then(function (user, err) {
-                if (err) {
-                    return done(err);
-                } else if (!user) {
+            }).then(function (user) {
+                if (!user) {
                     ArrowHelper.createUserAdmin(app, function (result) {
                         if (!result) {
                             return done(null, false, {

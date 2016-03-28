@@ -10,7 +10,10 @@ module.exports = function (sequelize, DataTypes) {
             autoIncrement: true
         },
         user_pass: {
-            type: DataTypes.STRING(255)
+            type: DataTypes.STRING(255),
+            validate: {
+                notEmpty: true
+            }
         },
         user_email: {
             type: DataTypes.STRING,

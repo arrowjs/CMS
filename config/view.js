@@ -13,7 +13,7 @@ module.exports = {
         frontNumberItem: 10
     },
     autoSaveDelay: 10,
-    date_format: 'DD-MM-YYYY',
+    dateFormat: 'YYYY-MM-DD',
     backendTheme: 'adminLTE',
     frontendTheme: 'acme',
     functionFolder: '/library/view_utilities/functions',
