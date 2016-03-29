@@ -7,6 +7,5 @@ module.exports = {
     saveUninitialized: true,
     cookie: {
         httpOnly: true
-    },
-    redis_prefix: 'sess : '
+    }
 };
