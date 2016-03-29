@@ -218,7 +218,7 @@ module.exports = function (controller, component, app) {
                 destination.indexOf(app.getConfig('uploadPath') + '/users/' + req.user.id) === -1) {
                 msg = "You don't have permission to upload here";
             } else {
-                let ext = path.extname(destination);
+                let ext = path.extname(destination).toLowerCase();
                 let noExt = destination.replace(/\..*$/, '');
 
                 if (allowExtension.indexOf(ext) !== -1) {
