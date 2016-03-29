@@ -10,13 +10,39 @@ module.exports = {
         let app = this;
         let permissions = currPermission || {feature: ''};
         let feature_data = app.featureManager.getAttribute();
-
         app.redisClient.getAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"))
             .then(function (menu) {
                 let htmlMenu = '<section class="sidebar">' +
                     '<ul class="sidebar-menu">';
                 if (menu) {
                     menu = JSON.parse(menu);
+                    //add item when update new feature
+                    _.map(permissions.feature, function (val,key) {
+                        if (menu.sorting.indexOf(key) == -1 ){
+                            if(_.has(feature_data[key],'backend_menu')){
+                                let flag = false;
+                                _.map(feature_data[key].backend_menu.menus, function (v, k) {
+                                    if(isDisplay(v.permission,permissions.feature[key])){
+                                        flag = true;
+                                    }
+                                })
+                                if(flag){
+                                    menu.sorting.push(key);
+                                    menu.default.features[key] = feature_data[key].backend_menu;
+                                }
+
+                            }
+                        }
+                    })
+                    //remove item when user remove feature
+                    _.map(menu.sorting, function (key) {
+                        if (!_.has(feature_data, key)){
+                            _.remove(menu.sorting, function (ele) {
+                                return ele === key;
+                            });
+                            delete menu.default.features[key];
+                        }
+                    })
                 } else {
                     menu = {};
                     menu.sorting = [];
@@ -24,11 +50,13 @@ module.exports = {
                         title: "MAIN NAVIGATION",
                         features: {}
                     };
-
                     _.map(feature_data, function (val, key) {
                         if (_.has(val, 'backend_menu')) {
-                            menu.sorting.push(key);
-                            menu.default.features[key] = val.backend_menu;
+                            if(_.has(permissions.feature,val.name)){
+                                menu.sorting.push(key);
+                                menu.default.features[key] = val.backend_menu;
+                            }
+
                         }
                     })
                 }
@@ -67,7 +95,7 @@ module.exports = {
                 });
 
                 htmlMenu += '</ul>' +
-                '   </section>';
+                    '   </section>';
                 //set menu json variables to redis
                 app.redisClient.setAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"), JSON.stringify(menu)).then(function () {
                     //return htmlMenu to display on sidebar
@@ -75,8 +103,8 @@ module.exports = {
                 });
 
             }).catch(function (err) {
-                callback(err);
-            });
+            callback(err);
+        });
     }
 };
 
