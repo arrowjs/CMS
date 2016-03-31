@@ -185,19 +185,17 @@ module.exports = function (controller, component, app) {
                     let result = [];
                     for (let i in files) {
                         let filePath = rPath + '/' + files[i];
-                        if (checkFileType(filePath) == "image") {
-                            let sta = fs.statSync(filePath);
-                            if (sta.isFile()) {
-                                let dimension = sizeOf(filePath);
-                                let p = {
-                                    p: folder + "/" + files[i],
-                                    s: sta.size,
-                                    t: new Date(sta.mtime).getTime() / 1000,
-                                    w: dimension.width,
-                                    h: dimension.height
-                                };
-                                result.push(p);
-                            }
+                        let sta = fs.statSync(filePath);
+                        if (sta.isFile()) {
+                            let dimension = sizeOf(filePath);
+                            let p = {
+                                p: folder + "/" + files[i],
+                                s: sta.size,
+                                t: new Date(sta.mtime).getTime() / 1000,
+                                w: dimension.width,
+                                h: dimension.height
+                            };
+                            result.push(p);
                         }
                     }
                     res.jsonp(result);
