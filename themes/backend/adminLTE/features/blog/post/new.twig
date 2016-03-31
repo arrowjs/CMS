@@ -184,7 +184,7 @@
                 $('#full_text').val(CKEDITOR.instances.full_text.getData());
 
                 // If content was changed, save to database
-                if (editForm.serialize() != draftData) {
+                if (editForm.serialize() != draftData && $('#published').val() == '0') {
                     draftData = editForm.serialize();
 
                     $.ajax({
