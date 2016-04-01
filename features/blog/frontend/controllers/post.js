@@ -85,8 +85,8 @@ module.exports = function (controller, component, app) {
 
         let number_item = app.getConfig('pagination').frontNumberItem || 10;
 
-        let sql = 'select posts.*,users.user_login,users.user_pass,users.user_email,users.user_url,users.user_registered,users.display_name,' +
-            'users.user_activation_key,users.user_image_url,users.salt,users.user_status' +
+        let sql = 'select posts.*,users.user_email,users.user_url,users.display_name,' +
+            'users.user_image_url,users.user_status' +
             'from arr_post as posts left outer join arr_user as users on posts.created_by = users.id WHERE' +
             ' "posts"."type" = \'post\' AND "posts"."published" = 1 AND EXTRACT(MONTH FROM posts.created_at ) = ' + month_ + ' AND EXTRACT(YEAR FROM posts.created_at) = ' + year_ +
             ' ORDER BY posts.id ASC OFFSET ' + (page - 1) * number_item + ' LIMIT ' + number_item;

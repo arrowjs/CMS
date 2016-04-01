@@ -28,15 +28,6 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.DATE,
             defaultValue: sequelize.fn('now')
         },
-        user_activation_key: {
-            type: DataTypes.STRING(60),
-            validate: {
-                len: {
-                    args: [0, 60],
-                    msg: 'Please don\'t input too long'
-                }
-            }
-        },
         user_status: {
             type: DataTypes.STRING(15),
             validate: {

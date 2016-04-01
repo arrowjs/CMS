@@ -25,7 +25,7 @@ module.exports = {
                                     if(isDisplay(v.permission,permissions.feature[key])){
                                         flag = true;
                                     }
-                                })
+                                });
                                 if(flag){
                                     menu.sorting.push(key);
                                     menu.default.features[key] = feature_data[key].backend_menu;
@@ -33,7 +33,7 @@ module.exports = {
 
                             }
                         }
-                    })
+                    });
                     //remove item when user remove feature
                     _.map(menu.sorting, function (key) {
                         if (!_.has(feature_data, key)){
@@ -95,7 +95,7 @@ module.exports = {
                 });
 
                 htmlMenu += '</ul>' +
-                    '   </section>';
+                '   </section>';
                 //set menu json variables to redis
                 app.redisClient.setAsync(app.getConfig("redis_prefix") + app.getConfig("redis_key.backend_menus"), JSON.stringify(menu)).then(function () {
                     //return htmlMenu to display on sidebar
@@ -103,8 +103,8 @@ module.exports = {
                 });
 
             }).catch(function (err) {
-            callback(err);
-        });
+                callback(err);
+            });
     }
 };
 
@@ -162,7 +162,7 @@ function isDisplay(permissions, permissionsOfFeature) {
  */
 function active_menu(currentURL, feature, returnStr, type, item) {
     let currentFeature = currentURL.split('/')[2];
-    let currentItem = currentURL.split('/')[3];
+    let currentItem = currentURL.split('/').pop();
     let result = "";
     if (currentFeature == feature) {
         if (type === 0) {
@@ -172,7 +172,6 @@ function active_menu(currentURL, feature, returnStr, type, item) {
             if (currentItem == item.split("/").pop()) {
                 result = returnStr;
             } else {
-
             }
         }
     }
