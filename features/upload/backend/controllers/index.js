@@ -187,7 +187,14 @@ module.exports = function (controller, component, app) {
                         let filePath = rPath + '/' + files[i];
                         let sta = fs.statSync(filePath);
                         if (sta.isFile()) {
-                            let dimension = sizeOf(filePath);
+                            let dimension;
+
+                            try {
+                                dimension = sizeOf(filePath);
+                            } catch (err) {
+                                dimension = {};
+                            }
+
                             let p = {
                                 p: folder + "/" + files[i],
                                 s: sta.size,
