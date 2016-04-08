@@ -26,9 +26,10 @@ module.exports = {
                 order: "ordering ASC",
                 raw: true
             }).then(function (plugins) {
-                let html = "";
+                let html = '';
+
                 if (_.isEmpty(plugins)) {
-                    callback(null, "");
+                    callback(null, '');
                 } else {
                     Promise.map(plugins, function (plugin) {
                         let pluginConfig = app.plugin[plugin.plugin_name];
@@ -42,7 +43,7 @@ module.exports = {
                                         return null;
                                     }
 
-                                    if (_.isPlainObject(dynamicData)){
+                                    if (_.isPlainObject(dynamicData)) {
                                         data = _.merge(data, dynamicData);
                                     }
 
@@ -59,11 +60,11 @@ module.exports = {
                         callback(null, html);
                     });
                 }
-            }).catch(function (err) {
-                callback(null, "");
+            }).catch(function () {
+                callback(null, '');
             });
         } else {
-            callback(null, "");
+            callback(null, '');
         }
     }
 };

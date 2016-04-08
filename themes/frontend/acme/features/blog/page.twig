@@ -2,7 +2,7 @@
 
 {% block headExtends %}
     <title>{{ item.title }}</title>
-    {{ getPlugin('page_' + item.id, 'head-tag', null) | async | default_value('<meta name="description" content="Free Responsive Corporate Template"> <meta name="keywords" content="Bootstrap 3, Template, Theme, Responsive, Corporate, Business">') | safe }}
+    {{ getPlugin('page_' + item.id, 'head_tag', null) | async | default_value('<meta name="description" content="Free Responsive Corporate Template"> <meta name="keywords" content="Bootstrap 3, Template, Theme, Responsive, Corporate, Business">') | safe }}
     {{ getPlugin('facebook', 'head_tag', {url: url, fb_share_type: 'article', fb_share_image: item.image, fb_share_description: item.intro_text }) | async | safe }}
 {% endblock %}
 
