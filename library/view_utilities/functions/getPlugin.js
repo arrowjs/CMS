@@ -37,10 +37,12 @@ module.exports = {
                         if (pluginConfig.pluginLocation && pluginConfig.pluginLocation.hasOwnProperty(location)) {
                             return pluginConfig.actions.getData(key).then(function (data) {
                                 if (data) {
-                                    try {
-                                        data = JSON.parse(data);
-                                    } catch (e) {
-                                        return null;
+                                    if (typeof data == 'string'){
+                                        try {
+                                            data = JSON.parse(data);
+                                        } catch (e) {
+                                            return null;
+                                        }
                                     }
 
                                     if (_.isPlainObject(dynamicData)) {

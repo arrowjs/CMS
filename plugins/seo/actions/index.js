@@ -35,7 +35,18 @@ module.exports = function (action, component, app) {
     };
 
     action.render = function (data, view) {
-        return component.render(view, data).then(function (html) {
+        let value;
+
+        try {
+            value = JSON.parse(data.value);
+        } catch (err) {
+            value = {};
+        }
+
+        return component.render(view, {
+            meta_description: value.meta_description,
+            meta_keywords: value.meta_keywords
+        }).then(function (html) {
             return html;
         }).catch(function () {
             return null;
