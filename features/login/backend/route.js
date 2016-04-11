@@ -20,7 +20,7 @@ module.exports = function (component, app) {
         },
         "/403": {
             get: {
-                handler: controller.notPermission,
+                handler: controller.notHavePermission,
                 authenticate: true
             }
         }

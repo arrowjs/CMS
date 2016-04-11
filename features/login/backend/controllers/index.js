@@ -1,19 +1,27 @@
-/**
- * Created by thangnv on 11/11/15.
- */
 'use strict';
 
-module.exports = function (cont, comp, app) {
-    cont.view = function (req, res) {
+module.exports = function (controller, component, app) {
+
+    controller.view = function (req, res) {
         res.backend.render('login');
     };
 
-    cont.logout = function (req, res) {
+    controller.logout = function (req, res) {
+        if (req.user && req.user.id) {
+            // Remove cache
+            let redis = app.redisClient;
+            redis.del(app.getConfig('redis_prefix') + 'current-user-' + req.user.id);
+        }
+
         req.logout();
-        res.redirect('/admin/login');
+
+        if (req.session.prelink) {
+            return res.redirect(req.session.prelink);
+        }
+        res.redirect('/');
     };
 
-    cont.notPermission = function (req, res) {
+    controller.notHavePermission = function (req, res) {
         res.backend.render('_403');
     }
 };

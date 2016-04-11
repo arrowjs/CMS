@@ -70,7 +70,7 @@ module.exports = function (passport, app) {
                 res.locals.user = req.user;
                 return next()
             } else {
-                req.flash.error("You do not have permission to access");
+                req.flash.error('You do not have permission to access');
                 res.redirect('/admin/403');
             }
         },
