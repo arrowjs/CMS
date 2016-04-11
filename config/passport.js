@@ -50,25 +50,19 @@ module.exports = function (passport, app) {
         },
         checkAuthenticate: function (req, res, next) {
             if (req.isAuthenticated()) {
-                app.models.user.find({
-                    where: {
-                        id: req.user.id
-                    },
-                    include: app.models.role
-                }).then(function (user) {
-                    try {
-                        req.session.permissions = res.locals.permissions = JSON.parse(user.role.permissions);
-                    } catch (err) {
-                        req.session.permissions = null;
-                    }
-                    res.locals.user = user;
-                    return next();
-                }).catch(function (err) {
-                    logger.error('Check authenticate error: ', err);
-                    res.redirect('/admin/login');
-                });
+                try {
+                    req.session.permissions = res.locals.permissions = JSON.parse(req.user.role.permissions);
+                } catch (err) {
+                    req.session.permissions = null;
+                }
+
+                res.locals.user = req.user;
+                next();
             } else {
-                res.redirect('/admin/login');
+                if (req.originalUrl.indexOf('/admin') == -1)
+                    res.redirect('/');
+                else
+                    res.redirect('/admin/login');
             }
         },
         handlePermission: function (req, res, next) {
