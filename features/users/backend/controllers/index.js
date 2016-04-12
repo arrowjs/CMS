@@ -302,14 +302,30 @@ module.exports = function (controller, component, app) {
         let ids = req.body.ids.split(',');
         let id = req.user.id.toString();
         let index = ids.indexOf(id);
+        let userActions = app.feature.users.actions;
 
         if (index == -1) {
-            app.feature.users.actions.destroy(ids).then(function () {
-                req.flash.success(__('m_users_backend_controllers_index_delete_flash_success'));
-                res.sendStatus(204);
-            }).catch(function (error) {
-                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                res.sendStatus(200);
+            userActions.find({
+                where: {
+                    id: {
+                        $in: ids
+                    }
+                }
+            }).then(function (user) {
+                // Delete user
+                userActions.destroy(ids).then(function () {
+                    // Delete user avatar
+                    fs.unlink(__base + 'upload' + folder_upload + slug(user.user_email).toLowerCase() + '.png', function (err) {
+                        if (err)
+                            logger.error(err);
+                    });
+
+                    req.flash.success(__('m_users_backend_controllers_index_delete_flash_success'));
+                    res.sendStatus(204);
+                }).catch(function (error) {
+                    req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+                    res.sendStatus(200);
+                });
             });
         } else {
             req.flash.error('Cannot delete yourself');
