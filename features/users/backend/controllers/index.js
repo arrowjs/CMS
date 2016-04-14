@@ -1,20 +1,15 @@
 'use strict';
 
-let _ = require('arrowjs')._;
-let promise = require('arrowjs').Promise;
+let Promise = require('arrowjs').Promise;
 let fs = require('fs');
-
-let path = require('path');
-let slug = require('slug');
-let writeFileAsync = promise.promisify(fs.writeFile);
-let readdirAsync = promise.promisify(fs.readdir);
+let writeFileAsync = Promise.promisify(fs.writeFile);
+let readdirAsync = Promise.promisify(fs.readdir);
 let formidable = require('formidable');
-promise.promisifyAll(formidable);
+Promise.promisifyAll(formidable);
 
 let logger = require('arrowjs').logger;
 let view_template = 'new';
 let folder_upload = '/img/users/';
-let route = 'users';
 
 module.exports = function (controller, component, app) {
 
@@ -24,41 +19,41 @@ module.exports = function (controller, component, app) {
     let isAllow = ArrowHelper.isAllow;
     let baseRoute = '/admin/users/';
 
-    function updateImage(data, user) {
-        return new Promise(function (fulfill, reject) {
-            let check = true;
-            if (user) check = (data.base64 != user.user_image_url);
+    function updateImage(dataBase64, user) {
+        let check = (dataBase64 != user.user_image_url);
 
-            if (data.base64 && data.base64 != '' && check) {
-                let email = data.user_email;
-                if (user) email = user.user_email;
+        if (dataBase64 && check) {
+            let fileName = folder_upload + user.id + '.png';
+            let base64Data = dataBase64.replace(/^data:image\/png;base64,/, '');
 
-                let fileName = folder_upload + slug(email).toLowerCase() + '.png';
-                let base64Data = data.base64.replace(/^data:image\/png;base64,/, "");
-
-                return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
-                    data.user_image_url = fileName;
-                    fulfill(data);
-                }).catch(function (err) {
-                    reject(err);
-                });
-            } else
-                fulfill(data);
-        });
+            return writeFileAsync(__base + 'upload' + fileName, base64Data, 'base64').then(function () {
+                return user.updateAttributes({user_image_url: fileName});
+            });
+        } else
+            return new Promise(function (fullfil, reject) {
+                fullfil(null);
+            });
     }
 
     function updateCache(userId) {
-        redis.del(redisPrefix + 'current-user-' + userId, function (err, reply) {
+        let key = redisPrefix + 'current-user-' + userId;
+        redis.del(key, function (err, reply) {
             if (!err)
                 return app.feature.users.actions.findWithRole({
                     id: userId,
                     user_status: 'publish'
                 }).then(function (user) {
                     if (user) {
-                        let user_tmp = JSON.parse(JSON.stringify(user));
-                        user_tmp.key = redisPrefix + 'current-user-' + user.id;
-                        user_tmp.acl = JSON.parse(user_tmp.role.permissions);
-                        redis.setex(user_tmp.key, 300, JSON.stringify(user_tmp));
+                        let user_tmp = {id: 0};
+
+                        try {
+                            user_tmp = JSON.parse(JSON.stringify(user));
+                            user_tmp.acl = JSON.parse(user_tmp.role.permissions);
+                        } catch (err) {
+                            user_tmp.acl = {};
+                        }
+
+                        redis.setex(key, 300, JSON.stringify(user_tmp));
                     }
                 }).catch(function (error) {
                     logger.error(error);
@@ -132,8 +127,8 @@ module.exports = function (controller, component, app) {
 
         // Add toolbar
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addSearchButton(isAllow(req, 'index'));
         toolbar.addRefreshButton(baseRoute);
+        toolbar.addSearchButton(isAllow(req, 'index'));
         toolbar.addCreateButton(isAllow(req, 'create'), baseRoute + 'create');
         toolbar = toolbar.render();
 
@@ -208,17 +203,21 @@ module.exports = function (controller, component, app) {
         // Get form data
         let data = req.body;
 
-        updateImage(data).then(function (result) {
-            // Set role equal first role in role_ids
-            result.role_id = [].concat(result.role_ids)[0];
+        if (!(data.user_pass && data.user_pass.match(/[a-zA-Z0-9_!@#$%^&*()_]{5,32}/))) {
+            req.flash.error('Mật khẩu không hợp lệ');
+            return next();
+        }
 
-            // Create user
-            return app.feature.users.actions.create(result);
-        }).then(function (user) {
-            req.flash.success(__('m_users_backend_controllers_index_add_flash_success'));
-            res.redirect(baseRoute + user.id);
+        // Set role equal first role in role_ids
+        data.role_id = [].concat(data.role_ids)[0];
+
+        app.feature.users.actions.create(data).then(function (user) {
+            // Update avatar
+            return updateImage(data.base64, user).then(function () {
+                req.flash.success(__('m_users_backend_controllers_index_add_flash_success'));
+                res.redirect(baseRoute + user.id);
+            });
         }).catch(function (error) {
-            logger.error(error);
             if (error.name == ArrowHelper.UNIQUE_ERROR) {
                 req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
                 return next();
@@ -264,25 +263,18 @@ module.exports = function (controller, component, app) {
         let edit_user = req._user;
         let data = req.body;
 
-        updateImage(data, edit_user).then(function (data) {
-            // If in profile page, don't allow change role_ids and email
-            if (req.url.indexOf('profile') !== -1) {
-                if (data.role_ids !== undefined) delete data.role_ids;
-                if (data.email !== undefined) delete data.email;
-            } else {
-                if (data.role_ids === undefined) data.role_ids = null;
-                else if (!edit_user.role_ids && data.role_ids) {
-                    // If user does not have a role, set role_id equal to first role in role_ids
-                    data.role_id = [].concat(data.role_ids)[0];
-                }
-            }
+        if (data.role_ids === undefined)
+            data.role_ids = null;
+        else if (!edit_user.role_ids && data.role_ids)  // If user does not have a role, set role_id equal to first role in role_ids
+            data.role_id = [].concat(data.role_ids)[0];
 
-            return userAction.update(edit_user, data).then(function (result) {
-                req.flash.success(__('m_users_backend_controllers_index_update_flash_success'));
-
+        return userAction.update(edit_user, data).then(function (user) {
+            // Update avatar
+            return updateImage(data.base64, user).then(function () {
                 // Update cache
-                updateCache(result.id);
+                updateCache(user.id);
 
+                req.flash.success(__('m_users_backend_controllers_index_update_flash_success'));
                 return res.redirect('/' + adminPrefix + '/users/' + req.params.uid);
             });
         }).catch(function (error) {
@@ -315,7 +307,7 @@ module.exports = function (controller, component, app) {
                 // Delete user
                 userActions.destroy(ids).then(function () {
                     // Delete user avatar
-                    fs.unlink(__base + 'upload' + folder_upload + slug(user.user_email).toLowerCase() + '.png', function (err) {
+                    fs.unlink(__base + 'upload' + folder_upload + user.id + '.png', function (err) {
                         if (err)
                             logger.error(err);
                     });
@@ -361,7 +353,7 @@ module.exports = function (controller, component, app) {
                 role_ids: roles
             });
         }).catch(function (err) {
-            logger.error(err);
+            logger.error(error);
             res.backend.render(view_template, {
                 item: req.user,
                 toolbar: toolbar,
@@ -375,29 +367,28 @@ module.exports = function (controller, component, app) {
         let data = req.body;
 
         userAction.findById(req.user.id).then(function (user) {
-            updateImage(data, user).then(function (data) {
-                // Don't allow change role_ids and email
-                if (data.role_ids !== undefined) delete data.role_ids;
-                if (data.email !== undefined) delete data.email;
+            // Don't allow change role_ids and email
+            if (data.role_ids !== undefined) delete data.role_ids;
+            if (data.email !== undefined) delete data.email;
 
-                return userAction.update(user, data).then(function (result) {
+            return userAction.update(user, data).then(function (result) {
+                return updateImage(data.base64, user).then(function () {
                     // Update cache
                     updateCache(result.id);
 
                     req.flash.success(__('m_users_backend_controllers_index_update_profile_flash_success'));
-
                     return res.redirect('/' + adminPrefix + '/users/profile');
                 });
-            }).catch(function (error) {
-                logger.error(error);
-                if (error.name == ArrowHelper.UNIQUE_ERROR) {
-                    req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
-                    return next();
-                } else {
-                    req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
-                    return next();
-                }
             });
+        }).catch(function (error) {
+            logger.error(error);
+            if (error.name == ArrowHelper.UNIQUE_ERROR) {
+                req.flash.error(__('m_users_backend_controllers_index_flash_email_exist'));
+                return next();
+            } else {
+                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+                return next();
+            }
         });
     };
 
@@ -420,6 +411,7 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'user_back_link');
         toolbar = toolbar.render();
+
         res.backend.render('change-pass', {
             title: "Change User's password",
             item: req.user,
@@ -465,7 +457,7 @@ module.exports = function (controller, component, app) {
                 res.redirect(baseRoute);
             }
         }).catch(function (err) {
-            req.flash.error(err.message);
+            req.flash.error(err.name + ': ' + err.message);
             res.redirect(baseRoute);
         });
     };
