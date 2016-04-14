@@ -14,6 +14,7 @@
   "dependencies": {
     "adm-zip": "^0.4.7",
     "arrowjs": "*",
+    "cheerio": "^0.20.0",
     "express": "*",
     "formidable": "~1.0.16",
     "glob": "^6.0.1",

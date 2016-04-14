@@ -44,8 +44,7 @@ module.exports = function (action, component, app) {
         }
 
         return component.render(view, {
-            meta_description: value.meta_description,
-            meta_keywords: value.meta_keywords
+            data: value
         }).then(function (html) {
             return html;
         }).catch(function () {

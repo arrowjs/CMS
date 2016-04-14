@@ -1,8 +1,7 @@
 {% extends '_layout.' + getConfig('viewExtension') %}
 
 {% block headExtends %}
-    <title>{{ item.title }}</title>
-    {{ getPlugin('page_' + item.id, 'head_tag', null) | async | default_value('<meta name="description" content="Free Responsive Corporate Template"> <meta name="keywords" content="Bootstrap 3, Template, Theme, Responsive, Corporate, Business">') | safe }}
+    {{ getPlugin('page_' + item.id, 'head_tag', null) | async | default_seo_value(item.title, 'Bootstrap 3, Template, Theme, Responsive, Corporate, Business', 'Free Responsive Corporate Template') | safe }}
     {{ getPlugin('facebook', 'head_tag', {url: url, fb_share_type: 'article', fb_share_image: item.image, fb_share_description: item.intro_text }) | async | safe }}
 {% endblock %}
 
@@ -49,11 +48,11 @@
 
                         </div>
                         {% if item.image %}
-                        <div class="col-lg-10 col-sm-10">
+                            <div class="col-lg-10 col-sm-10">
                                 <div class="blog-img gs">
                                     <img src="{{ item.image }}" alt=""/>
                                 </div>
-                        </div>
+                            </div>
                         {% endif %}
                     </div>
                     <div class="row">

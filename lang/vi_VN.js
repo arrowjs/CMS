@@ -34,6 +34,10 @@ module.exports = {
     "choose": "Chọn",
     "not_authenticated": "Không có quyền",
 
+    "p_seo_meta_description_help": "Meta descriptions nên có từ 150 - 160 ký tự và không có ký tự xuống dòng",
+    "p_seo_meta_description_now": "Hiện tại:",
+    "p_seo_meta_description_characters": "ký tự",
+
     /** Module category */
     "m_category_backend_module_title": "Tất cả Category",
     "m_category_backend_module_desc": "Quản lý Category",

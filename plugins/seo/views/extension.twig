@@ -4,38 +4,37 @@
             <form method="post" action="/admin/plugins/seo/save" class="tab-pane fade active in"
                   id="{{ pluginName + "_form" }}">
                 <div class="form-group">
-                    <label data-toggle="tooltip" data-placement="top"
-                           title="Pick the main keyword or keyphrase that this post is about.">Meta Keywords</label>
+                    <label for="meta_keywords">Keywords</label>
                     <input name="meta_keywords" id="meta_keywords" class="form-control" value="{{ seo.meta_keywords }}"
                            type="text"/>
-
-                    <p class="help-block">Enter a focus keyword</p>
-
-                    <div class="check-keyword" style="display: none;">
-                        Your focus keyword was found in:
-                        <ul>
-                            <li>Page title: <span class="label" id="count-in-title"></span></li>
-                            <li>Content: <span class="label" id="count-in-content"></span></li>
-                            <li>Meta description: <span class="label" id="count-in-description"></span></li>
-                        </ul>
-                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label data-toggle="tooltip" data-placement="top"
-                           title="The meta description is often shown as the black text under the title in a search result.
-                           For this to work it has to contain the keyword that was searched for.">
-                        Meta description
-                    </label>
-                            <textarea name="meta_description" id="meta_description" class="form-control"
-                                      rows="3">{{ seo.meta_description }}</textarea>
+                    <label for="page_title">Page title</label>
+                    <input name="page_title" id="page_title" class="form-control" value="{{ seo.page_title }}"
+                           type="text"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="meta_description">Meta description</label>
+                    <textarea name="meta_description" id="meta_description" class="form-control"
+                              rows="3" onkeyup="countCharacter()">{{ seo.meta_description }}</textarea>
 
                     <p class="help-block" id="counter">
-                        It is best to keep meta descriptions between 150 and 160 characters.
-                        Now: <span style="color: #FF8722"></span> characters.
+                        {{ __('p_seo_meta_description_help') }}
+                        {{ __('p_seo_meta_description_now') }} <span style="color: #FF8722" id="character_count">0</span> {{ __('p_seo_meta_description_characters') }}
                     </p>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    function countCharacter() {
+        var s = document.getElementById('meta_description').value.trim()
+                .replace(/\n/, '').replace(/\r/, '');
+        console.log(s.toString());
+        document.getElementById('character_count').innerText = s.length;
+    }
+</script>

@@ -12,8 +12,7 @@
             {% for col in table_columns %}
                 <th width="{{ col.width }}">
                     {% if col.type == 'checkbox' %}
-                        {{ '' }}
-                        {% elif col.filter %}
+                    {% elif col.filter %}
                         {% set filter = col.filter %}
 
                         {% if filter.type == 'select' %}
@@ -28,30 +27,11 @@
                                 {% endfor %}
                             </select>
                         {% elif filter.data_type == 'datetime' %}
-                            <input type="text" class="form-control date-range"
-                                   id="{{ col.column }}"
-                                   name="{{ col.column }}"
-                                   value="{{ filters[col.column] }}"/>
+                            <input type="text" class="form-control date-range" id="{{ col.column }}"
+                                   name="{{ col.column }}" value="{{ filters[col.column] }}"/>
                         {% else %}
-                            {% set toolTip = '' %}
-                            {% if filter.data_type != 'string' %}
-                                {% set toolTip = 'Use operator ">" "<" ">=" "<=" "><" "<>" ";". </br>Ex: >15, 15><25' %}
-                            {% endif %}
-                            <div class="input-group">
-                                <input type="text" name="{{ col.column }}"
-                                       class="form-control"
+                            <input type="text" name="{{ col.column }}" class="form-control"
                                        value="{{ filters[col.column] }}"/>
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-default popover-btn"
-                                                data-container="body"
-                                                data-placement="bottom"
-                                                data-toggle="popover"
-                                                data-html="true"
-                                                data-content='{{ toolTip }}'>
-                                            <i class="fa fa-question"></i>
-                                        </button>
-                                    </span>
-                            </div>
                         {% endif %}
                     {% endif %}
                 </th>

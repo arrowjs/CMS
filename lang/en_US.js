@@ -34,6 +34,10 @@ module.exports = {
     "choose": "Choose",
     "not_authenticated": "Not Authenticated",
 
+    "p_seo_meta_description_help": "It is best to keep meta descriptions between 150 and 160 characters and don't use line break.",
+    "p_seo_meta_description_now": "Now:",
+    "p_seo_meta_description_characters": "characters",
+
     /** Module category */
     "m_category_backend_module_title": "Categories",
     "m_category_backend_module_desc": "Category Manager",
@@ -75,10 +79,6 @@ module.exports = {
     "m_blog_backend_views_form_author_info": "Author's Information",
     "m_blog_backend_module_title": "Blog",
     "m_blog_backend_module_desc": "Blog Manager",
-    //"m_blog_backend_module_category_index": "View All Categories",
-    //"m_blog_backend_module_category_create": "Create New Category",
-    //"m_blog_backend_module_category_edit": "Edit Category",
-    //"m_blog_backend_module_category_delete": "Delete Category",
     "m_blog_backend_module_post_index": "View All Posts",
     "m_blog_backend_module_post_create": "Create New Post",
     "m_blog_backend_module_post_edit": "Edit Own Post",

@@ -1,6 +1,7 @@
 'use strict';
 
-let promise = require('arrowjs').Promise;
+let Promise = require('arrowjs').Promise;
+let logger = require('arrowjs').logger;
 
 module.exports = function (controller, component, app) {
 
@@ -169,7 +170,7 @@ module.exports = function (controller, component, app) {
         let alias = req.params.alias || '';
         let id = req.params.id || '';
 
-        promise.all([
+        Promise.all([
             app.feature.blog.actions.findAndCountAll({
                 include: [
                     {
@@ -199,7 +200,7 @@ module.exports = function (controller, component, app) {
                     baseURL: '/blog/posts/categories/' + alias + '/' + id + '/page-:page([0-9]+)?(/)?',
                 });
             } else {
-                //Redirect to 404 if post not exist
+                // Redirect to 404 if post not exist
                 res.frontend.render('_404');
             }
         }).catch(function (err) {

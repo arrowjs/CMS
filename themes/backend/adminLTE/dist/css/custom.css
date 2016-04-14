@@ -180,7 +180,7 @@ input[type="checkbox"] {
 }
 
 #datatable_orders tr.heading > th:not(:first-child) {
-    padding: 0 !important;
+    padding: 0 5px !important;
 }
 
 #datatable_orders a.sort-link {
