@@ -4,7 +4,6 @@ module.exports = {
     redis: {
         host: 'localhost',
         port: '6379',
-        type: 'fakeredis'
     },
     redis_prefix: 'arrowCMS_',
     redis_key: {

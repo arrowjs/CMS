@@ -3,7 +3,6 @@
 let _ = require('arrowjs')._;
 let Promise = require('arrowjs').Promise;
 let fs = require('fs');
-let log = require('arrowjs').logger;
 
 module.exports = function (controller, component, application) {
 
@@ -37,10 +36,10 @@ module.exports = function (controller, component, application) {
             }
         }).then(function (result) {
             if (application.plugin[pluginName]) {
-                if (result.dataValues && result.dataValues.data) {
+                if (result && result.dataValues && result.dataValues.data) {
                     result.dataValues.data = JSON.parse(result.dataValues.data)
+                    _.assign(application.plugin[pluginName], result.dataValues.data);
                 }
-                _.assign(application.plugin[pluginName], result.dataValues.data);
             }
             res.render("setting", {plugin: application.plugin[pluginName]});
         });
