@@ -1,7 +1,7 @@
 {
   "name": "arrowjs-cms",
   "description": "ArrowJS CMS base on ArrowJS",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Techmaster",
   "license": "MIT",
   "repository": {
@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "dev" : "nodemon server.js"
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
@@ -34,5 +34,7 @@
     "serve-favicon": "^2.3.0",
     "slug": "^0.9.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
 }

@@ -1,4 +1,4 @@
-{% macro getContent(col) %}
+{% macro getContent(col,item) %}
     <span class="{{ col.value_cls }}" style="{{ col.value_style }}">
         {% if col.alias %}
             {% if col.type=='custom' %}
@@ -49,13 +49,13 @@
                 {% if col.type=='inline' and col.link %}
                     <a href="#" data-name="{{ col.column }}" class="inline-edit"
                        data-url="{{ col.link|table_link(item) }}"
-                       data-type="text" data-pk="{{ col.pk|inline_pk(item) }}">{{ getContent(col) }}</a>
+                       data-type="text" data-pk="{{ col.pk|inline_pk(item) }}">{{ getContent(col,item) }}</a>
                     {% elif col.link %}
                     {% if col.acl == false %}
-                        {{ getContent(col) }}
+                        {{ getContent(col,item) }}
                     {% else %}
                         <a href="{{ col.link|table_link(item) }}" target="{{ col.target }}"
-                           onclick="{{ col.onclick|table_link(item) }}">{{ getContent(col) }}</a>
+                           onclick="{{ col.onclick|table_link(item) }}">{{ getContent(col,item) }}</a>
                     {% endif %}
                     {% elif col.type=='checkbox' %}
                     <input type="checkbox" class="check-element" name="ids[]" value="{{ col.column|get_value(item) }}">
@@ -73,7 +73,7 @@
                         {% endif %}
                     {% endfor %}
                 {% else %}
-                    {{ getContent(col) }}
+                    {{ getContent(col,item) }}
                 {% endif %}
             </td>
         {% endfor %}
