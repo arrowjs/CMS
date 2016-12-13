@@ -92,7 +92,9 @@ function parseCondition(column_name, value, col) {
     column_name = (col.filter.model ? (col.filter.model + '.') : '') + column_name;
     column_name = column_name.replace(/(.*)\.(.*)/, '"$1"."$2"');
 
-    if (col.filter.data_type == 'array') {
+    if (col.filter.data_type == 'number' && isNaN(Number(value))) {
+       return false;
+    } else if (col.filter.data_type == 'array') {
         return column_name + ' @> ?';
     } else if (col.filter.data_type == 'string') {
         return column_name + ' ilike ?';
