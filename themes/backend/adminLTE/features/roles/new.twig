@@ -44,44 +44,42 @@
                     </div>
                 </div>
 
-                <div class="col-md-12">
-                    <div class="nav-tabs-custom" style="cursor: move;">
-                        <!-- Tabs within a box -->
-                        <ul class="nav nav-tabs ui-sortable-handle">
-                            <li class=""><a href="#backend" data-toggle="tab" aria-expanded="false">
-                                    {{ __('backend') }}</a></li>
-                        </ul>
+                <div class="nav-tabs-custom" style="cursor: move;">
+                    <!-- Tabs within a box -->
+                    <ul class="nav nav-tabs ui-sortable-handle">
+                        <li class="active"><a href="#backend" data-toggle="tab" aria-expanded="false">
+                                {{ __('backend') }}</a></li>
+                    </ul>
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="tab-content">
-                                    <div class="tab-pane active" id="backend">
-                                        {% for name,values in features %}
-                                            {% if values.length > 0 %}
-                                                <div class="col-md-3 col-sm-3">
-                                                    <div class="rule-item">
-                                                        <div class="form-group">
-                                                            <label class="label-rule">
-                                                                <input type="checkbox" class="check-rule-parent"/>
-                                                                {{ name }}
-                                                            </label>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="backend">
+                                    {% for name,values in features %}
+                                        {% if values.length > 0 %}
+                                            <div class="col-md-3 col-sm-3">
+                                                <div class="rule-item">
+                                                    <div class="form-group">
+                                                        <label class="label-rule">
+                                                            <input type="checkbox" class="check-rule-parent"/>
+                                                            {{ name }}
+                                                        </label>
 
-                                                            {% for v in values %}
-                                                                <div class="checkbox">
-                                                                    <label>
-                                                                        <input type="checkbox" name="{{ name }}"
-                                                                               class="check-rule-children"
-                                                                               value="{{ v.name }}" {{ _permissions|check_state(name, v) }}/>
-                                                                        {{ v.title }}
-                                                                    </label>
-                                                                </div>
-                                                            {% endfor %}
-                                                        </div>
+                                                        {% for v in values %}
+                                                            <div class="checkbox">
+                                                                <label>
+                                                                    <input type="checkbox" name="{{ name }}"
+                                                                           class="check-rule-children"
+                                                                           value="{{ v.name }}" {{ _permissions|check_state(name, v) }}/>
+                                                                    {{ v.title }}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
                                                     </div>
                                                 </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>

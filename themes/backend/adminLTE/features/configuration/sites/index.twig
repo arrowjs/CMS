@@ -3,51 +3,49 @@
 {% block content %}
     <form id="edit-form" method="post" role="form">
         {{ toolbar | safe }}
-        <div class="nav-tabs-custom">
-            <div class="tab-content">
-                <div class="tab-pane active" id="site-setting">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="title">{{ __('m_configurations_backend_index_label_title') }}</label>
-                            <input type="text" name="title" id="title" class="form-control"
-                                   value="{{ config.app.title }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="description">{{ __('m_configurations_backend_index_label_desc') }}</label>
-                            <input type="text" name="description" id="description" class="form-control"
-                                   value="{{ config.app.description }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="auto_save_delay">Auto save time delay (second)</label>
-                            <input type="text" name="auto_save_delay" id="auto_save_delay" class="form-control"
-                                   value="{{ config.autoSaveDelay }}">
-                        </div>
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="title">{{ __('m_configurations_backend_index_label_title') }}</label>
+                        <input type="text" name="title" id="title" class="form-control"
+                               value="{{ config.app.title }}">
                     </div>
 
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="language">{{ __('m_configurations_backend_index_label_language_code') }}</label>
-                            <select name="language" id="language" class="form-control">
-                                {% for key in lang %}
-                                    {% if key == config.language %}
-                                        <option value="{{ key }}" selected>{{ key }}</option>
-                                    {% else %}
-                                        <option value="{{ key }}">{{ key }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label for="description">{{ __('m_configurations_backend_index_label_desc') }}</label>
+                        <input type="text" name="description" id="description" class="form-control"
+                               value="{{ config.app.description }}">
                     </div>
 
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="number_item">{{ __('m_configurations_backend_index_label_item_per_page') }}</label>
-                                <input type="text" name="number_item" id="number_item" class="form-control"
-                                       value="{{ config.pagination.numberItem }}">
-                            </div>
+                    <div class="form-group">
+                        <label for="auto_save_delay">Auto save time delay (second)</label>
+                        <input type="text" name="auto_save_delay" id="auto_save_delay" class="form-control"
+                               value="{{ config.autoSaveDelay }}">
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="language">{{ __('m_configurations_backend_index_label_language_code') }}</label>
+                        <select name="language" id="language" class="form-control">
+                            {% for key in lang %}
+                                {% if key == config.language %}
+                                    <option value="{{ key }}" selected>{{ key }}</option>
+                                {% else %}
+                                    <option value="{{ key }}">{{ key }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="number_item">{{ __('m_configurations_backend_index_label_item_per_page') }}</label>
+                            <input type="text" name="number_item" id="number_item" class="form-control"
+                                   value="{{ config.pagination.numberItem }}">
                         </div>
                     </div>
                 </div>
