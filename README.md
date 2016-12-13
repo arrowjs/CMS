@@ -1,6 +1,9 @@
 ArrowJS CMS
 ==================
 
+[![dependencies Status](https://david-dm.org/arrowjs/CMS/status.svg)](https://david-dm.org/arrowjs/CMS)
+[![devDependencies Status](https://david-dm.org/arrowjs/CMS/dev-status.svg)](https://david-dm.org/arrowjs/CMS?type=dev)
+
 Join our online chat at [![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/trquoccuong/arrowjs)
 
 > Welcome to ArrowJS CMS! ArrowJS CMS is CMS base on ArrowJS framework. By default, we are blog platform support SQL database like Wordpress. We have many features like themes, widget , multi-language, authenticate , Role-base v.v
