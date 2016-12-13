@@ -81,14 +81,14 @@ module.exports = function (controller, component, application) {
                     });
                 });
             }).catch(function (err) {
-                req.flash.error('Cannot parse "theme.json" file');
+            req.flash.error('Cannot parse "theme.json" file');
 
-                res.render('sidebars', {
-                    widgets: widgets,
-                    sidebars: null,
-                    title: 'Widgets Manager'
-                });
+            res.render('sidebars', {
+                widgets: widgets,
+                sidebars: null,
+                title: 'Widgets Manager'
             });
+        });
     };
 
     /**
@@ -116,7 +116,9 @@ module.exports = function (controller, component, application) {
      */
     controller.saveWidget = function (req, res) {
         // Optimize post data
-        let data = req.body;
+
+        let data = Object.assign({}, req.body);
+
         let mainAttributes = ['id', 'widget_name', 'sidebar', 'ordering'];
         let optionAttributes = {};
         for (let i in data) {
