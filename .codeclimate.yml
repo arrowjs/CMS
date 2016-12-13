@@ -1,0 +1,7 @@
+exclude_paths:
+- "log/"
+- "node_modules/"
+- "themes/"
+- "**.rb"
+- "**.log"
+- "**.twig"
