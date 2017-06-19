@@ -30,17 +30,42 @@ module.exports = function (passport, app) {
                             user_status: 'publish'
                         }
                     }).then(function (user) {
-                        let user_tmp;
-                        try {
-                            user_tmp = JSON.parse(JSON.stringify(user));
-                        } catch (err) {
-                            logger.error(err);
-                            done(null, false);
-                        }
+                        // Integrate multiple roles to user
+                        // Author : nguyenpham93
+                        let role_array = user.role_ids.split(',').map(role => parseInt(role));
 
-                        // Set expires 300 seconds
-                        redis.setex(key, 300, JSON.stringify(user_tmp));
-                        done(null, user_tmp);
+                        // Find all roles by user.role_ids
+                        app.models.role.findAll({
+                            where: {
+                                $or: [ {id: role_array }]
+                            }
+                        }).then (function (roles) {
+                            let user_tmp;
+
+                            try {
+                                user_tmp = JSON.parse(JSON.stringify(user));
+                                let feature = JSON.parse(user_tmp.role.permissions);
+
+                                roles.forEach ((role) => {
+                                    let role_permission = JSON.parse(role.permissions);
+
+                                    for(key in role_permission.feature){
+                                        feature.feature[key] =  role_permission.feature[key];
+                                    }
+                                });
+
+                                user_tmp.role.permissions = JSON.stringify(feature);
+                            } catch (err) {
+                                logger.error(err);
+                                done(null, false);
+                            }
+
+                            // Set expires 300 seconds
+                            redis.setex(key, 300, JSON.stringify(user_tmp));
+                            done(null, user_tmp);
+                        });
+
+
                     }).catch(function (err) {
                         logger.error(err);
                         done(null, false);
